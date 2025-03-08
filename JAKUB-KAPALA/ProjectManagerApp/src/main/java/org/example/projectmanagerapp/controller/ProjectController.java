@@ -1,5 +1,6 @@
 package org.example.projectmanagerapp.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
+@Tag(name = "Project API")
 public class ProjectController {
     private final ProjectRepository projectRepository;
 
