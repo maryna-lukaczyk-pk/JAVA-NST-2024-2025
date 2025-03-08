@@ -1,1 +1,3 @@
-Dominik Gąsiorek lab 1
+Dominik Gąsiorek
+GRUPA 1
+PROJEKT: ...
