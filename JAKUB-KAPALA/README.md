@@ -1,3 +1,3 @@
 - Jakub Kapała
 - GRUPA GK02
-- Projekt: `placeholder`
+- Projekt: _placeholder_
