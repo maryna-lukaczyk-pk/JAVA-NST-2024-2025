@@ -13,8 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
-    private static final String PROJECT_ID_PATH = "/{projectId}";
-
     private final ProjectRepository projectRepository;
 
     @Autowired
@@ -22,12 +20,12 @@ public class ProjectController {
         this.projectRepository = projectRepository;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
 
-    @GetMapping(PROJECT_ID_PATH)
+    @GetMapping("/{projectId}")
     public ResponseEntity<Project> getProjectById(@PathVariable Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElse(null);
@@ -39,16 +37,19 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    @PostMapping
+    @PostMapping("/add/{projectId}")
     public ResponseEntity<Project> createProject(@RequestBody Project project) {
         Project createdProject = projectRepository.save(project);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
-    @PutMapping(PROJECT_ID_PATH)
-    public ResponseEntity<Project> updateProject(@PathVariable Long projectId, @RequestBody Project projectUpdateRequest) {
+    @PutMapping("/update/{projectId}")
+    public ResponseEntity<Project> replaceProject(@PathVariable Long projectId, @RequestBody Project projectUpdateRequest) {
         Project project =  projectRepository.findById(projectId)
-                .map(existingProject -> saveUpdatedProjectDetails(existingProject, projectUpdateRequest))
+                .map(existingProject -> {
+                    existingProject.setName(projectUpdateRequest.getName());
+                    return projectRepository.save(existingProject);
+                })
                 .orElse(null);
 
         if (project == null) {
@@ -58,7 +59,7 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    @DeleteMapping(PROJECT_ID_PATH)
+    @DeleteMapping("/remove/{projectId}")
     public ResponseEntity<Object> deleteProject(@PathVariable Long projectId) {
         return projectRepository.findById(projectId)
                 .map(project -> {
@@ -66,10 +67,5 @@ public class ProjectController {
                     return ResponseEntity.noContent().build();
                 })
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    private Project saveUpdatedProjectDetails(Project existingProject, Project projectUpdateRequest) {
-        existingProject.setName(projectUpdateRequest.getName());
-        return projectRepository.save(existingProject);
     }
 }
