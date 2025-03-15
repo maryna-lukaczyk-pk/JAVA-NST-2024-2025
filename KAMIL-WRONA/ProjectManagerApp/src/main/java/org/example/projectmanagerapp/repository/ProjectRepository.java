@@ -1,4 +1,3 @@
-package org.example.projectmanagerapp.entity;
 package org.example.projectmanagerapp.repository;
 
 import org.example.projectmanagerapp.entity.Project;
