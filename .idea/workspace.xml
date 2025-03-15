@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd0d6119-7434-40ca-8de4-d52f30880492" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ksawery-Handziuk/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Ksawery-Handziuk/README.md" afterDir="false" />
+    <list default="true" id="cd0d6119-7434-40ca-8de4-d52f30880492" name="Changes" comment="Aktualizacja plikow">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,9 +94,22 @@
       <workItem from="1741464401814" duration="843000" />
       <workItem from="1741519357907" duration="1889000" />
     </task>
+    <task id="LOCAL-00001" summary="Aktualizacja plikow">
+      <option name="closed" value="true" />
+      <created>1742061440799</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1742061440799</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Aktualizacja plikow" />
+    <option name="LAST_COMMIT_MESSAGE" value="Aktualizacja plikow" />
   </component>
 </project>
