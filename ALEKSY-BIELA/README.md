@@ -1,1 +1,0 @@
-aleksy,biela,gr1
