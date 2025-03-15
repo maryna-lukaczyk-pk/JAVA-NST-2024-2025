@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd0d6119-7434-40ca-8de4-d52f30880492" name="Changes" comment="" />
+    <list default="true" id="cd0d6119-7434-40ca-8de4-d52f30880492" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ksawery-Handziuk/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Ksawery-Handziuk/README.md" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,6 +24,7 @@
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="2u2uUTJsJCTSHwHCq89M1BlWSR7" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -34,7 +38,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.ProjectManagerAppApplication.executor": "Run",
-    "git-widget-placeholder": "damian-judka-lab-01",
+    "git-widget-placeholder": "ksawery-handziuk",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/geniu/OneDrive/Dokumenty/Studia-informatyka/IV_semestr/Java/laby/lab1/JAVA-NST-2024-2025",
