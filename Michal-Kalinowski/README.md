@@ -1,1 +1,0 @@
-Michał Kalinowski gr. 2
