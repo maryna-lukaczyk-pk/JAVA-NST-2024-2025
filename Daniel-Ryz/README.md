@@ -1,1 +1,3 @@
--e "Imi©: Daniel\nNazwisko: Ry¾\nNumer grupy: 4" 
+ImiÄ™: Daniel
+Nazwisko: RyÅ¼
+Numer grupy: 4 
