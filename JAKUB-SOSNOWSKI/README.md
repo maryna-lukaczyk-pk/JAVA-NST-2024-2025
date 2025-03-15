@@ -1,1 +1,3 @@
-Jakub Sosnowsk\ GK04\ Projekt: TaskMaster
+Jakub 
+Sosnowski
+Gr. 04
