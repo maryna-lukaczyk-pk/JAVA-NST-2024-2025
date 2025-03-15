@@ -1,3 +1,3 @@
 # JAVA-NST-2024-2025
-Adrian Bober
-grupa 1
+Ksawery Handziuk
+Grupa 2
