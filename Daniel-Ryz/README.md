@@ -1,0 +1,1 @@
+-e "Imi©: Daniel\nNazwisko: Ry¾\nNumer grupy: 4" 
