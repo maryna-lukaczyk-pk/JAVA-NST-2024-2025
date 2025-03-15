@@ -1,3 +1,3 @@
-Imię: Daniel
-Nazwisko: Ryż
-Numer grupy: 4
+-Imię: Daniel
+-Nazwisko: Ryż
+-Numer grupy: 4
