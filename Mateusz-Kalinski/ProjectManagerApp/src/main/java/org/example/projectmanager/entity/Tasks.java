@@ -21,4 +21,14 @@ public class Tasks {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    @Transient // Nie mapuj tego pola do bazy danych
+    private PriorityLevel priorityLevel;
+
+    public String getPriority() {
+        if (priorityLevel != null) {
+            return priorityLevel.getPriority();
+        }
+        return null; // Or handle default priority
+    }
 }
