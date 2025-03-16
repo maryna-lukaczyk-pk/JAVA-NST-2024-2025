@@ -1,1 +1,0 @@
-Grzegorz Kotkowski GK02
