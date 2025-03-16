@@ -19,4 +19,8 @@ public class User {
 
     @ManyToMany(mappedBy = "users")
     private Set<Project> projects;
+
+    public User(String username) {
+        this.username = username;
+    }
 }
