@@ -1,1 +1,0 @@
-bartosz, misiek, 3
