@@ -1,6 +1,7 @@
 package com.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
+import com.example.projectmanagerapp.priority.PriorityLevel;
 
 @Entity
 public class Task {
@@ -16,4 +17,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    @Transient
+    private PriorityLevel priority;
 }
