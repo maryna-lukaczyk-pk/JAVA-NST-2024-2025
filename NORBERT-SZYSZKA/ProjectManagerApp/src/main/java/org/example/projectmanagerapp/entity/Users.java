@@ -3,16 +3,18 @@ package org.example.projectmanagerapp.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Set;
+
 @Entity
 @Data
-public class Project {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(nullable = false)
-    private String name;
+    private String username;
 
-    @Column(nullable = false)
-    private String description;
+    @ManyToMany
+    Set<Projects> user_projects;
 }
