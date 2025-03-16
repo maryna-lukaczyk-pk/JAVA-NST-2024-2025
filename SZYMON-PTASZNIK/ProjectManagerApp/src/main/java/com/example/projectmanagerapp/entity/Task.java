@@ -21,7 +21,7 @@ public class Task {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private String taskType;
+    private TaskType taskType;
 
     @ManyToOne
     private Project project;
