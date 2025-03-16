@@ -19,7 +19,7 @@ public class Project {
 
     @OneToMany(mappedBy = "project")
     private Set<ProjectUsers> projectUsers;
-
+//D
     @OneToMany(mappedBy = "project")
     private Set<Tasks> tasks;
 }
