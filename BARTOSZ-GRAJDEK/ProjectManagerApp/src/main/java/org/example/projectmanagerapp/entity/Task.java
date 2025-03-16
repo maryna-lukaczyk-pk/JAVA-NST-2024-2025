@@ -14,14 +14,11 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String title;
 
-    @Column()
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private TaskType taskType;
 
     @ManyToOne
