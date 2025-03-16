@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -15,4 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Project> projects;
 }
