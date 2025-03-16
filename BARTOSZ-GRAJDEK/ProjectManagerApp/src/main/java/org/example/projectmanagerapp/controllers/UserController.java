@@ -18,12 +18,12 @@ class UserController {
         this.repository= repository;
     }
 
-    @GetMapping("/projects")
+    @GetMapping("/users")
     List<Task> all() {
         return repository.findAll();
     }
 
-    @PostMapping("/projects")
+    @PostMapping("/users")
     Task newTask(@RequestBody Task newTask) {
         return repository.save(newTask);
     }
