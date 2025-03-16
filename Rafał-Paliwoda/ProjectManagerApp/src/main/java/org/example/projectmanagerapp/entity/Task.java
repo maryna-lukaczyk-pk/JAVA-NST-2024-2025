@@ -20,7 +20,7 @@ public class Task {
 
     private String description;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private TaskType task_type;
 
     @Transient
