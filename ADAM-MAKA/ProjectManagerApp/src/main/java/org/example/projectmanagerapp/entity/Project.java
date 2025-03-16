@@ -15,17 +15,14 @@ public class Project {
     private String name;
     private String description;
 
-    // Konstruktor bezargumentowy
     public Project() {
     }
 
-    // Konstruktor z argumentami
     public Project(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    // Gettery i Settery
     public Long getId() {
         return id;
     }
