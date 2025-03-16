@@ -18,5 +18,8 @@ public class Project {
     private String name;
 
     @ManyToMany
+    @JoinTable(
+            name="project_user"
+    )
     private List<User> users;
 }
