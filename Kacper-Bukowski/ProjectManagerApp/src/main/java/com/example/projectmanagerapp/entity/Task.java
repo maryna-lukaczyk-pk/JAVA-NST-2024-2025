@@ -20,4 +20,48 @@ public class Task {
 
     @Transient
     private PriorityLevel priority;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TaskType getTaskTypeEnum() {
+        return taskTypeEnum;
+    }
+
+    public void setTaskTypeEnum(TaskType taskTypeEnum) {
+        this.taskTypeEnum = taskTypeEnum;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public PriorityLevel getPriority() {
+        return priority;
+    }
+
+    public void setPriority(PriorityLevel priority) {
+        this.priority = priority;
+    }
 }
