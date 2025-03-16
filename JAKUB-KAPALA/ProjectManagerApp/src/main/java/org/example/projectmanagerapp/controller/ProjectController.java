@@ -2,6 +2,7 @@ package org.example.projectmanagerapp.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.example.projectmanagerapp.repository.UserRepository;
@@ -51,6 +52,16 @@ public class ProjectController {
         List<User> users = project.getUsers().stream().toList();
 
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{projectId}/tasks")
+    public ResponseEntity<List<Task>> getAssociatedTasks(@PathVariable Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        List<Task> tasks = project.getTasks().stream().toList();
+
+        return ResponseEntity.ok(tasks);
     }
 
     @PostMapping("/add")
