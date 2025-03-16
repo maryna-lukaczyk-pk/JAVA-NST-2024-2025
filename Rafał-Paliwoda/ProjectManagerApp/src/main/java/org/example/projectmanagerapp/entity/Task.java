@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.projectmanagerapp.interfaces.PriorityLevel;
 
 @Entity
 @NoArgsConstructor
@@ -20,6 +21,9 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     private String task_type;
+
+    @Transient
+    private PriorityLevel priorityLevel;
 
     @ManyToOne
     private Project project;
