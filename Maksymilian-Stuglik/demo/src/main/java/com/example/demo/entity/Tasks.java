@@ -19,7 +19,7 @@ public class Tasks {
     @Enumerated(EnumType.STRING)
     private taskType taskType;
     private Long projectId;
-    //D
+
     private enum taskType {
         NEW,
         IN_PROGRESS,

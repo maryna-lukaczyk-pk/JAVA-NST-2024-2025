@@ -16,7 +16,7 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username; // no message
-    //D
+
     @OneToMany(mappedBy = "user")
     private Set<ProjectUsers> projectUsers;
 }
