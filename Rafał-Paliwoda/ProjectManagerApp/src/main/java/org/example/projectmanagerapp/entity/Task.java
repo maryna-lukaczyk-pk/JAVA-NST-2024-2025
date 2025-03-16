@@ -18,7 +18,7 @@ public class Task {
 
     private String description;
 
-//  TODO: ENUM
+    @Enumerated(EnumType.STRING)
     private String task_type;
 
     @ManyToOne
