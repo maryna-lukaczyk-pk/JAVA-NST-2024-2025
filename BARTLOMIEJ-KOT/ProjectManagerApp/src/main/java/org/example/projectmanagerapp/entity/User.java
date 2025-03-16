@@ -11,17 +11,17 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Project {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    private String username;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private String email;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<ProjectUser> projectUsers;
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private Set<Task> tasks;
 }
