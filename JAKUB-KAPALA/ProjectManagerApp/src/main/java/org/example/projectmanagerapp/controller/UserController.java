@@ -3,6 +3,7 @@ package org.example.projectmanagerapp.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.User;
+import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,12 @@ import java.util.List;
 @Tag(name = "User API")
 public class UserController {
     private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, ProjectRepository projectRepository) {
         this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
 
     @GetMapping("/{userId}")
@@ -71,5 +74,31 @@ public class UserController {
         List<Project> projects = user.getProjects().stream().toList();
 
         return ResponseEntity.ok(projects);
+    }
+
+    @PostMapping("/{userId}/projects/{projectId}")
+    public ResponseEntity<Void> associateUserWithProject(@PathVariable Long userId, @PathVariable Long projectId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        user.getProjects().add(project);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("/{userId}/projects/{projectId}")
+    public ResponseEntity<Void> removeUserFromProject(@PathVariable Long userId, @PathVariable Long projectId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        user.getProjects().remove(project);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(null);
     }
 }
