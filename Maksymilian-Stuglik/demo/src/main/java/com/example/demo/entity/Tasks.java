@@ -19,6 +19,7 @@ public class Tasks {
     private String description;
     @Enumerated(EnumType.STRING)
     private taskType taskType;
+    @Column(name = "projectId", insertable = false, updatable = false)
     private Long projectId;
     private String priority;
 
