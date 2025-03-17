@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "projects")
 @Getter
@@ -17,4 +19,12 @@ public class Project {
 
     @Column(columnDefinition="VARCHAR(255)")
     private String name;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "project_user",
+            joinColumns = { @JoinColumn(name = "project_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+    )
+    private List<User> users;
 }
