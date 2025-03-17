@@ -7,14 +7,15 @@ import java.util.Set;
 
 @Entity
 @Data
-public class Users {
+@Table(name = "users")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @ManyToMany
-    Set<Projects> user_projects;
+    @ManyToMany(mappedBy = "users")
+    Set<Project> user_projects;
 }
