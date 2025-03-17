@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.priority.PriorityLevel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +20,19 @@ public class Tasks {
     @Enumerated(EnumType.STRING)
     private taskType taskType;
     private Long projectId;
+    private String priority;
 
     private enum taskType {
         NEW,
         IN_PROGRESS,
         DONE;
+    }
+    @Transient
+    private PriorityLevel priorityLevel;
+
+    public void setPriorityLevel(PriorityLevel priorityLevel) {
+        this.priorityLevel = priorityLevel;
+        this.priority = priorityLevel.getPriority();
     }
 
     @ManyToOne
