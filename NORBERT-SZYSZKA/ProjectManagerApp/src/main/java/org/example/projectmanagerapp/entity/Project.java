@@ -19,8 +19,14 @@ public class Project {
     @ManyToMany
     @JoinTable(
         name = "project_user",
-        joinColumns = @JoinColumn(name = "project_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
+        joinColumns = @JoinColumn(
+            name = "project_id",
+            foreignKey = @ForeignKey(name = "fk_project_user_project")
+        ),
+        inverseJoinColumns = @JoinColumn(
+            name = "user_id",
+            foreignKey = @ForeignKey(name = "fk_project_user_user")
+        )
     )
     private Set<User> users;
 

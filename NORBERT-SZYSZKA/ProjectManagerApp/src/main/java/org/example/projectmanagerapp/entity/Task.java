@@ -22,6 +22,10 @@ public class Task {
     private TaskType taskType;
 
     @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(
+        name = "project_id",
+        foreignKey = @ForeignKey(name = "fk_task_project"),
+        nullable = false
+    )
     private Project project;
 }
