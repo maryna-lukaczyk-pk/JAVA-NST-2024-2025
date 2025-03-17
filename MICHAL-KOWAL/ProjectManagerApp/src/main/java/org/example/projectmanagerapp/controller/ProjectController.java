@@ -21,7 +21,7 @@ public class ProjectController {
         return projectRepository.findAll();
     }
 
-    @PostMapping("/new")
+    @PostMapping("/")
     Project newProject(@RequestBody Project newProject) {
         return projectRepository.save(newProject);
     }
