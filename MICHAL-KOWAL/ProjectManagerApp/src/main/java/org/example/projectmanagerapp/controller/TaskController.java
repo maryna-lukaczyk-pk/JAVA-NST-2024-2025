@@ -1,6 +1,5 @@
 package org.example.projectmanagerapp.controller;
 
-import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.repository.TaskRepository;
 import org.springframework.web.bind.annotation.*;
