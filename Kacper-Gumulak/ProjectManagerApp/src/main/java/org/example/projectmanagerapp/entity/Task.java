@@ -31,6 +31,9 @@ public class Task {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
+    @Transient
+    private PriorityLevel priorityLevel;
+
     public Task(String title, String description, TaskType taskType, Project project) {
         this.title = title;
         this.description = description;
@@ -57,4 +60,8 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getPriority() { return priorityLevel != null ? priorityLevel.getPriority() : "UNDEFINED"; }
+
+    public void setPriorityLevel(PriorityLevel priorityLevel) { this.priorityLevel = priorityLevel; }
 }
