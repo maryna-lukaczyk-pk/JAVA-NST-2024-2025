@@ -1,13 +1,11 @@
 package org.example.projectmanagerapp.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
+
 import java.util.Set;
 
 @Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
