@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.projectmanagerapp.priority.PriorityLevel;
 
 
 @Entity
@@ -25,5 +26,8 @@ public class Tasks {
 
     @ManyToOne
     private Project project;
+
+    @Convert(converter = PriorityLevelConverter.class)
+    private PriorityLevel priorityLevel;
 }
 
