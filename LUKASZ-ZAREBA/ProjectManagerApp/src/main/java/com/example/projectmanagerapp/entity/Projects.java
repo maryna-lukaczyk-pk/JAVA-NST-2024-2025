@@ -1,4 +1,4 @@
-package com.example.projectmanagerapp.entity;
+/*package com.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
 //import jakarta.persistence.GeneratedValue;
@@ -16,8 +16,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 
-@Table(name = "projects")
-public class Project
+public class Projects
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +25,8 @@ public class Project
     private String name;
 
     @ManyToMany(mappedBy = "projects")
-    private List<User> users;
+    private List<Users> users;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "projects", cascade = CascadeType.ALL)
     private List<Task> tasks;
-}
+}*/
