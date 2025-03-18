@@ -1,5 +1,6 @@
 package org.example.projectmanagerapp.entity;
 
+import org.example.projectmanagerapp.priority.PriorityLevel;
 import java.util.Set;
 import jakarta.persistence.*;
 import lombok.Getter;

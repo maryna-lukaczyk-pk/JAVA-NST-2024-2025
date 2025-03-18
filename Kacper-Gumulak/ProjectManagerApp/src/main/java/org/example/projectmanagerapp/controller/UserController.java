@@ -1,3 +1,7 @@
+package org.example.projectmanagerapp.controller;
+
+import org.example.projectmanagerapp.service.UserService;
+import org.example.projectmanagerapp.entity.User;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
