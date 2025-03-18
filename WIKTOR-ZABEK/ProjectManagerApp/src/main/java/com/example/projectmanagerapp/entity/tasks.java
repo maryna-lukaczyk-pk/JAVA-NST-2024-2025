@@ -1,5 +1,6 @@
 package  com.example.projectmanagerapp.entity;
 
+import com.example.projectmanagerapp.priority.priority_level;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class tasks {
     private String description;
     private taskType taskType;
     private Long project_id;
+    private String priority;
 
     private enum taskType{
         NEW,
@@ -27,7 +29,17 @@ public class tasks {
         CLOSE,
     }
 
+    @Transient
+    private priority_level priority_level;
+
+    void get_priority_level(priority_level priority_level){
+    this.priority_level = priority_level;
+    this.priority = priority_level.get_priority();
+
+
+    }
+
     @ManyToOne
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id_ref")
     private projects projects;
 }
