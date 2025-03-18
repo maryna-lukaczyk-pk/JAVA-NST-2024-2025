@@ -11,15 +11,14 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Project {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name; // no message
+    private String username; // no message
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "user")
     private Set<ProjectUsers> projectUsers;
-
-    @OneToMany(mappedBy = "project")
-    private Set<Tasks> tasks;
 }
+
+
