@@ -1,4 +1,4 @@
-package com.example.projectmanager.priority;
+package org.example.projectmanager.priority;
 
 public class LowPriority implements PriorityLevel {
     @Override

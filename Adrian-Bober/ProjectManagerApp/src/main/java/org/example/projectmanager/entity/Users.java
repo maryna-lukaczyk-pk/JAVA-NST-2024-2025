@@ -18,5 +18,5 @@ public class Users {
     private String username;
 
     @OneToMany(mappedBy = "users")
-    private Set<project_users> project_users;
+    private Set<ProjectUsers> projectUsers;
 }
