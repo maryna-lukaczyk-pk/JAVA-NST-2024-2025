@@ -4,29 +4,28 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.Set;
 
 @Entity
-@Table(name = "projects")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Project {
+@Table(name = "users")
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    private String username;
 
     @ManyToMany
     @JoinTable(
             name = "project_users",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
     )
-    private Set<User> users;
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private Set<Task> tasks;
+    private Set<Project> projects;
 }
