@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.projectmanagerapp.enums.PriorityLevel;
+import org.example.projectmanagerapp.enums.TaskType;
 import org.example.projectmanagerapp.enums.LowPriority;
 import org.example.projectmanagerapp.enums.MediumPriority;
 import org.example.projectmanagerapp.enums.HighPriority;
@@ -27,14 +28,14 @@ public class Task {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "task_type")
+    @Column(name = "task_type", nullable = false)
     private TaskType taskType;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @Transient  // To pole NIE JEST zapisywane w bazie
+    @Transient  // To pole NIE JEST zapisywane w bazie, ale może być używane w kodzie
     private PriorityLevel priorityLevel;
 
     public Task(String title, String description, TaskType taskType, Project project) {
@@ -47,15 +48,9 @@ public class Task {
 
     public void setPriority(TaskType taskType) {
         switch (taskType) {
-            case LOW:
-                this.priorityLevel = new LowPriority();
-                break;
-            case MEDIUM:
-                this.priorityLevel = new MediumPriority();
-                break;
-            case HIGH:
-                this.priorityLevel = new HighPriority();
-                break;
+            case LOW -> this.priorityLevel = new LowPriority();
+            case MEDIUM -> this.priorityLevel = new MediumPriority();
+            case HIGH -> this.priorityLevel = new HighPriority();
         }
     }
 
