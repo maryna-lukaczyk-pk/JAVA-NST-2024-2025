@@ -9,14 +9,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class project_users {
+public class ProjectUsers {
     @Id
 
     @ManyToOne
     @JoinColumn(name = "project_id")
-    private projects projects;
+    private Project project;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private users users;
+    private Users users;
 }

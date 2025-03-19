@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class tasks {
+public class Tasks {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -22,17 +22,17 @@ public class tasks {
     private enum tasktype {
         NEW, IN_PROGRESS, COMPLETED, FAILED;
     }
-    private string priority;
+    private String priority;
 
     @Transient
     private PriorityLevel priorityLevel;
 
-    public void setPriorityLevel(String priorityLevel) {
+    public void setPriorityLevel(PriorityLevel priorityLevel) {
         this.priorityLevel = priorityLevel;
         this.priority = priorityLevel.getPriorityLevel();
     }
 
     @ManyToOne
     @JoinColumn(name = "project_id")
-    private projects projects;
+    private Project project;
 }
