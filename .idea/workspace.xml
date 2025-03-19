@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd0d6119-7434-40ca-8de4-d52f30880492" name="Changes" comment="" />
+    <list default="true" id="cd0d6119-7434-40ca-8de4-d52f30880492" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Adrian-Bober/ProjectManagerApp/src/main/java/org/example/projectmanager/entity/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/Adrian-Bober/ProjectManagerApp/src/main/java/org/example/projectmanager/entity/Project.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,7 +36,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.ProjectManagerAppApplication.executor": "Run",
-    "git-widget-placeholder": "damian-judka-lab-01",
+    "git-widget-placeholder": "adrian-bober-2-lab",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/geniu/OneDrive/Dokumenty/Studia-informatyka/IV_semestr/Java/laby/lab1/JAVA-NST-2024-2025",
@@ -65,8 +67,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.39" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.39" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
       </set>
     </attachedChunks>
   </component>
@@ -90,6 +92,7 @@
       <workItem from="1741464087071" duration="59000" />
       <workItem from="1741464401814" duration="843000" />
       <workItem from="1741519357907" duration="1889000" />
+      <workItem from="1742121794419" duration="145000" />
     </task>
     <servers />
   </component>

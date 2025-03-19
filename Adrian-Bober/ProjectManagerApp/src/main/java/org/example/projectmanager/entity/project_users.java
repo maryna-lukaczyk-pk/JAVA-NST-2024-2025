@@ -9,10 +9,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Project {
+public class project_users {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-}
 
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private projects projects;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private users users;
+}
