@@ -25,4 +25,24 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "project_id")
     )
     private Set<Projects> projects;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Set<Projects> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Set<Projects> projects) {
+        this.projects = projects;
+    }
 }
