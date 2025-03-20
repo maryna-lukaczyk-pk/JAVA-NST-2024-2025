@@ -1,9 +1,18 @@
 package org.example.projectmanager.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "projects")
+@Getter
+@Setter
 public class Project {
 
     @Id
@@ -16,30 +25,16 @@ public class Project {
     @Column(length = 500)
     private String description;
 
+    @ManyToMany(mappedBy = "projects")
+    private Set<User> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "project")
+    private List<Task> tasks = new ArrayList<>();
+
     public Project() {}
 
     public Project(String name, String description) {
         this.name = name;
-        this.description = description;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
     }
 }
