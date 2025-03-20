@@ -15,7 +15,6 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition="VARCHAR(255)")
     private String title;
 
     @Column(columnDefinition="TEXT")

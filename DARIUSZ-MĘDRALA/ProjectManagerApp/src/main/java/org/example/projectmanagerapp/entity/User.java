@@ -10,13 +10,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "users")
-
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(255")
+    @Column(columnDefinition="VARCHAR(255)")
     private String username;
 
     @ManyToMany(mappedBy = "users")

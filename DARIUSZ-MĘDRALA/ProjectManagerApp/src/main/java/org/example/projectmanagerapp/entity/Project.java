@@ -15,12 +15,12 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(255")
+    @Column(columnDefinition="VARCHAR(255)")
     private String name;
 
     @ManyToMany(cascade = { CascadeType.ALL})
     @JoinTable(
-            name = "project_user",
+            name = "project_users",
             joinColumns = { @JoinColumn(name = "project_id") },
             inverseJoinColumns = { @JoinColumn(name = "user_id")}
     )
