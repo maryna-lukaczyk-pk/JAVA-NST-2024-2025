@@ -1,0 +1,3 @@
+Dominik Gąsiorek
+GRUPA 1
+PROJEKT: ...
