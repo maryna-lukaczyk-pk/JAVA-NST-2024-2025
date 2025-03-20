@@ -1,11 +1,16 @@
 package com.example.projectmanagerapp.entity;
 
 import java.util.Set;
+import com.example.projectmanagerapp.priority.PriorityLevel;
+import com.example.projectmanagerapp.priority.HighPriority;
+import com.example.projectmanagerapp.priority.MediumPriority;
+import com.example.projectmanagerapp.priority.LowPriority;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Entity
 @Table(name = "tasks")
@@ -21,6 +26,11 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     private Task_type task_type;
+
+    private String priorityName;
+
+    @Transient
+    private PriorityLevel priorityLevel;
 
     @ManyToOne
     @JoinColumn(name = "project_id")
@@ -60,6 +70,36 @@ public class Task {
 
     public void setProject(Projects project) {
         this.project = project;
+    }
+
+
+    public PriorityLevel getPriority() {
+        if(this.priorityLevel == null && this.priorityName != null) {
+            switch (priorityName){
+                case "High":
+                    this.priorityLevel = new HighPriority();
+                    break;
+                case "Medium":
+                    this.priorityLevel = new MediumPriority();
+                    break;
+                case "Low":
+                    this.priorityLevel = new LowPriority();
+                    break;
+                default:
+                    this.priorityLevel = new MediumPriority();
+                    break;
+            }
+        }
+        return this.priorityLevel;
+    }
+
+    public void setPriority(PriorityLevel priorityLevel) {
+        this.priorityLevel = priorityLevel;
+        if (priorityLevel != null) {
+            this.priorityName = priorityLevel.getPriority();
+        } else {
+            this.priorityName = null;
+        }
     }
 
 }
