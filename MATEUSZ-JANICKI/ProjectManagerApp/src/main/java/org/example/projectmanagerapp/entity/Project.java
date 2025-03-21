@@ -1,7 +1,8 @@
-package org.example.projectmanager.entity;
+package org.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -10,31 +11,23 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "projects")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Project {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(length = 500)
-    private String description;
-
-    @ManyToMany(mappedBy = "projects")
+    @ManyToMany
+    @JoinTable(
+            name = "project_users",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy="project")
     private List<Task> tasks = new ArrayList<>();
-
-    public Project() {}
-
-    public Project(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
 }

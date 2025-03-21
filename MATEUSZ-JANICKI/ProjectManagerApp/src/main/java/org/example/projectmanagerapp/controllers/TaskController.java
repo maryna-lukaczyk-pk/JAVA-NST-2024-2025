@@ -1,7 +1,7 @@
-package org.example.projectmanager.controllers;
+package org.example.projectmanagerapp.controllers;
 
-import org.example.projectmanager.entity.Task;
-import org.example.projectmanager.repository.TaskRepository;
+import org.example.projectmanagerapp.entity.Task;
+import org.example.projectmanagerapp.repository.TaskRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

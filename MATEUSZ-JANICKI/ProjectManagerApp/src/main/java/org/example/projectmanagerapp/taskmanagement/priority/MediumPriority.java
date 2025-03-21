@@ -1,6 +1,6 @@
-package org.example.projectmanager.taskmanagement.priority;
+package org.example.projectmanagerapp.taskmanagement.priority;
 
-import org.example.projectmanager.taskmanagement.PriorityLevel;
+import org.example.projectmanagerapp.taskmanagement.PriorityLevel;
 
 public class MediumPriority implements PriorityLevel {
     @Override

@@ -1,4 +1,4 @@
-package org.example.projectmanager.taskmanagement;
+package org.example.projectmanagerapp.taskmanagement;
 
 public interface PriorityLevel {
     Integer getPriority();

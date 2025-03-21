@@ -1,4 +1,4 @@
-package org.example.projectmanager.entity;
+package org.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,16 +16,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String username;
 
-    @ManyToMany
-    @JoinTable(name = "project_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
+    @ManyToMany(mappedBy = "users")
     private Set<Project> projects = new HashSet<>();
-
-    public User() {
-    }
-
-    public User(String username) {
-        this.username = username;
-    }
 }
