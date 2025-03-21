@@ -36,4 +36,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    @Transient
+    private PriorityLevel priority;
 }
