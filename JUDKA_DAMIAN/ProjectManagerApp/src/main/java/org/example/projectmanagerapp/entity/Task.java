@@ -1,5 +1,6 @@
 package org.example.projectmanagerapp.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,15 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class Task {
-    public enum TaskType {
-        HIGH,
-        MEDIUM,
-        LOW
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false, unique = true)
     private String title;
 
     @Column(columnDefinition = "TEXT")
@@ -28,20 +24,24 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "task_type", nullable = false)
-    private TaskType type;
+    private TaskType taskType;
 
     @Transient
+    @JsonIgnore
     private PriorityLevel priorityLevel;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
 
-    public String getPriority() {
-        return priorityLevel != null ? priorityLevel.getPriority() : "UNDEFINED";
-    }
+    public void setTaskType(TaskType taskType) {
+        this.taskType = taskType;
 
-    public void setPriority(PriorityLevel priorityLevel) {
-        this.priorityLevel = priorityLevel;
+        switch (taskType) {
+            case HIGH -> this.priorityLevel = new HighPriority();
+            case MEDIUM -> this.priorityLevel = new MediumPriority();
+            case LOW -> this.priorityLevel = new LowPriority();
+        }
     }
 }
