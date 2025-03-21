@@ -16,7 +16,7 @@ import lombok.Setter;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -42,7 +42,7 @@ public class Task {
         this.project = project;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

@@ -21,4 +21,14 @@ public class ProjectService {
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
+
+    public void deleteProject(Long id) { projectRepository.deleteById(id); }
+
+    public Project updateProject(Long id, Project updatedProject) {
+        if (projectRepository.existsById(id)) {
+            updatedProject.setId(id);
+            return projectRepository.save(updatedProject);
+        }
+        else { throw new RuntimeException("Project not found with ID: " + id); }
+    }
 }

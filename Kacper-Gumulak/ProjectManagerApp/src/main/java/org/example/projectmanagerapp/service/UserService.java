@@ -21,4 +21,14 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    public void deleteUser(Long id) { userRepository.deleteById(id); }
+
+    public User updateUser(Long id, User updatedUser) {
+        if (userRepository.existsById(id)) {
+            updatedUser.setId(id);
+            return userRepository.save(updatedUser);
+        }
+        else { throw new RuntimeException("User not found with ID: " + id); }
+    }
 }
