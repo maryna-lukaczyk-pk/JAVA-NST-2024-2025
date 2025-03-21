@@ -1,6 +1,5 @@
 package org.example.projectmanagerapp.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,22 +9,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 
-public class Project {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable = false, unique = true)
-    private String name;
+    private String username;
 
-    @ManyToMany(mappedBy = "projects")
-    private List<User> users = new ArrayList<>();
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Task> tasks = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "project_users",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    private List<Project> projects = new ArrayList<>();
 }
