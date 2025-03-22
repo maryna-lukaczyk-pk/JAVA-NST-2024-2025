@@ -1,4 +1,4 @@
-package org.jerzy.projectmanager.prioritylevel;
+package org.jerzy.projectmanagerapp.priorityLevel;
 
 public class HighPriorityLevel implements PriorityLevel {
     @Override
