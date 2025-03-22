@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.projectmanagerapp.PriorityLevel;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,6 +25,9 @@ public class Task {
     private Task_Type task_type;
     @ManyToOne
     private Project project;
+    @Transient
+    private PriorityLevel priority;
+
 
     private enum Task_Type {
         TYPE1, TYPE2, TYPE3
