@@ -25,4 +25,7 @@ public class Tasks {
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private Projects projects;
+
+    @Transient
+    private PriorityLevel priority;
 }
