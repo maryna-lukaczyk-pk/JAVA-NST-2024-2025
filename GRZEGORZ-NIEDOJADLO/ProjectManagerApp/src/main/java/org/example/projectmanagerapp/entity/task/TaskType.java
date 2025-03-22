@@ -1,6 +1,6 @@
 package org.example.projectmanagerapp.entity.task;
 
-public class TaskType {
+public enum TaskType {
     NEW,
     FUTURE,
 }
