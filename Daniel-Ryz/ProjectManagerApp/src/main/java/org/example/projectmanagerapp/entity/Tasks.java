@@ -10,18 +10,13 @@ public class Tasks {
 
     private String title;
 
+    private String description;
+
     @Enumerated(EnumType.STRING)
-    private TaskType task_type;
+    private TaskType taskType;
 
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
-
-    @ManyToOne
-    @JoinColumn(name = "assigned_user_id")
-    private User assignedUser;
-
-    @Transient
-    private String dynamicPriority;
-
 }
+
