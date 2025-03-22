@@ -1,8 +1,7 @@
 package org.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.scheduling.config.Task;
 
@@ -12,8 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class Project {
     @Id
