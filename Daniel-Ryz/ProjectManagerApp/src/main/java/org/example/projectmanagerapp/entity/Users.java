@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class User {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,6 +15,4 @@ public class User {
 
     @ManyToMany(mappedBy = "users")
     private Set<Project> projects = new HashSet<>();
-
-
 }
