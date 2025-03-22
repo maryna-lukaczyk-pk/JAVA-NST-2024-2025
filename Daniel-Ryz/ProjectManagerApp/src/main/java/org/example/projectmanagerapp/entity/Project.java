@@ -29,8 +29,9 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> users = new HashSet<>();
+    private Set<Users> users = new HashSet<>();
 
     @OneToMany(mappedBy = "project")
-    private List<Task> tasks = new ArrayList<>();
+    private List<Tasks> tasks = new ArrayList<>();
 }
+
