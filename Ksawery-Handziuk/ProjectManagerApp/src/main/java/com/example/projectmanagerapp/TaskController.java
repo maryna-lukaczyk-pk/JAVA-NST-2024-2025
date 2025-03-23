@@ -1,10 +1,7 @@
 package com.example.projectmanagerapp;
 
 import com.example.projectmanagerapp.entity.Task;
-import com.example.projectmanagerapp.PriorityLevel;
-import com.example.projectmanagerapp.HighPriority;
-import com.example.projectmanagerapp.MediumPriority;
-import com.example.projectmanagerapp.LowPriority;
+import com.example.projectmanagerapp.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
