@@ -5,21 +5,15 @@ import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @NoArgsConstructor
+@Table(name = "users")
 @Getter
 @Setter
-public class Project {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name="project_user"
-    )
-    private List<User> users;
+    private String username;
 }
