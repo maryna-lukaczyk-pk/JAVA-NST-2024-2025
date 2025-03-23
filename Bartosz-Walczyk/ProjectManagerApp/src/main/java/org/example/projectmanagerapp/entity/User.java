@@ -8,25 +8,21 @@ import lombok.Setter;
 import java.util.Collection;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Project {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-
-    @OneToMany
-    @JoinColumn(name = "project_id")
-    private Collection<Task> tasks;
+    private String username;
 
     @JoinTable(
             name = "project_users",
-            joinColumns = {@JoinColumn(name = "project_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "project_id")}
     )
     @ManyToMany
-    private Collection<User> users;
+    private Collection<Project> projects;
 }
