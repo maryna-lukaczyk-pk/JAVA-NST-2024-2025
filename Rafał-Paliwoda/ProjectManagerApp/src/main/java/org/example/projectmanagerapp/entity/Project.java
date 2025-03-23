@@ -17,7 +17,7 @@ public class Project {
     private Long id;
     private String name;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name="project_user"
     )
