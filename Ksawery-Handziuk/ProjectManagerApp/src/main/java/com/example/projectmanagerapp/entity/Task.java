@@ -13,6 +13,16 @@ public class Task {
     @Column(nullable = false)
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private PriorityType taskType;
+    @Transient
+    private PriorityLevel priority;
+
+    // Gettery i Settery
+    public void setPriority(PriorityLevel priority) {
+        this.priority = priority;
+    }
+
+    public String getPriority() {
+        return priority != null ? priority.getPriority() : "UNDEFINED";
+    }
 }
+
