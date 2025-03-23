@@ -13,13 +13,16 @@ import lombok.Setter;
 @NoArgsConstructor
 
 public class ProjectUser {
-    @Id
+    @EmbeddedId
+    private ProjectUserId id;
+
     @ManyToOne
+    @MapsId("project_id")
     @JoinColumn(name = "project_id", referencedColumnName = "id", nullable = false)
     private Projects project_id;
 
-    @Id
     @ManyToOne
+    @MapsId("user_id")
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private Users user_id;
 }
