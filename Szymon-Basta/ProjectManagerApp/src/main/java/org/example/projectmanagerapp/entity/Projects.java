@@ -19,6 +19,6 @@ public class Projects {
 
     private String name;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "projects")
     private List<Tasks> tasks;
 }
