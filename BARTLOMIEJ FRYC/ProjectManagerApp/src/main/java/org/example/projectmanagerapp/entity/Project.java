@@ -11,7 +11,7 @@ public class Project {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "project_id")
+    @OneToMany(mappedBy = "project")
     private Set<Task> tasks;
 
     @ManyToMany(mappedBy = "projects")
