@@ -6,27 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.Set;
 
-
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-
-public class Project {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    private String username;
 
-    @ManyToMany
-    @JoinTable(
-            name = "project_users",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-
-    private  Set<User> users;
+    @ManyToMany(mappedBy = "users")
+    private Set<Project> projects;
 }
-
