@@ -8,7 +8,8 @@ import org.example.projectmanagerapp.entity.project.Project;
 
 import java.util.Set;
 
-@Entity (name = "user")
+@Entity (name = "users")
+//@Table (name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
