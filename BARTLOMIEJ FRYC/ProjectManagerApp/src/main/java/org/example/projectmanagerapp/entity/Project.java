@@ -14,6 +14,6 @@ public class Project {
     @OneToMany(mappedBy = "project_id")
     private Set<Task> tasks;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "projects")
     private Set<Users> users;
 }
