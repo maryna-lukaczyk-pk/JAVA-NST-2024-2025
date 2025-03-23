@@ -21,12 +21,13 @@ public class Task {
     @Transient
     private PriorityLevel priorityLevel;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
     public Task(String name, PriorityLevel priorityLevel) {
         this.name = name;
         this.priorityLevel = priorityLevel;
     }
-
-    public String getPriority() {
-        return priorityLevel.getPriority();
-    }
 }
+

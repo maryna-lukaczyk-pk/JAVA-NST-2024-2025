@@ -17,10 +17,9 @@ public class ProjectUser {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user_id;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
-    private Project project_id;
-
+    private Project project;
 }
