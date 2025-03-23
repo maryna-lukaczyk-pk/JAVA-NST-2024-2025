@@ -1,4 +1,4 @@
-package org.example.projectmanagerapp.priority;
+package org.example.projectmanagerapp.entity.priority;
 
 public class MediumPriority implements PriorityLevel {
     @Override

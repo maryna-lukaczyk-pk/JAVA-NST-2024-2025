@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.projectmanagerapp.entity.project.Project;
+import org.example.projectmanagerapp.entity.priority.PriorityLevel;
 
-@Entity
+
+@Entity (name = "task")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,4 +28,7 @@ public class Task {
 
     @ManyToOne
     private Project project;
+
+    @Transient
+    private PriorityLevel priorityLevel;
 }

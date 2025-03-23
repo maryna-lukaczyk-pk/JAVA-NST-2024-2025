@@ -9,7 +9,7 @@ import org.example.projectmanagerapp.entity.user.User;
 
 import java.util.Set;
 
-@Entity
+@Entity (name = "project")
 @Getter
 @Setter
 @NoArgsConstructor
