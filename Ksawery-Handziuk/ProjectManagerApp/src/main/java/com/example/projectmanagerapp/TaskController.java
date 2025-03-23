@@ -1,9 +1,18 @@
-package com.example.projectmanagerapp.entity;
+package com.example.projectmanagerapp;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.projectmanagerapp.entity.Task;
+import com.example.projectmanagerapp.PriorityLevel;
+import com.example.projectmanagerapp.HighPriority;
+import com.example.projectmanagerapp.MediumPriority;
+import com.example.projectmanagerapp.LowPriority;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -22,7 +31,7 @@ public class TaskController {
                 case "LOW" -> task.setPriority(new LowPriority());
                 default -> task.setPriority(null);
             }
-            taskRepository.save(task); // Aktualizujemy w bazie
+            taskRepository.save(task);
             return ResponseEntity.ok(task);
         } else {
             return ResponseEntity.notFound().build();

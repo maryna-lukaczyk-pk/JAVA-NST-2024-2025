@@ -1,4 +1,5 @@
 package com.example.projectmanagerapp.entity;
+import com.example.projectmanagerapp.PriorityLevel;
 
 import jakarta.persistence.*;
 import lombok.Getter;
