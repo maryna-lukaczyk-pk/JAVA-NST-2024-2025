@@ -1,5 +1,6 @@
 package org.example.projectmanagerapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +20,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String username;
+    @Column(nullable = false)
+    @JsonProperty("userName")
+    private String userName;
     @ManyToMany(mappedBy = "users")
     private Set<Project> projects;
 }
