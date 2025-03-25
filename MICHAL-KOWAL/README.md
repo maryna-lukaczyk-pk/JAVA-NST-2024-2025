@@ -1,0 +1,1 @@
+Michal Kowal, GK03
