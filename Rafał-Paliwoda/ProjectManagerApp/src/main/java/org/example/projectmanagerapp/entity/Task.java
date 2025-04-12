@@ -4,22 +4,26 @@ import jakarta.persistence.*;
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import org.example.projectmanagerapp.interfaces.PriorityLevel;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-public class Project {
+public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name="project_user"
-    )
-    private List<User> users;
+    private String title;
+
+    private String description;
+
+    private String taskType;
+
+    @Transient
+    private PriorityLevel priorityLevel;
+
+    @ManyToOne
+    private Project project;
 }
