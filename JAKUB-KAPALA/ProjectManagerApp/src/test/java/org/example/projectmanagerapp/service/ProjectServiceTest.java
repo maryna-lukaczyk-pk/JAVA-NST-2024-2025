@@ -31,7 +31,6 @@ public class ProjectServiceTest {
 
     @BeforeEach
     void setUp() {
-
         userRepository = Mockito.mock(UserRepository.class);
         projectRepository = Mockito.mock(ProjectRepository.class);
         projectService = new ProjectService(projectRepository, userRepository);
