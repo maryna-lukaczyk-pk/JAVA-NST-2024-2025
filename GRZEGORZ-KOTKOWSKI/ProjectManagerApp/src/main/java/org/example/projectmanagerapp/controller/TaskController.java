@@ -1,7 +1,7 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Tasks;
-import org.example.projectmanagerapp.repository.TaskRepository;
+import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,16 +13,16 @@ import java.util.List;
 @RequestMapping("/api/tasks")
 @Tag(name = "Tasks", description = "Operations related to tasks")
 public class TaskController {
-    private final TaskRepository taskRepository;
+    private final TaskService taskService;
 
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @GetMapping
     @Operation(summary = "Get all tasks")
     public List<Tasks> getAllTasks() {
-        return taskRepository.findAll();
+        return taskService.getAllTasks();
     }
 
     @PostMapping
@@ -30,6 +30,6 @@ public class TaskController {
     public Tasks createTask(
             @Parameter(description = "Task to be created", required = true)
             @RequestBody Tasks task) {
-        return taskRepository.save(task);
+        return taskService.createTask(task);
     }
 }

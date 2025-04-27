@@ -1,12 +1,11 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Users;
-import org.example.projectmanagerapp.repository.UserRepository;
+import org.example.projectmanagerapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-
 
 import java.util.List;
 
@@ -14,16 +13,16 @@ import java.util.List;
 @RequestMapping("/api/users")
 @Tag(name = "Users", description = "Operations related to users")
 public class UserController {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
     @Operation(summary = "Get all users")
     public List<Users> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
     @PostMapping
@@ -31,6 +30,6 @@ public class UserController {
     public Users createUser(
             @Parameter(description = "User to be created", required = true)
             @RequestBody Users user) {
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 }
