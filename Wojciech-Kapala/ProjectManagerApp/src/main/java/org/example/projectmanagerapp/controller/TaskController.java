@@ -1,5 +1,8 @@
 package org.example.projectmanagerapp.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
+@Tag(name = "Tasks", description = "Endpoints for managing tasks")
 public class TaskController {
 
     private final TaskRepository taskRepository;
@@ -18,12 +22,14 @@ public class TaskController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all tasks", description = "Retrieve a list of all tasks")
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
+    @Operation(summary = "Create a new task", description = "Create and save a new task")
+    public Task createTask(@Parameter(description = "Task entity to be created") @RequestBody Task task) {
         return taskRepository.save(task);
     }
 }
