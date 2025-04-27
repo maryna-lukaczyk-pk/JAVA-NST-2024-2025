@@ -1,7 +1,5 @@
 package org.example.projectmanager.controller;
 
-package org.example.projectmanager.controller;
-
 import org.springframework.web.bind.annotation.*;
 
 @RestController
