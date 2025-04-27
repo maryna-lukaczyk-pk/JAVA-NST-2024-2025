@@ -11,15 +11,21 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+
 @RestController
 @RequestMapping("/api/tasks")
+@Tag(name = "Tasks", description = "Operacje -zadania")
 public class TaskController {
 
     @Autowired
     private TaskRepository taskRepository;
 
     @PostMapping("/add")
-    public Task createTask(@RequestParam String name, @RequestParam String priority) {
+    @Operation(summary = "Dodaj nowe zadanie", description = "Tworzy nowe zadanie")
+    public Task createTask(@Parameter(description = "Powstaje nowe zadanie") @RequestParam String name, @RequestParam String priority) {
         PriorityLevel priorityLevel;
 
         switch (priority.toUpperCase()) {
@@ -40,6 +46,7 @@ public class TaskController {
     }
 
     @GetMapping
+    @Operation(summary = "Pobierz wszystkie zadania", description = "Zwraca listę zadań")
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
