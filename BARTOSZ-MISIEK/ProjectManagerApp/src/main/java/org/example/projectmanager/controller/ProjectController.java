@@ -1,5 +1,6 @@
 package org.example.projectmanager.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanager.dto.project.ProjectCreateDto;
@@ -40,6 +41,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete an entity")
     public void delete(
             @Parameter(description = "The id of the entity")
             @PathVariable Long id
