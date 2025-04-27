@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+
 import java.util.List;
 
 @RestController
@@ -27,5 +28,17 @@ public class UserController {
     @Operation(summary = "Utwórz nowego użytkownika")
     public Users createUser(@RequestBody @Parameter(description = "Dane nowego użytkownika") Users users) {
         return userService.createUser(users);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Aktualizuj użytkownika")
+    public Users updateUser(@PathVariable Long id, @RequestBody Users userDetails) {
+        return userService.updateUser(id, userDetails);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Usuń użytkownika")
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
     }
 }

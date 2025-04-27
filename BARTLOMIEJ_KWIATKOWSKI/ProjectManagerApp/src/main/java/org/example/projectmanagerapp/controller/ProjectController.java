@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+
 import java.util.List;
 
 @RestController
@@ -27,5 +28,17 @@ public class ProjectController {
     @Operation(summary = "Utwórz nowy projekt")
     public Project createProject(@RequestBody @Parameter(description = "Dane nowego projektu") Project project) {
         return projectService.createProject(project);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Aktualizuj projekt")
+    public Project updateProject(@PathVariable Long id, @RequestBody Project projectDetails) {
+        return projectService.updateProject(id, projectDetails);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Usuń projekt")
+    public void deleteProject(@PathVariable Long id) {
+        projectService.deleteProject(id);
     }
 }

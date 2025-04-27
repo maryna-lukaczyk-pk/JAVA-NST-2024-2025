@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+
 import java.util.List;
 
 @RestController
@@ -27,5 +28,17 @@ public class TaskController {
     @Operation(summary = "Utwórz nowe zadanie")
     public Tasks createTask(@RequestBody @Parameter(description = "Dane nowego zadania") Tasks tasks) {
         return taskService.createTask(tasks);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Aktualizuj zadanie")
+    public Tasks updateTask(@PathVariable Long id, @RequestBody Tasks taskDetails) {
+        return taskService.updateTask(id, taskDetails);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Usuń zadanie")
+    public void deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
     }
 }
