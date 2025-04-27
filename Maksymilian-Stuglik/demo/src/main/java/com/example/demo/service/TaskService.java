@@ -20,4 +20,17 @@ public class TaskService {
     public Tasks createTask(Tasks task) {
         return taskRepository.save(task);
     }
+
+    public Tasks updateTask(Long id, Tasks updatedTask) {
+        if (taskRepository.existsById(id)) {
+            updatedTask.setId(id);
+            return taskRepository.save(updatedTask);
+        }
+        return null;
+    }
+
+    public void deleteTask(Long id) {
+        taskRepository.deleteById(id);
+    }
+
 }

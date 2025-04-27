@@ -20,4 +20,16 @@ public class ProjectService {
     public Project createProject(Project project) {
         return projectRepository.save(project);
     }
+
+    public Project updateProject(Long id, Project updatedProject) {
+        if (projectRepository.existsById(id)) {
+            updatedProject.setId(id);
+            return projectRepository.save(updatedProject);
+        }
+        return null;
+    }
+
+    public void deleteProject(Long id) {
+        projectRepository.deleteById(id);
+    }
 }
