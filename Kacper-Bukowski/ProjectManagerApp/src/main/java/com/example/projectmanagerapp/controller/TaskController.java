@@ -27,6 +27,14 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a task by ID")
+    public ResponseEntity<Task> getTaskById(
+            @Parameter(description = "Task ID") @PathVariable Long id) {
+        Task task = taskService.getTaskById(id);
+        return ResponseEntity.ok(task);
+    }
+
     @PostMapping
     @Operation(summary = "Create a new task")
     public ResponseEntity<Task> createTask(

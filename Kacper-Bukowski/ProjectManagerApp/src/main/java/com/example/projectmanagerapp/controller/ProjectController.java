@@ -27,6 +27,14 @@ public class ProjectController {
         return projectService.getAllProjects();
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a project by ID")
+    public ResponseEntity<Project> getProjectById(
+            @Parameter(description = "Project ID") @PathVariable Long id) {
+        Project project = projectService.getProjectById(id);
+        return ResponseEntity.ok(project);
+    }
+
     @PostMapping
     @Operation(summary = "Create a new project")
     public ResponseEntity<Project> createProject(

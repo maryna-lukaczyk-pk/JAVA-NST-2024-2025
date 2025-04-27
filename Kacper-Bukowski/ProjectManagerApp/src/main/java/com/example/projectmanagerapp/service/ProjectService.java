@@ -24,6 +24,11 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
+    public Project getProjectById(Long id) {
+        return projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+    }
+
     public Project updateProject(Long id, Project projectDetails) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
