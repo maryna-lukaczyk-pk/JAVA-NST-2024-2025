@@ -1,7 +1,9 @@
 package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.entity.Project;
+import com.example.projectmanagerapp.entity.Tasks;
 import com.example.projectmanagerapp.repozytorium.ProjectRepository;
+import com.example.projectmanagerapp.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -18,11 +21,11 @@ import java.util.Optional;
 @Tag(name = "Projects", description = "API for managing projects.")
 public class Controller {
 
-    private final ProjectRepository projectRepository;
+    private final ProjectService projectService;
 
     @Autowired
-    public Controller(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public Controller(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     // Get all projects
@@ -32,10 +35,9 @@ public class Controller {
             description = "Returns a list of all projects in the database."
     )
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+        return projectService.getAllProjects();
     }
 
-    // Get project by id
     @GetMapping("/{id}")
     @Operation(
             summary = "Find project by ID",
@@ -43,11 +45,15 @@ public class Controller {
     )
     public ResponseEntity<Project> getProjectById(
             @Parameter(description = "ID of the project to be retrieved") @PathVariable Long id) {
-        Optional<Project> project = projectRepository.findById(id);
-        return project.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        try{
+            Project project = projectService.getProjectById(id);
+            return ResponseEntity.ok(project);
+        }catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // Create a new project
+
     @PostMapping
     @Operation(
             summary = "Create a new project",
@@ -55,11 +61,9 @@ public class Controller {
     )
     public ResponseEntity<Project> createProject(
             @Parameter(description = "Details of the project to be created") @RequestBody Project project) {
-        Project createdProject = projectRepository.save(project);
-        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
+        return new ResponseEntity<>(projectService.createProject(project), HttpStatus.CREATED);
     }
 
-    // Update an existing project
     @PutMapping("/{id}")
     @Operation(
             summary = "Update an existing project",
@@ -68,13 +72,7 @@ public class Controller {
     public ResponseEntity<Project> updateProject(
             @Parameter(description = "ID of the project to be updated") @PathVariable Long id,
             @Parameter(description = "Updated project data") @RequestBody Project projectDetails) {
-        return projectRepository.findById(id)
-                .map(project -> {
-                    project.setName(projectDetails.getName());
-                    Project updatedProject = projectRepository.save(project);
-                    return ResponseEntity.ok(updatedProject);
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return new ResponseEntity<>(projectService.updateProject(id, projectDetails), HttpStatus.CREATED);
     }
 
     // Delete a project
@@ -85,11 +83,12 @@ public class Controller {
     )
     public ResponseEntity<Void> deleteProject(
             @Parameter(description = "ID of the project to be deleted") @PathVariable Long id) {
-        if (projectRepository.existsById(id)) {
-            projectRepository.deleteById(id);
+        try {
+            projectService.deleteProject(id);
             return ResponseEntity.noContent().build();
-        } else {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 }
+
