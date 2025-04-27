@@ -4,24 +4,23 @@ import com.example.model.Project;
 import com.example.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/projects")
+//@RequestMapping("/api/projects")
 public class ProjectController {
 
     @Autowired
     private ProjectRepository projectRepository;
 
     // GET: Pobierz wszystkie projekty
-    @GetMapping
+    @GetMapping("/all")
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
 
     // POST: Dodaj nowy projekt
-    @PostMapping
+    @PostMapping("/create")
     public Project createProject(@RequestBody Project project) {
         return projectRepository.save(project);
     }

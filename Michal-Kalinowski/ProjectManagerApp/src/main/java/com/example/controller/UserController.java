@@ -15,13 +15,13 @@ public class UserController {
     private UserRepository userRepository;
 
     // GET: Pobierz wszystkich użytkowników
-    @GetMapping
+    @GetMapping("all")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     // POST: Dodaj nowego użytkownika
-    @PostMapping
+    @PostMapping("")
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
     }

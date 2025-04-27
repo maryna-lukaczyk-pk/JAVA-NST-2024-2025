@@ -7,21 +7,21 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/tasks")
+//@RestController
+//@RequestMapping("/tasks")
 public class TaskController {
 
     @Autowired
     private TaskRepository taskRepository;
 
     // GET: Pobierz wszystkie zadania
-    @GetMapping
+    @GetMapping("all")
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
 
     // POST: Dodaj nowe zadanie
-    @PostMapping
+    @PostMapping("create")
     public Task createTask(@RequestBody Task task) {
         return taskRepository.save(task);
     }
