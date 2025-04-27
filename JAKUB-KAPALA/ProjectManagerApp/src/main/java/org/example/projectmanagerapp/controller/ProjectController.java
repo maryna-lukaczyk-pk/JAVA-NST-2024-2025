@@ -1,9 +1,9 @@
 package org.example.projectmanagerapp.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.example.projectmanagerapp.entity.Project;
-import org.example.projectmanagerapp.entity.Task;
-import org.example.projectmanagerapp.entity.User;
+import org.example.projectmanagerapp.interfaces.ProjectResponseDTO;
+import org.example.projectmanagerapp.interfaces.ProjectTasksResponseDTO;
+import org.example.projectmanagerapp.interfaces.ProjectUserResponseDTO;
 import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,37 +24,37 @@ public class ProjectController {
     }
 
     @GetMapping("/all")
-    public List<Project> getAllProjects() {
+    public List<ProjectResponseDTO> getAllProjects() {
         return projectService.getAllProjects();
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<Project> getProjectById(@PathVariable Long projectId) {
-        Project project = projectService.getProjectById(projectId);
+    public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable Long projectId) {
+        ProjectResponseDTO project = projectService.getProjectById(projectId);
         return ResponseEntity.ok(project);
     }
 
     @GetMapping("/{projectId}/users")
-    public ResponseEntity<List<User>> getAssociatedUsers(@PathVariable Long projectId) {
-        List<User> users = projectService.getAssociatedUsers(projectId);
+    public ResponseEntity<List<ProjectUserResponseDTO>> getAssociatedUsers(@PathVariable Long projectId) {
+        List<ProjectUserResponseDTO> users = projectService.getAssociatedUsers(projectId);
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{projectId}/tasks")
-    public ResponseEntity<List<Task>> getAssociatedTasks(@PathVariable Long projectId) {
-        List<Task> tasks = projectService.getAssociatedTasks(projectId);
+    public ResponseEntity<List<ProjectTasksResponseDTO>> getAssociatedTasks(@PathVariable Long projectId) {
+        List<ProjectTasksResponseDTO> tasks = projectService.getAssociatedTasks(projectId);
         return ResponseEntity.ok(tasks);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Project> createProject(@RequestBody String projectName) {
-        Project createdProject = projectService.createProject(projectName);
+    public ResponseEntity<ProjectResponseDTO> createProject(@RequestBody String projectName) {
+        ProjectResponseDTO createdProject = projectService.createProject(projectName);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
     @PutMapping("/rename/{projectId}")
-    public ResponseEntity<Project> renameProject(@PathVariable Long projectId, @RequestBody String projectName) {
-        Project project = projectService.renameProject(projectId, projectName);
+    public ResponseEntity<ProjectResponseDTO> renameProject(@PathVariable Long projectId, @RequestBody String projectName) {
+        ProjectResponseDTO project = projectService.renameProject(projectId, projectName);
         return ResponseEntity.ok(project);
     }
 
