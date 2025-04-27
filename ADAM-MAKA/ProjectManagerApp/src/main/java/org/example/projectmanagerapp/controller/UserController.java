@@ -1,3 +1,4 @@
+// Language: java
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.User;
@@ -33,5 +34,23 @@ public class UserController {
             @Parameter(description = "User data to create a new user", required = true)
             @RequestBody User user) {
         return userService.createUser(user);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an existing user", description = "Update the user with the given ID")
+    public User updateUser(
+            @Parameter(description = "ID of the user to update", required = true)
+            @PathVariable Integer id,
+            @Parameter(description = "Updated user data", required = true)
+            @RequestBody User user) {
+        return userService.updateUser(id, user);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete an existing user", description = "Delete the user with the given ID")
+    public void deleteUser(
+            @Parameter(description = "ID of the user to delete", required = true)
+            @PathVariable Integer id) {
+        userService.deleteUser(id);
     }
 }

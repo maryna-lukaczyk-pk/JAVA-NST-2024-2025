@@ -1,3 +1,4 @@
+// Language: java
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Project;
@@ -33,5 +34,23 @@ public class ProjectController {
             @Parameter(description = "Project data to create a new project", required = true)
             @RequestBody Project project) {
         return projectService.createProject(project);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an existing project", description = "Update the project with the given ID")
+    public Project updateProject(
+            @Parameter(description = "ID of the project to update", required = true)
+            @PathVariable Integer id,
+            @Parameter(description = "Updated project data", required = true)
+            @RequestBody Project project) {
+        return projectService.updateProject(id, project);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete an existing project", description = "Delete the project with the given ID")
+    public void deleteProject(
+            @Parameter(description = "ID of the project to delete", required = true)
+            @PathVariable Integer id) {
+        projectService.deleteProject(id);
     }
 }
