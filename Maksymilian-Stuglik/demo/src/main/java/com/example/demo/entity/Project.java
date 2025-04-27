@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -14,4 +16,10 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name; // no message
+
+    @OneToMany(mappedBy = "project")
+    private Set<ProjectUsers> projectUsers;
+
+    @OneToMany(mappedBy = "project")
+    private Set<Tasks> tasks;
 }
