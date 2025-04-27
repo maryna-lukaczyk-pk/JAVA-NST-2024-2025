@@ -4,6 +4,7 @@ package org.example.projectmanagerapp.controller;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +27,15 @@ public class ProjectController {
     @Operation(summary = "Retrieve all projects", description = "Get a list of all projects")
     public List<Project> getAllProjects() {
         return projectService.getAllProjects();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Project> getProjectById(@PathVariable Integer id) {
+        Project project = projectService.getProjectById(id);
+        if (project == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(project);
     }
 
     @PostMapping
