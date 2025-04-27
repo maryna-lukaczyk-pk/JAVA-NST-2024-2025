@@ -2,6 +2,7 @@ package org.example.projectmanager.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanager.dto.task.TaskCreateDto;
 import org.example.projectmanager.dto.task.TaskDto;
@@ -41,7 +42,10 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete an entity")
+    @Operation(summary = "Delete an entity", responses = {
+            @ApiResponse(responseCode = "200", description = "Entity deleted"),
+            @ApiResponse(responseCode = "400", description = "Entity not found")
+    })
     public void delete(
             @Parameter(description = "The id of the entity")
             @PathVariable Long id
