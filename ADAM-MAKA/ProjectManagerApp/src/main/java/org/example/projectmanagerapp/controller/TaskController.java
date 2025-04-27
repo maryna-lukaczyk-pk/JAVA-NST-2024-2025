@@ -1,7 +1,7 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Task;
-import org.example.projectmanagerapp.repository.TaskRepository;
+import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,17 +14,17 @@ import java.util.List;
 @Tag(name = "Tasks", description = "Operations related to tasks")
 public class TaskController {
 
-    private final TaskRepository taskRepository;
+    private final TaskService taskService;
 
     @Autowired
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @GetMapping
     @Operation(summary = "Retrieve all tasks", description = "Get a list of all tasks")
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+        return taskService.getAllTasks();
     }
 
     @PostMapping
@@ -32,6 +32,6 @@ public class TaskController {
     public Task createTask(
             @Parameter(description = "Task data to create a new task", required = true)
             @RequestBody Task task) {
-        return taskRepository.save(task);
+        return taskService.createTask(task);
     }
 }

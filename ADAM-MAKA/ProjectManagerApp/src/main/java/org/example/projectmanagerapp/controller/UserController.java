@@ -1,7 +1,7 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.User;
-import org.example.projectmanagerapp.repository.UserRepository;
+import org.example.projectmanagerapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,17 +14,17 @@ import java.util.List;
 @Tag(name = "Users", description = "Operations related to users")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
     @Operation(summary = "Retrieve all users", description = "Get a list of all users")
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
     @PostMapping
@@ -32,6 +32,6 @@ public class UserController {
     public User createUser(
             @Parameter(description = "User data to create a new user", required = true)
             @RequestBody User user) {
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 }

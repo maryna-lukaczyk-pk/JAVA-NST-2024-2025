@@ -1,7 +1,7 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Project;
-import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,17 +14,17 @@ import java.util.List;
 @Tag(name = "Projects", description = "Operations related to projects")
 public class ProjectController {
 
-    private final ProjectRepository projectRepository;
+    private final ProjectService projectService;
 
     @Autowired
-    public ProjectController(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     @GetMapping
     @Operation(summary = "Retrieve all projects", description = "Get a list of all projects")
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+        return projectService.getAllProjects();
     }
 
     @PostMapping
@@ -32,6 +32,6 @@ public class ProjectController {
     public Project createProject(
             @Parameter(description = "Project data to create a new project", required = true)
             @RequestBody Project project) {
-        return projectRepository.save(project);
+        return projectService.createProject(project);
     }
 }
