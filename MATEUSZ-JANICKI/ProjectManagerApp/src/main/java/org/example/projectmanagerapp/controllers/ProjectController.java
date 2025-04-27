@@ -3,7 +3,9 @@ package org.example.projectmanagerapp.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Project;
-import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.services.ProjectService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,21 +16,22 @@ import java.util.List;
 @Tag(name = "Project")
 @RestController
 public class ProjectController {
-    private final ProjectRepository repository;
+    private final ProjectService projectService;
 
-    ProjectController(ProjectRepository projectRepository) {
-        this.repository = projectRepository;
+    ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     @Operation(summary = "API Project POST method")
     @GetMapping("/projects")
     List<Project> all() {
-        return repository.findAll();
+        return projectService.getAllProjects();
     }
 
     @Operation(summary = "API Project POST method")
     @PostMapping("/projects")
-    Project newProject(@RequestBody Project newProject) {
-        return repository.save(newProject);
+    public ResponseEntity<Project> newProject(@RequestBody Project newProject) {
+        Project createdProject = projectService.createProject(newProject);
+        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 }
