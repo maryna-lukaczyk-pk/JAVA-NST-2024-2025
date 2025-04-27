@@ -1,4 +1,3 @@
-// File: `src/main/java/org/example/projectmanagerapp/service/ProjectService.java`
 package org.example.projectmanagerapp.service;
 
 import org.example.projectmanagerapp.entity.Project;
@@ -26,13 +25,17 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
+    public Project getProjectById(Integer id) {
+        Optional<Project> project = projectRepository.findById(id);
+        return project.orElse(null);
+    }
+
     public Project updateProject(Integer id, Project project) {
         Optional<Project> existingProject = projectRepository.findById(id);
         if (existingProject.isPresent()) {
             project.setId(id);
             return projectRepository.save(project);
         }
-        // Handle not found case as needed
         return null;
     }
 

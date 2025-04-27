@@ -1,4 +1,3 @@
-// File: `src/main/java/org/example/projectmanagerapp/service/UserService.java`
 package org.example.projectmanagerapp.service;
 
 import org.example.projectmanagerapp.entity.User;
@@ -24,6 +23,11 @@ public class UserService {
 
     public User createUser(User user) {
         return userRepository.save(user);
+    }
+
+    public User getUserById(Integer id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.orElse(null);
     }
 
     public User updateUser(Integer id, User user) {

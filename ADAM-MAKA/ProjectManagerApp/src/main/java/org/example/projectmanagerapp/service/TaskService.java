@@ -1,4 +1,3 @@
-// File: `src/main/java/org/example/projectmanagerapp/service/TaskService.java`
 package org.example.projectmanagerapp.service;
 
 import org.example.projectmanagerapp.entity.Task;
@@ -26,13 +25,17 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    public Task getTaskById(Integer id) {
+        Optional<Task> task = taskRepository.findById(id);
+        return task.orElse(null);
+    }
+
     public Task updateTask(Integer id, Task task) {
         Optional<Task> existingTask = taskRepository.findById(id);
         if (existingTask.isPresent()) {
             task.setId(id);
             return taskRepository.save(task);
         }
-        // Handle not found case as needed
         return null;
     }
 
