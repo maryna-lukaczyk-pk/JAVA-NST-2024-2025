@@ -33,4 +33,17 @@ public class TaskController {
         return taskRepository.save(task);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public void deleteById(@PathVariable Long id) {
+        taskRepository.deleteById(id);
+    }
+
+    @PutMapping("/update/{id}/{newTaskTitle}")
+    public void update(@PathVariable Long id, @PathVariable String newTitle) {
+        taskRepository.findById(id);
+        Task myTask = taskRepository.getReferenceById(id);
+        myTask.setTitle(newTitle);
+        taskRepository.save(myTask);
+    }
+
 }
