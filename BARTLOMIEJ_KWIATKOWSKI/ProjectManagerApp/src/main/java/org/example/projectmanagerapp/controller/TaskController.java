@@ -3,10 +3,10 @@ package org.example.projectmanagerapp.controller;
 import org.example.projectmanagerapp.entity.Tasks;
 import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 
 import java.util.List;
 
@@ -24,21 +24,38 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Pobierz zadanie po ID")
+    public ResponseEntity<Tasks> getTaskById(@PathVariable Long id) {
+        return taskService.getTaskById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     @Operation(summary = "Utwórz nowe zadanie")
-    public Tasks createTask(@RequestBody @Parameter(description = "Dane nowego zadania") Tasks tasks) {
-        return taskService.createTask(tasks);
+    public Tasks createTask(@RequestBody Tasks task) {
+        return taskService.createTask(task);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Aktualizuj zadanie")
-    public Tasks updateTask(@PathVariable Long id, @RequestBody Tasks taskDetails) {
-        return taskService.updateTask(id, taskDetails);
+    public ResponseEntity<Tasks> updateTask(@PathVariable Long id, @RequestBody Tasks taskDetails) {
+        Tasks updated = taskService.updateTask(id, taskDetails);
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Usuń zadanie")
-    public void deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        boolean exists = taskService.getTaskById(id).isPresent();
+        if (!exists) {
+            return ResponseEntity.notFound().build();
+        }
         taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }

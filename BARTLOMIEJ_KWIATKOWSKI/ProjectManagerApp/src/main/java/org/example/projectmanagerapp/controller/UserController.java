@@ -3,10 +3,10 @@ package org.example.projectmanagerapp.controller;
 import org.example.projectmanagerapp.entity.Users;
 import org.example.projectmanagerapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 
 import java.util.List;
 
@@ -24,21 +24,38 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Pobierz użytkownika po ID")
+    public ResponseEntity<Users> getUserById(@PathVariable Long id) {
+        return userService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     @Operation(summary = "Utwórz nowego użytkownika")
-    public Users createUser(@RequestBody @Parameter(description = "Dane nowego użytkownika") Users users) {
-        return userService.createUser(users);
+    public Users createUser(@RequestBody Users user) {
+        return userService.createUser(user);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Aktualizuj użytkownika")
-    public Users updateUser(@PathVariable Long id, @RequestBody Users userDetails) {
-        return userService.updateUser(id, userDetails);
+    public ResponseEntity<Users> updateUser(@PathVariable Long id, @RequestBody Users userDetails) {
+        Users updated = userService.updateUser(id, userDetails);
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Usuń użytkownika")
-    public void deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        boolean exists = userService.getUserById(id).isPresent();
+        if (!exists) {
+            return ResponseEntity.notFound().build();
+        }
         userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
