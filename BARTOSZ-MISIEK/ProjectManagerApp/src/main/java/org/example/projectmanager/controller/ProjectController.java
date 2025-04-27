@@ -1,5 +1,7 @@
 package org.example.projectmanager.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanager.dto.project.ProjectCreateDto;
 import org.example.projectmanager.dto.project.ProjectDto;
 import org.example.projectmanager.dto.project.ProjectEditDto;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Tag(name = "Project", description = "Project management ")
 @RequestMapping("/api/projects")
 public class ProjectController {
     private final IProjectService service;
@@ -19,7 +22,10 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ProjectDto get(@PathVariable Long id) throws EntityNotFoundException {
+    public ProjectDto get(
+            @Parameter(description = "The id of the entity")
+            @PathVariable Long id
+    ) throws EntityNotFoundException {
         return this.service.getById(id);
     }
 
@@ -34,7 +40,10 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) throws EntityNotFoundException {
+    public void delete(
+            @Parameter(description = "The id of the entity")
+            @PathVariable Long id
+    ) throws EntityNotFoundException {
         this.service.delete(id);
     }
 

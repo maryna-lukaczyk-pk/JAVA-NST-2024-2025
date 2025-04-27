@@ -1,5 +1,7 @@
 package org.example.projectmanager.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanager.dto.task.TaskCreateDto;
 import org.example.projectmanager.dto.task.TaskDto;
 import org.example.projectmanager.dto.task.TaskEditDto;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Tag(name = "Task", description = "Task management")
 @RequestMapping("/api/tasks")
 public class TaskController {
     private final ITaskService service;
@@ -19,7 +22,10 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public TaskDto get(@PathVariable Long id) throws EntityNotFoundException {
+    public TaskDto get(
+            @Parameter(description = "The id of the entity")
+            @PathVariable Long id
+    ) throws EntityNotFoundException {
         return this.service.getById(id);
     }
 
@@ -34,7 +40,10 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) throws EntityNotFoundException {
+    public void delete(
+            @Parameter(description = "The id of the entity")
+            @PathVariable Long id
+    ) throws EntityNotFoundException {
         this.service.delete(id);
     }
 
