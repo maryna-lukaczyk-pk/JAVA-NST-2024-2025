@@ -1,5 +1,5 @@
-package org.example.projectmanagerapp.entity;
 
+package org.example.projectmanagerapp.entity;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -28,3 +28,4 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private List<Task> tasks;
 }
+

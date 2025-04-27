@@ -2,7 +2,10 @@ package org.example.projectmanagerapp.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.Task;
+import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +19,12 @@ import java.util.List;
 @Tag(name = "Project API")
 public class ProjectController {
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ProjectController(ProjectRepository projectRepository) {
+    public ProjectController(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/all")
@@ -39,17 +44,37 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    @PostMapping("/add/{projectId}")
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
-        Project createdProject = projectRepository.save(project);
+    @GetMapping("/{projectId}/users")
+    public ResponseEntity<List<User>> getAssociatedUsers(@PathVariable Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        List<User> users = project.getUsers().stream().toList();
+
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{projectId}/tasks")
+    public ResponseEntity<List<Task>> getAssociatedTasks(@PathVariable Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        List<Task> tasks = project.getTasks().stream().toList();
+
+        return ResponseEntity.ok(tasks);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Project> createProject(@RequestBody String projectName) {
+        Project createdProject = projectRepository.save(new Project(projectName));
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{projectId}")
-    public ResponseEntity<Project> replaceProject(@PathVariable Long projectId, @RequestBody Project projectUpdateRequest) {
+    @PutMapping("/rename/{projectId}")
+    public ResponseEntity<Project> renameProject(@PathVariable Long projectId, @RequestBody String projectName) {
         Project project =  projectRepository.findById(projectId)
                 .map(existingProject -> {
-                    existingProject.setName(projectUpdateRequest.getName());
+                    existingProject.setName(projectName);
                     return projectRepository.save(existingProject);
                 })
                 .orElse(null);
@@ -69,5 +94,31 @@ public class ProjectController {
                     return ResponseEntity.noContent().build();
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{projectId}/users/{userId}")
+    public ResponseEntity<Void> associateUserWithProject(@PathVariable Long userId, @PathVariable Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        project.getUsers().add(user);
+        projectRepository.save(project);
+
+        return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("/{projectId}/users/{userId}")
+    public ResponseEntity<Void> removeUserFromProject(@PathVariable Long userId, @PathVariable Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        project.getUsers().remove(user);
+        projectRepository.save(project);
+
+        return ResponseEntity.ok(null);
     }
 }
