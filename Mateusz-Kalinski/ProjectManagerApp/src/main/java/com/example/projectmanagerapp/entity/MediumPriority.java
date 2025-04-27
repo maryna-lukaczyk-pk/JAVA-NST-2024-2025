@@ -1,4 +1,4 @@
-package org.example.projectmanager.entity;
+package com.example.projectmanagerapp.entity;
 
 import lombok.Getter;
 

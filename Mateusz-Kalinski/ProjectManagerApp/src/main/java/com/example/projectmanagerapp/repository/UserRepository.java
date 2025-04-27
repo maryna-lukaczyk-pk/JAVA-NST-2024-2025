@@ -1,6 +1,6 @@
-package org.example.projectmanager.repository;
+package com.example.projectmanagerapp.repository;
 
-import org.example.projectmanager.entity.Users;
+import com.example.projectmanagerapp.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

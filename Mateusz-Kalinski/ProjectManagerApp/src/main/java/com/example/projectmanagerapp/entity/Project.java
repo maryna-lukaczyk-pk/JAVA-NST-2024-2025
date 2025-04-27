@@ -1,4 +1,4 @@
-package org.example.projectmanager.entity;
+package com.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

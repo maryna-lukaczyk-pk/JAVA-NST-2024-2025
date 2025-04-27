@@ -1,7 +1,7 @@
-package org.example.projectmanager.controller;
+package com.example.projectmanagerapp.controller;
 
-import org.example.projectmanager.entity.Project;
-import org.example.projectmanager.repository.ProjectRepository;
+import com.example.projectmanagerapp.entity.Project;
+import com.example.projectmanagerapp.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,18 +14,18 @@ public class ProjectController {
     @Autowired
     private ProjectRepository projectRepository;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public Project createProject(@RequestBody Project project) {
         return projectRepository.save(project);
     }
 
-    @GetMapping("/{id}")
-    public Project getProjectById(@PathVariable Long id) {
-        return projectRepository.findById(id).orElse(null);
-    }
+//    @GetMapping("/{id}")
+//    public Project getProjectById(@PathVariable Long id) {
+//        return projectRepository.findById(id).orElse(null);
+//    }
 }

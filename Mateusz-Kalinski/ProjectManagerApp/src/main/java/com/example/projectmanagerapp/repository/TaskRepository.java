@@ -1,6 +1,6 @@
-package org.example.projectmanager.repository;
+package com.example.projectmanagerapp.repository;
 
-import org.example.projectmanager.entity.Tasks;
+import com.example.projectmanagerapp.entity.Tasks;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
