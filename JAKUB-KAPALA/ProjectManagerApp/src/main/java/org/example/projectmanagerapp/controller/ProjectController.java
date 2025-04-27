@@ -3,7 +3,7 @@ package org.example.projectmanagerapp.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.interfaces.ProjectResponseDTO;
 import org.example.projectmanagerapp.interfaces.ProjectTasksResponseDTO;
-import org.example.projectmanagerapp.interfaces.ProjectUserResponseDTO;
+import org.example.projectmanagerapp.interfaces.UserResponseDTO;
 import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,8 +35,8 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/users")
-    public ResponseEntity<List<ProjectUserResponseDTO>> getAssociatedUsers(@PathVariable Long projectId) {
-        List<ProjectUserResponseDTO> users = projectService.getAssociatedUsers(projectId);
+    public ResponseEntity<List<UserResponseDTO>> getAssociatedUsers(@PathVariable Long projectId) {
+        List<UserResponseDTO> users = projectService.getAssociatedUsers(projectId);
         return ResponseEntity.ok(users);
     }
 

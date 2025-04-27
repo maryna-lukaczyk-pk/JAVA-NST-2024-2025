@@ -5,7 +5,7 @@ import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.interfaces.ProjectResponseDTO;
 import org.example.projectmanagerapp.interfaces.ProjectTasksResponseDTO;
-import org.example.projectmanagerapp.interfaces.ProjectUserResponseDTO;
+import org.example.projectmanagerapp.interfaces.UserResponseDTO;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class ProjectService {
         return mapToProjectResponseDTO(project);
     }
 
-    public List<ProjectUserResponseDTO> getAssociatedUsers(Long projectId) {
+    public List<UserResponseDTO> getAssociatedUsers(Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
 
@@ -114,8 +114,8 @@ public class ProjectService {
         return dto;
     }
 
-    private ProjectUserResponseDTO mapToUserResponseDTO(User user) {
-        ProjectUserResponseDTO dto = new ProjectUserResponseDTO();
+    private UserResponseDTO mapToUserResponseDTO(User user) {
+        UserResponseDTO dto = new UserResponseDTO();
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         return dto;
