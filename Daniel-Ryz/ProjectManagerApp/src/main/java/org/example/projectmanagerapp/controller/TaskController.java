@@ -17,16 +17,18 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @PostMapping
-    public ResponseEntity<Tasks> createTask(@RequestBody Tasks tasks) {
-        Tasks savedTask = taskService.createTask(tasks);
-        return ResponseEntity.ok(savedTask);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Tasks> getTask(@PathVariable Long id) {
         return taskService.taskRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PostMapping
+    public ResponseEntity<Tasks> createTask(@RequestBody Tasks tasks) {
+        Tasks savedTask = taskService.createTask(tasks);
+        return ResponseEntity.ok(savedTask);
+    }
+
+
 }
