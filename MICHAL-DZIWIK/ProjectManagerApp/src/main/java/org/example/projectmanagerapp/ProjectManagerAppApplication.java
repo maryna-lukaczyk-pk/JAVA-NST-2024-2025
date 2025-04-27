@@ -1,5 +1,8 @@
 package org.example.projectmanagerapp;
 
+import org.example.projectmanagerapp.entity.*;
+import org.example.projectmanagerapp.repository.*;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
