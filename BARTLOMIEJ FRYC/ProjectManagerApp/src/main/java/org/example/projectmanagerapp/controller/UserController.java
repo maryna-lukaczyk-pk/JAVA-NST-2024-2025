@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Users;
-import org.example.projectmanagerapp.repository.UserRepository;
+import org.example.projectmanagerapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +16,12 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @GetMapping
     @Operation(summary = "Get all users", description = "Retrieves a list of all users in the system")
     public List<Users> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
     @PostMapping
@@ -29,6 +29,6 @@ public class UserController {
     public Users createUser(
             @Parameter(description = "User object with details to be created") 
             @RequestBody Users user) {
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 }
