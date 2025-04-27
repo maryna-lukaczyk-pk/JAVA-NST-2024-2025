@@ -15,6 +15,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Setter
+    @Getter
     private String username;
 
     @ManyToMany(mappedBy = "users")
