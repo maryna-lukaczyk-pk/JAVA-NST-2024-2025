@@ -1,10 +1,11 @@
 package org.example.projectmanagerapp.controller;
 
-import org.example.projectmanagerapp.entity.Tasks;
-import org.example.projectmanagerapp.service.TaskService;
+import org.example.projectmanagerapp.entity.tasks.Tasks;
+import org.example.projectmanagerapp.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 

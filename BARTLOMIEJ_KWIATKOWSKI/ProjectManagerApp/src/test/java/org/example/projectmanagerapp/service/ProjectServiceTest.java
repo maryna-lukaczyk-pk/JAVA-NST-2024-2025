@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.example.projectmanagerapp.service.ProjectService;
 
 class ProjectServiceTest {
 

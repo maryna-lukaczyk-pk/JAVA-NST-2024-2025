@@ -1,6 +1,7 @@
-package org.example.projectmanagerapp.service;
+package org.example.projectmanagerapp.services;
 
-import org.example.projectmanagerapp.entity.Tasks;
+import org.example.projectmanagerapp.entity.tasks.Tasks;
+import org.example.projectmanagerapp.entity.tasks.TaskType;
 import org.example.projectmanagerapp.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
