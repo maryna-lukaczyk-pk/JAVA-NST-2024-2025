@@ -34,4 +34,25 @@ public class UserController {
     ) {
         return userService.createUser(user);
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an existing user", description = "Updates an existing user based on ID.")
+    public User updateUser(
+            @Parameter(description = "ID of the user to be updated")
+            @PathVariable Long id,
+            @Parameter(description = "Updated user object")
+            @RequestBody User user
+    ) {
+        return userService.updateUser(id, user);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a user", description = "Deletes a user based on ID.")
+    public void deleteUser(
+            @Parameter(description = "ID of the user to be deleted")
+            @PathVariable Long id
+    ) {
+        userService.deleteUser(id);
+    }
 }
+

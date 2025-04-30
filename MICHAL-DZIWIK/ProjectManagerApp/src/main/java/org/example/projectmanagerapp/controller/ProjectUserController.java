@@ -34,4 +34,24 @@ public class ProjectUserController {
     ) {
         return projectUserService.createProjectUser(projectUser);
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an existing project-user relationship", description = "Updates an existing project-user relationship by its ID.")
+    public ProjectUser updateProjectUser(
+            @Parameter(description = "ID of the project-user relationship to be updated")
+            @PathVariable Long id,
+            @Parameter(description = "Updated project-user object")
+            @RequestBody ProjectUser projectUser
+    ) {
+        return projectUserService.updateProjectUser(id, projectUser);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a project-user relationship", description = "Deletes a project-user relationship by its ID.")
+    public void deleteProjectUser(
+            @Parameter(description = "ID of the project-user relationship to be deleted")
+            @PathVariable Long id
+    ) {
+        projectUserService.deleteProjectUser(id);
+    }
 }
