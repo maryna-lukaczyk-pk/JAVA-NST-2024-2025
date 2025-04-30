@@ -22,9 +22,14 @@ public class TasksService {
         return tasksRepository.save(task);
     }
 
-    public Tasks updateTask(int id,Tasks task) {
-        return tasksRepository.save(task);
+    public Tasks updateTask(long id, Tasks task) {
+        if(tasksRepository.existsById(id)){
+            return tasksRepository.save(task);
+        }
+        return null;
     }
+
+    public void deleteTask(long id) {tasksRepository.deleteById(id); }
 
 
 }

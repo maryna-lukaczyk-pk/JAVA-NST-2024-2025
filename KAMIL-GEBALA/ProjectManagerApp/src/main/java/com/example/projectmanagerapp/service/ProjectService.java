@@ -23,8 +23,12 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Project updateProject(int id,Project project) {
-        return projectRepository.save(project);
+    public Project updateProject(long id,Project project) {
+        if(projectRepository.existsById(id)){
+            return projectRepository.save(project);
+        }
+        return null;
     }
 
+    public void deleteProject(long id) {projectRepository.deleteById(id); }
 }

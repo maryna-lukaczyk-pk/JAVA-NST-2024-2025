@@ -1,7 +1,8 @@
 package com.example.projectmanagerapp.controller;
-import com.example.projectmanagerapp.entity.Project;
+
 import com.example.projectmanagerapp.entity.Users;
 import com.example.projectmanagerapp.service.UsersService;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,16 +29,25 @@ public class UsersController {
 
     @PostMapping("/create")
     @Operation  (summary = "Create new user",description = "Adds new user to database")
-    public ResponseEntity<Users> createUser(@RequestBody Users user) {
+    public ResponseEntity<Users> createUser(@Parameter(description = "User object",required = true)@RequestBody Users user) {
         Users createdUser = usersService.createUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
     @Operation (summary = "Update user", description = "Updates informations about user")
-    public ResponseEntity<Users> updateUser(@PathVariable int id, @RequestBody Users user) {
+    public ResponseEntity<Users> updateUser(
+            @Parameter (description="ID of the user",required = true) @PathVariable long id,
+            @Parameter (description = "User object",required = true)@RequestBody Users user) {
         Users updatedUser = usersService.updateUser(id, user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
+
+    @DeleteMapping("/delete/{id}")
+    @Operation (summary = "Deletes user", description = "Deletes user from database by id")
+    public void deleteUser(@Parameter (description="ID of the user",required = true) @PathVariable long id) {
+        usersService.deleteUser(id);
+    }
+
 
 }
