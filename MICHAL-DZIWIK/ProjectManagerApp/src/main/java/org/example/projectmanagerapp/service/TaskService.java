@@ -1,9 +1,5 @@
 package org.example.projectmanagerapp.service;
 
-public class TaskService {
-}
-package org.example.projectmanagerapp.service;
-
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.repository.TaskRepository;
 import org.springframework.stereotype.Service;

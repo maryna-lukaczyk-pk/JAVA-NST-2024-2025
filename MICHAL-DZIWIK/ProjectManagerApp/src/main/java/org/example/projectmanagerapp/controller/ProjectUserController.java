@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.ProjectUser;
-import org.example.projectmanagerapp.repository.ProjectUserRepository;
+import org.example.projectmanagerapp.service.ProjectUserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,16 +14,16 @@ import java.util.List;
 @Tag(name = "Project Users", description = "Operations related to user participation in projects")
 public class ProjectUserController {
 
-    private final ProjectUserRepository projectUserRepository;
+    private final ProjectUserService projectUserService;
 
-    public ProjectUserController(ProjectUserRepository projectUserRepository) {
-        this.projectUserRepository = projectUserRepository;
+    public ProjectUserController(ProjectUserService projectUserService) {
+        this.projectUserService = projectUserService;
     }
 
     @GetMapping
     @Operation(summary = "Retrieve all project-user relationships", description = "Returns a list of all project-user assignments.")
     public List<ProjectUser> getAllProjectUsers() {
-        return projectUserRepository.findAll();
+        return projectUserService.getAllProjectUsers();
     }
 
     @PostMapping
@@ -32,6 +32,6 @@ public class ProjectUserController {
             @Parameter(description = "ProjectUser object to be created")
             @RequestBody ProjectUser projectUser
     ) {
-        return projectUserRepository.save(projectUser);
+        return projectUserService.createProjectUser(projectUser);
     }
 }
