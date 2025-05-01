@@ -1,5 +1,6 @@
 package org.example.projectmanagerapp.controller;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.services.TaskService;
@@ -29,5 +30,29 @@ public class TaskController {
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         Task createdTask = taskService.createTask(task);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Delete a task", description = "Delete a task by its ID")
+    @Parameter(name = "id", description = "ID of the task to delete")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Update a task", description = "Update an existing task by its ID")
+    @Parameter(name = "id", description = "ID of the task to update")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
+        Task updatedTask = taskService.updateTask(id, task);
+        return new ResponseEntity<>(updatedTask, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get a task by ID", description = "Retrieve a task by its ID")
+    @Parameter(name = "id", description = "ID of the task to retrieve")
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+        Task task = taskService.findById(id);
+        return new ResponseEntity<>(task, HttpStatus.OK);
     }
 }

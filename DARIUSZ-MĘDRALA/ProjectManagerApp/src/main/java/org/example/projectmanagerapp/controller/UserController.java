@@ -1,5 +1,6 @@
 package org.example.projectmanagerapp.controller;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.services.UserService;
@@ -29,5 +30,29 @@ public class UserController {
     public ResponseEntity<User> addUser(@RequestBody User user) {
         User createdUser = userService.createUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Delete a user", description = "Delete a user by its ID")
+    @Parameter(name = "id", description = "ID of the user to delete")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Update a user", description = "Update an existing user by its ID")
+    @Parameter(name = "id", description = "ID of the user to update")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        User updatedUser = userService.updateUser(id, user);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get a user by ID", description = "Retrieve a user by its ID")
+    @Parameter(name = "id", description = "ID of the user to retrieve")
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.findById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

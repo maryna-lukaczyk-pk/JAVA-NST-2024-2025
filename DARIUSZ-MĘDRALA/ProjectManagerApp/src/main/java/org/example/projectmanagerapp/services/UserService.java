@@ -20,4 +20,22 @@ public class UserService {
     public User createUser(User user) {
         return userRepository.save(user);
     }
+
+    public User deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.delete(user);
+        return user;
+    }
+
+    public User updateUser(Long id, User user) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.save(user);
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 }
