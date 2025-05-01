@@ -1,11 +1,14 @@
 package org.example.projectmanagerapp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Project", description = "Project controller")
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
@@ -16,12 +19,13 @@ public class ProjectController {
     }
 
     @GetMapping("/all")
-    List<Project> all() {
-        return projectRepository.findAll();
-    }
+    @Operation(summary = "Get all projects", description = "Gets all projects")
+    List<Project> all() { return projectRepository.findAll(); }
 
     @PostMapping("/")
-    Project newProject(@RequestBody Project newProject) {
+    @Operation(summary = "Create project", description = "Creates a new project")
+    Project newProject(@RequestBody Project newProject)
+    {
         return projectRepository.save(newProject);
     }
 }
