@@ -2,7 +2,7 @@ package org.example.projectmanagerapp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.User;
-import org.example.projectmanagerapp.repository.UserRepository;
+import org.example.projectmanagerapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,23 +12,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @Operation(summary = "Get all users", description = "Retrieve a list of all users")
     @GetMapping("/all")
     public List<User> getUsers() {
-        return userRepository.findAll();
+        return userService.findAll();
     }
 
     @Operation(summary = "Create a new user", description = "Create a new user with the provided details")
     @PostMapping("/create")
     public ResponseEntity<User> addUser(@RequestBody User user) {
-        userRepository.save(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        User createdUser = userService.createUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
-
 }
