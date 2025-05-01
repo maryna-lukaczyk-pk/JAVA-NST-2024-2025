@@ -18,7 +18,30 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
+    public Project getProjectById(Long id) {
+        return projectRepository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Project does not exist"));
+    }
+
     public Project createProject(Project project) {
         return projectRepository.save(project);
+    }
+
+    public Project updateById(Long id, Project project) {
+        if (!projectRepository.existsById(id)) {
+            throw new RuntimeException("Project with id " + id + " does not exist");
+        }
+
+        project.setId(id);
+        return projectRepository.save(project);
+    }
+
+    public Boolean deleteById(Long id) {
+        if (!projectRepository.existsById(id)) {
+            return false;
+        }
+
+        projectRepository.deleteById(id);
+        return true;
     }
 }
