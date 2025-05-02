@@ -2,8 +2,11 @@ package org.example.projectmanager.controller;
 
 import org.example.projectmanager.entity.Users;
 import org.example.projectmanager.repository.UsersRepository;
+import org.example.projectmanager.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,30 +22,22 @@ import io.swagger.v3.oas.annotations.Parameter;
 public class UsersController {
     @Autowired
     private UsersRepository usersRepository;
+    private final UsersService usersService;
 
-    @Operation (
-            summary = "Retrieve all users",
-            description = "Return a list of all users from the database"
-    )
-
-    @GetMapping
-    public List<Users> getAllUsers() {
-        return usersRepository.findAll();
+    public UsersController(UsersService usersService) {
+        this.usersService = usersService;
     }
 
-    @Operation(
-            summary = "Create a new user",
-            description = "Creates a new user and saves it to the database"
-    )
+    @GetMapping("/all")
+    @Operation (summary = "Retrieve all users",description = "Return a list of all users from the database")
+    public List<Users> getUsers() {
+        return usersService.getAllUsers();
+    }
 
     @PostMapping
-    public Users createUser(
-            @Parameter(
-                    description = "User that needs to be created",
-                    required = true
-            )
-            @RequestBody Users user
-    ) {
-        return usersRepository.save(user);
+    @Operation(summary = "Create a new user",description = "Creates a new user and saves it to the database")
+    public ResponseEntity<Users> addUser(@RequestBody Users users) {
+        Users createdUser = usersService.createUser(users);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 }

@@ -2,8 +2,11 @@ package org.example.projectmanager.controller;
 
 import org.example.projectmanager.entity.Tasks;
 import org.example.projectmanager.repository.TasksRepository;
+import org.example.projectmanager.service.TasksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import io.swagger.v3.oas.annotations.tags.Tag;
