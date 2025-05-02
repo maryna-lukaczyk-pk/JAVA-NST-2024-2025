@@ -20,13 +20,36 @@ public class TasksController {
     @Autowired
     private TasksRepository tasksRepository;
 
+    @Operation (
+            summary = "Get all tasks",
+            description = "Returns a list of all tasks"
+    )
+
     @GetMapping
-    public List<Tasks> getAllTasks() {
+    public List<Tasks> getAllTasks(
+            @Parameter(
+                    name = "opis",
+                    description = "Optional description filter",
+                    required = false
+            )
+            @RequestParam(required = false) String opis
+    ) {
         return tasksRepository.findAll();
     }
 
+    @Operation(
+            summary = "Create a new task",
+            description = "Creates a new task and saves it to the database"
+    )
+
     @PostMapping
-    public Tasks createTask(@RequestBody Tasks task) {
+    public Tasks createTask(
+            @Parameter(
+                    description = "Task object that needs to be created",
+                    required = true
+            )
+            @RequestBody Tasks task
+    ) {
         return tasksRepository.save(task);
     }
 }
