@@ -27,7 +27,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateById(Long id, User user) {
+    public User updateUserById(Long id, User user) {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User with id " + id + " does not exist");
         }
@@ -36,7 +36,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Boolean deleteById(Long id) {
+    public Boolean deleteUserById(Long id) {
         if (!userRepository.existsById(id)) {
             return false;
         }

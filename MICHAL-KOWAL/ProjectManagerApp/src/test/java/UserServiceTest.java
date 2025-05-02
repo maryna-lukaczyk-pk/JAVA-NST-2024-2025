@@ -97,7 +97,7 @@ public class UserServiceTest {
         when(userRepository.existsById(1L)).thenReturn(true);
         when(userRepository.save(user2)).thenReturn(user2);
 
-        User user1Updated = userService.updateById(1L, user2);
+        User user1Updated = userService.updateUserById(1L, user2);
 
         assertEquals(user2, user1Updated);
         verify(userRepository, times(1)).existsById(1L);
@@ -113,13 +113,13 @@ public class UserServiceTest {
 
         when(userRepository.existsById(1L)).thenReturn(true);
 
-        Boolean deleted = userService.deleteById(1L);
+        Boolean deleted = userService.deleteUserById(1L);
 
         assertEquals(true, deleted);
 
         when(userRepository.existsById(1L)).thenReturn(false);
 
-        deleted = userService.deleteById(1L);
+        deleted = userService.deleteUserById(1L);
 
         assertEquals(false, deleted);
 

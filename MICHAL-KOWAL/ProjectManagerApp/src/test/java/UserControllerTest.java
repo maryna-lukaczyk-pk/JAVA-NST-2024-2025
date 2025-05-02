@@ -66,31 +66,31 @@ public class UserControllerTest {
         user2.setUsername("Jerzy");
         user2.setId(1L);
 
-        when(userService.updateById(1L, user2)).thenReturn(user2);
+        when(userService.updateUserById(1L, user2)).thenReturn(user2);
 
         var user1Updated = userController.updateUser(1L, user2);
 
         assertEquals(user2, user1Updated.getBody());
         assertEquals(HttpStatus.OK, user1Updated.getStatusCode());
-        verify(userService, times(1)).updateById(1L, user2);
+        verify(userService, times(1)).updateUserById(1L, user2);
     }
 
     @Test
     @DisplayName("Should delete a chosen user")
     void testDeleteUser() {
-        when(userService.deleteById(1L)).thenReturn(true);
+        when(userService.deleteUserById(1L)).thenReturn(true);
 
         var deleteResult = userController.deleteUser(1L);
 
         assertEquals(HttpStatus.OK, deleteResult.getStatusCode());
 
-        when(userService.deleteById(1L)).thenReturn(false);
+        when(userService.deleteUserById(1L)).thenReturn(false);
 
         deleteResult = userController.deleteUser(1L);
 
         assertEquals(HttpStatus.BAD_REQUEST, deleteResult.getStatusCode());
 
-        verify(userService, times(2)).deleteById(1L);
+        verify(userService, times(2)).deleteUserById(1L);
     }
 
     @Test

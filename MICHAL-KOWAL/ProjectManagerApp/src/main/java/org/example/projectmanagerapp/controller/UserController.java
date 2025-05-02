@@ -41,7 +41,7 @@ public class UserController {
     {
         User updatedUser;
         try {
-            updatedUser = userService.updateById(id, newUser);
+            updatedUser = userService.updateUserById(id, newUser);
         }
         catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -54,7 +54,7 @@ public class UserController {
     @Operation(summary = "Delete user", description = "Deletes a user by id")
     @Parameter(name = "id", description  = "id of the user to delete", required = true)
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (!userService.deleteById(id)) {
+        if (!userService.deleteUserById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
