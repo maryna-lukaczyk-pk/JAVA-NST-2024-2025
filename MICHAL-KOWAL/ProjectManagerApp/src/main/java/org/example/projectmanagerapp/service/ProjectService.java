@@ -27,7 +27,7 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Project updateById(Long id, Project project) {
+    public Project updateProjectById(Long id, Project project) {
         if (!projectRepository.existsById(id)) {
             throw new RuntimeException("Project with id " + id + " does not exist");
         }
@@ -36,7 +36,7 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Boolean deleteById(Long id) {
+    public Boolean deleteProjectById(Long id) {
         if (!projectRepository.existsById(id)) {
             return false;
         }

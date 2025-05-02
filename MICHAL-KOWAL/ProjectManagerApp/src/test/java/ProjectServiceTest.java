@@ -92,7 +92,7 @@ public class ProjectServiceTest {
         when(projectRepository.existsById(1L)).thenReturn(true);
         when(projectRepository.save(project2)).thenReturn(project2);
 
-        Project project1Updated = projectService.updateById(1L, project2);
+        Project project1Updated = projectService.updateProjectById(1L, project2);
 
         assertEquals(project2, project1Updated);
         verify(projectRepository, times(1)).existsById(1L);
@@ -108,13 +108,13 @@ public class ProjectServiceTest {
 
         when(projectRepository.existsById(1L)).thenReturn(true);
 
-        Boolean deleted = projectService.deleteById(1L);
+        Boolean deleted = projectService.deleteProjectById(1L);
 
         assertEquals(true, deleted);
 
         when(projectRepository.existsById(1L)).thenReturn(false);
 
-        deleted = projectService.deleteById(1L);
+        deleted = projectService.deleteProjectById(1L);
 
         assertEquals(false, deleted);
 

@@ -68,31 +68,31 @@ public class ProjectControllerTest {
         project2.setId(1L);
         project2.setName("Project 1 updated");
 
-        when(projectService.updateById(1L, project2)).thenReturn(project2);
+        when(projectService.updateProjectById(1L, project2)).thenReturn(project2);
 
         var project1UpdateResult = projectController.updateProject(1L, project2);
 
         assertEquals(project2, project1UpdateResult.getBody());
         assertEquals(HttpStatus.OK, project1UpdateResult.getStatusCode());
-        verify(projectService, times(1)).updateById(1L, project2);
+        verify(projectService, times(1)).updateProjectById(1L, project2);
     }
 
     @Test
     @DisplayName("Should delete a chosen project")
     void testDeleteProject() {
-        when(projectService.deleteById(1L)).thenReturn(true);
+        when(projectService.deleteProjectById(1L)).thenReturn(true);
 
         var deleteResult = projectController.deleteProject(1L);
 
         assertEquals(HttpStatus.OK, deleteResult.getStatusCode());
 
-        when(projectService.deleteById(1L)).thenReturn(false);
+        when(projectService.deleteProjectById(1L)).thenReturn(false);
 
         deleteResult = projectController.deleteProject(1L);
 
         assertEquals(HttpStatus.BAD_REQUEST, deleteResult.getStatusCode());
 
-        verify(projectService, times(2)).deleteById(1L);
+        verify(projectService, times(2)).deleteProjectById(1L);
     }
 
     @Test

@@ -39,7 +39,7 @@ public class ProjectController {
     {
         Project updatedProject;
         try {
-            updatedProject = projectService.updateById(id, newProject);
+            updatedProject = projectService.updateProjectById(id, newProject);
         }
         catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -52,7 +52,7 @@ public class ProjectController {
     @Operation(summary = "Delete project", description = "Deletes project by id")
     @Parameter(name = "id", description  = "id of the project to delete", required = true)
     public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-        if (!projectService.deleteById(id)) {
+        if (!projectService.deleteProjectById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
