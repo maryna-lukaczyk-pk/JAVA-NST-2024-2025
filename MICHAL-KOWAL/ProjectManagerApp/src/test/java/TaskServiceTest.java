@@ -94,7 +94,7 @@ public class TaskServiceTest {
         when(taskRepository.existsById(1L)).thenReturn(true);
         when(taskRepository.save(task2)).thenReturn(task2);
 
-        Task task1Updated = taskService.updateById(1L, task2);
+        Task task1Updated = taskService.updateTaskById(1L, task2);
 
         assertEquals(task2, task1Updated);
         verify(taskRepository, times(1)).existsById(1L);
@@ -110,13 +110,13 @@ public class TaskServiceTest {
 
         when(taskRepository.existsById(1L)).thenReturn(true);
 
-        Boolean deleted = taskService.deleteById(1L);
+        Boolean deleted = taskService.deleteTaskById(1L);
 
         assertEquals(true, deleted);
 
         when(taskRepository.existsById(1L)).thenReturn(false);
 
-        deleted = taskService.deleteById(1L);
+        deleted = taskService.deleteTaskById(1L);
 
         assertEquals(false, deleted);
 

@@ -41,7 +41,7 @@ public class TaskController {
     {
         Task updatedTask;
         try {
-            updatedTask = taskService.updateById(id, newTask);
+            updatedTask = taskService.updateTaskById(id, newTask);
         }
         catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -54,7 +54,7 @@ public class TaskController {
     @Operation(summary = "Delete task", description = "Deletes a task by id")
     @Parameter(name = "id", description  = "id of the task to delete", required = true)
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        if (!taskService.deleteById(id)) {
+        if (!taskService.deleteTaskById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

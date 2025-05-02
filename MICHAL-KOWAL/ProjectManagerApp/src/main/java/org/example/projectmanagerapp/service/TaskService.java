@@ -27,7 +27,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task updateById(Long id, Task task) {
+    public Task updateTaskById(Long id, Task task) {
         if (!taskRepository.existsById(id)) {
             throw new RuntimeException("Task with id " + id + " does not exist");
         }
@@ -36,7 +36,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Boolean deleteById(Long id) {
+    public Boolean deleteTaskById(Long id) {
         if (!taskRepository.existsById(id)) {
             return false;
         }

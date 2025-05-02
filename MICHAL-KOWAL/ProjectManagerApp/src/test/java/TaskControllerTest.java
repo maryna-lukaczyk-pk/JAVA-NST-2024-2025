@@ -68,31 +68,31 @@ public class TaskControllerTest {
         task2.setId(1L);
         task2.setTitle("Task 1 - Updated");
 
-        when(taskService.updateById(1L, task2)).thenReturn(task2);
+        when(taskService.updateTaskById(1L, task2)).thenReturn(task2);
 
         var task1UpdateResult = taskController.updateTask(1L, task2);
 
         assertEquals(task2, task1UpdateResult.getBody());
         assertEquals(HttpStatus.OK, task1UpdateResult.getStatusCode());
-        verify(taskService, times(1)).updateById(1L, task2);
+        verify(taskService, times(1)).updateTaskById(1L, task2);
     }
 
     @Test
     @DisplayName("Should delete a chosen task")
     void testDeleteTask() {
-        when(taskService.deleteById(1L)).thenReturn(true);
+        when(taskService.deleteTaskById(1L)).thenReturn(true);
 
         var deleteResult = taskController.deleteTask(1L);
 
         assertEquals(HttpStatus.OK, deleteResult.getStatusCode());
 
-        when(taskService.deleteById(1L)).thenReturn(false);
+        when(taskService.deleteTaskById(1L)).thenReturn(false);
 
         deleteResult = taskController.deleteTask(1L);
 
         assertEquals(HttpStatus.BAD_REQUEST, deleteResult.getStatusCode());
 
-        verify(taskService, times(2)).deleteById(1L);
+        verify(taskService, times(2)).deleteTaskById(1L);
     }
 
     @Test
