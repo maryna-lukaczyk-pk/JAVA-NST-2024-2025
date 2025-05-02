@@ -23,11 +23,11 @@ public class ProjectController {
 
     @GetMapping("/all")
     @Operation(summary = "Get all projects", description = "Gets all projects")
-    List<Project> all() { return projectService.getAllProjects(); }
+    public List<Project> all() { return projectService.getAllProjects(); }
 
     @PostMapping("/")
     @Operation(summary = "Create project", description = "Creates a new project")
-    Project newProject(@RequestBody Project newProject)
+    public Project newProject(@RequestBody Project newProject)
     {
         return projectService.createProject(newProject);
     }
@@ -35,7 +35,7 @@ public class ProjectController {
     @PutMapping("/update/{id}")
     @Operation(summary = "Update project", description = "Updates project by id")
     @Parameter(name =  "id", description  = "id of the project to update", required = true)
-    ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project newProject)
+    public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project newProject)
     {
         Project updatedProject;
         try {
@@ -51,7 +51,7 @@ public class ProjectController {
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "Delete project", description = "Deletes project by id")
     @Parameter(name = "id", description  = "id of the project to delete", required = true)
-    ResponseEntity<Void> deleteProject(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
         if (!projectService.deleteById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -62,7 +62,7 @@ public class ProjectController {
     @GetMapping("/{id}")
     @Operation(summary = "Get project", description = "Gets a project by id")
     @Parameter(name = "id", description  = "id of the project", required = true)
-    ResponseEntity<Project> getProjectById(@PathVariable Long id) {
+    public ResponseEntity<Project> getProjectById(@PathVariable Long id) {
         Project project;
         try {
             project = projectService.getProjectById(id);

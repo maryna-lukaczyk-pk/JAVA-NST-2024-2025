@@ -23,13 +23,13 @@ public class UserController {
 
     @GetMapping("/all")
     @Operation(summary = "Get all users", description = "Gets all users")
-    List<User> all() {
+    public List<User> all() {
         return userService.getAllUsers();
     }
 
     @PostMapping("/")
     @Operation(summary = "Create user", description = "Creates a new user")
-    User newUser(@RequestBody User newUser)
+    public User newUser(@RequestBody User newUser)
     {
         return userService.createUser(newUser);
     }
@@ -37,7 +37,7 @@ public class UserController {
     @PutMapping("/update/{id}")
     @Operation(summary = "Update user", description = "Updates a user by id")
     @Parameter(name = "id", description  = "id of the user to be updated", required = true)
-    ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User newUser)
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User newUser)
     {
         User updatedUser;
         try {
@@ -53,7 +53,7 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "Delete user", description = "Deletes a user by id")
     @Parameter(name = "id", description  = "id of the user to delete", required = true)
-    ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (!userService.deleteById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -64,7 +64,7 @@ public class UserController {
     @GetMapping("/{id}")
     @Operation(summary = "Get user", description = "Gets a user by id")
     @Parameter(name = "id", description  = "id of the user", required = true)
-    ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
         User user;
         try {
             user = userService.getUserById(id);

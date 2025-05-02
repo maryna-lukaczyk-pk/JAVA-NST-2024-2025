@@ -23,13 +23,13 @@ public class TaskController {
 
     @GetMapping("/all")
     @Operation(summary = "Get all tasks", description = "Gets all tasks")
-    List<Task> all() {
+    public List<Task> all() {
         return taskService.getAllTasks();
     }
 
     @PostMapping("/")
     @Operation(summary = "Create task", description = "Creates a new task")
-    Task newTask(@RequestBody Task newTask)
+    public Task newTask(@RequestBody Task newTask)
     {
         return taskService.createTask(newTask);
     }
@@ -37,7 +37,7 @@ public class TaskController {
     @PutMapping("/update/{id}")
     @Operation(summary = "Update task", description = "Updates a task by id")
     @Parameter(name = "id", description  = "id of the task to be updated", required = true)
-    ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task newTask)
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task newTask)
     {
         Task updatedTask;
         try {
@@ -53,7 +53,7 @@ public class TaskController {
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "Delete task", description = "Deletes a task by id")
     @Parameter(name = "id", description  = "id of the task to delete", required = true)
-    ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         if (!taskService.deleteById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -64,7 +64,7 @@ public class TaskController {
     @GetMapping("/{id}")
     @Operation(summary = "Get task", description = "Gets a task by id")
     @Parameter(name = "id", description  = "id of the task", required = true)
-    ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
         Task task;
         try {
             task = taskService.getTaskById(id);
