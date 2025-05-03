@@ -1,7 +1,7 @@
 package org.example.projectmanager.controller;
 
 import org.example.projectmanager.entity.Tasks;
-import org.example.projectmanager.repository.TasksRepository;
+//import org.example.projectmanager.repository.TasksRepository;
 import org.example.projectmanager.service.TasksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 
 public class TasksController {
     @Autowired
-    private TasksRepository tasksRepository;
+    //private TasksRepository tasksRepository;
     private TasksService tasksService;
 
     public TasksController(TasksService tasksService) {
@@ -32,7 +32,7 @@ public class TasksController {
             @Parameter(name = "opis",description = "Optional description filter",required = false)
             @RequestParam(required = false) String opis
     ) {
-        return tasksRepository.findAll();
+        return tasksService.getAllTasks();
     }
 
     @PostMapping
@@ -41,7 +41,7 @@ public class TasksController {
             @Parameter(description = "Task object that needs to be created",required = true)
             @RequestBody Tasks task
     ) {
-        return tasksRepository.save(task);
+        return tasksService.createTask(task);
     }
 
     @PutMapping("/{id}")

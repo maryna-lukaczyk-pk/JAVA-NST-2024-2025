@@ -1,7 +1,7 @@
 package org.example.projectmanager.controller;
 
 import org.example.projectmanager.entity.Users;
-import org.example.projectmanager.repository.UsersRepository;
+//import org.example.projectmanager.repository.UsersRepository;
 import org.example.projectmanager.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 
 public class UsersController {
     @Autowired
-    private UsersRepository usersRepository;
+    //private UsersRepository usersRepository;
     private final UsersService usersService;
 
     public UsersController(UsersService usersService) {
