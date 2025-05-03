@@ -28,7 +28,6 @@ public class Controller {
         this.projectService = projectService;
     }
 
-    // Get all projects
     @GetMapping
     @Operation(
             summary = "Find all projects",
@@ -75,7 +74,6 @@ public class Controller {
         return new ResponseEntity<>(projectService.updateProject(id, projectDetails), HttpStatus.CREATED);
     }
 
-    // Delete a project
     @DeleteMapping("/{id}")
     @Operation(
             summary = "Delete a project",

@@ -36,7 +36,7 @@ public class ProjectService {
                     project.setName(projectDetails.getName());
                     return projectRepository.save(project);
                 })
-                .orElseThrow(() -> new NoSuchElementException("Project not found with id: " + id));  // Rzucenie wyjątku, jeśli projekt nie istnieje
+                .orElseThrow(() -> new NoSuchElementException("Project not found with id: " + id));
     }
     public void deleteProject(Long id) {
         if (projectRepository.existsById(id)) {

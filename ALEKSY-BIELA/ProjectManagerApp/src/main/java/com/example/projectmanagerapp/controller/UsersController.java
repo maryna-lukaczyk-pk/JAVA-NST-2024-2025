@@ -27,7 +27,6 @@ public class UsersController {
         this.userService = userService;
     }
 
-    // Get user by id
     @GetMapping("/{id}")
     @Operation(
             summary = "Find user by ID",
@@ -43,7 +42,6 @@ public class UsersController {
         }
     }
 
-    // Create a new user
     @PostMapping
     @Operation(
             summary = "Create a new user",

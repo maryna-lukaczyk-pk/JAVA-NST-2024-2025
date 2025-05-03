@@ -18,33 +18,27 @@ public class TaskService {
         this.tasksRepository = tasksRepository;
     }
 
-    // Pobieranie zadania na podstawie ID
     public Tasks getTaskById(Long id) {
         Optional<Tasks> task = tasksRepository.findById(id);
         return task.orElseThrow(() -> new NoSuchElementException("Task not found with id: " + id));
     }
 
-    // Tworzenie zadania
     public Tasks createTask(Tasks task) {
-        // Generowanie priorytetu przed zapisaniem
         task.generatePriority();
         return tasksRepository.save(task);
     }
 
-    // Aktualizacja zadania na podstawie ID
     public Tasks updateTask(Long id, Tasks taskDetails) {
         return tasksRepository.findById(id)
                 .map(task -> {
                     task.setTitle(taskDetails.getTitle());
                     task.setDescription(taskDetails.getDescription());
-                    task.setTask_type(taskDetails.getTask_type()); // Dodanie aktualizacji priorytetu
-                    // Można tu dodać logikę dla innych pól, jeśli będą dostępne
+                    task.setTask_type(taskDetails.getTask_type());
                     return tasksRepository.save(task);
                 })
                 .orElseThrow(() -> new NoSuchElementException("Task not found with id: " + id));
     }
 
-    // Usuwanie zadania
     public void deleteTask(Long id) {
         if (tasksRepository.existsById(id)) {
             tasksRepository.deleteById(id);
