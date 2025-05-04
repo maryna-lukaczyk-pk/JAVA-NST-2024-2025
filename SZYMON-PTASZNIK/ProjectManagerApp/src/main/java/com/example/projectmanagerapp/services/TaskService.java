@@ -19,7 +19,7 @@ public class TaskService {
 
     public Task updateTask(long taskId, Task updatedTask) {
         Task existingTask = taskRepository.findById(taskId).orElseThrow(()->new RuntimeException("Task not found"));
-        existingTask.setProjectId(updatedTask.getProjectId());
+        existingTask.setProject(updatedTask.getProject());
         existingTask.setDescription(updatedTask.getDescription());
         existingTask.setTaskType(updatedTask.getTaskType());
         existingTask.setTitle(updatedTask.getTitle());
