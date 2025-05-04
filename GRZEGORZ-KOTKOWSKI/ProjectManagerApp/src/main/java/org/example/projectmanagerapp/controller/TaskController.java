@@ -32,4 +32,34 @@ public class TaskController {
             @RequestBody Tasks task) {
         return taskService.createTask(task);
     }
+
+    // ========================
+// Metoda PUT (aktualizacja)
+// ========================
+    @PutMapping("/{id}")
+    @Operation(
+            summary = "Update existing task",
+            description = "Updates an existing task by its ID"
+    )
+    public Tasks updateTask(
+            @Parameter(description = "ID of the task to be updated", required = true)
+            @PathVariable Long id,
+            @Parameter(description = "Updated task data", required = true)
+            @RequestBody Tasks updatedTask) {
+        return taskService.updateTask(id, updatedTask);
+    }
+
+    // ==========================
+// Metoda DELETE (usuwanie)
+// ==========================
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete a task by ID",
+            description = "Deletes the task with the specified ID"
+    )
+    public void deleteTask(
+            @Parameter(description = "ID of the task to be deleted", required = true)
+            @PathVariable Long id) {
+        taskService.deleteTask(id);
+    }
 }

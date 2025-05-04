@@ -32,4 +32,34 @@ public class UserController {
             @RequestBody Users user) {
         return userService.createUser(user);
     }
+
+    // ========================
+// Metoda PUT (aktualizacja)
+// ========================
+    @PutMapping("/{id}")
+    @Operation(
+            summary = "Update existing user",
+            description = "Updates an existing user by its ID"
+    )
+    public Users updateUser(
+            @Parameter(description = "ID of the user to be updated", required = true)
+            @PathVariable Long id,
+            @Parameter(description = "Updated user data", required = true)
+            @RequestBody Users updatedUser) {
+        return userService.updateUser(id, updatedUser);
+    }
+
+    // ==========================
+// Metoda DELETE (usuwanie)
+// ==========================
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete a user by ID",
+            description = "Deletes the user with the specified ID"
+    )
+    public void deleteUser(
+            @Parameter(description = "ID of the user to be deleted", required = true)
+            @PathVariable Long id) {
+        userService.deleteUser(id);
+    }
 }

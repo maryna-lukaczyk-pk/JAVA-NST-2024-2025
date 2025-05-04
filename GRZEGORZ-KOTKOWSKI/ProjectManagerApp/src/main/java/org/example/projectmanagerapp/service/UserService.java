@@ -21,4 +21,29 @@ public class UserService {
     public Users createUser(Users user) {
         return userRepository.save(user);
     }
+
+    // --------------------------
+// Metoda do aktualizacji
+// --------------------------
+    public Users updateUser(Long id, Users updatedUser) {
+        Users existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(
+                        "User with id " + id + " not found."));
+
+        existingUser.setUsername(updatedUser.getUsername());
+        // W razie potrzeby można ustawiać także np. existingUser.setProjects(...)
+
+        return userRepository.save(existingUser);
+    }
+
+    // --------------------------
+// Metoda do usuwania
+// --------------------------
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException(
+                    "User with id " + id + " does not exist.");
+        }
+        userRepository.deleteById(id);
+    }
 }
