@@ -14,39 +14,28 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+    public Project getProjectById(Long id) {
+        return projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project with ID " + id + " not found."));
     }
 
-    public Project createProject(Project project) {
-        return projectRepository.save(project);
-    }
-
-    // --------------------------
-// Metoda do aktualizacji
-// --------------------------
-    public Project updateProject(Long id, Project newProject) {
-        // Wyszukujemy projekt po ID lub rzucamy wyjątek
+    public Project updateProject(Long id, Project newProjectData) {
         Project existingProject = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Project with id " + id + " not found."));
+                .orElseThrow(() -> new RuntimeException("Project with ID " + id + " not found."));
 
-        // Ustawiamy nowe pola
-        existingProject.setName(newProject.getName());
-        // Jeśli zachodzi potrzeba, można ustawiać pozostałe pola
-        // existingProject.setUsers(newProject.getUsers()); – w zależności od wymagań
+        existingProject.setName(newProjectData.getName());
 
         return projectRepository.save(existingProject);
     }
 
-    // --------------------------
-// Metoda do usuwania
-// --------------------------
     public void deleteProject(Long id) {
         if (!projectRepository.existsById(id)) {
-            throw new RuntimeException(
-                    "Project with id " + id + " does not exist.");
+            throw new RuntimeException("Project with ID " + id + " does not exist.");
         }
         projectRepository.deleteById(id);
+    }
+
+    public Project createProject(Project project) {
+        return projectRepository.save(project);
     }
 }

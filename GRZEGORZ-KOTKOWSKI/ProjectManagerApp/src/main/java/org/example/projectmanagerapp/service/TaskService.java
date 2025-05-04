@@ -14,39 +14,32 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public List<Tasks> getAllTasks() {
-        return taskRepository.findAll();
+    public Tasks getTaskById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task with ID " + id + " not found."));
     }
 
-    public Tasks createTask(Tasks task) {
-        return taskRepository.save(task);
-    }
-
-    // --------------------------
-// Metoda do aktualizacji
-// --------------------------
-    public Tasks updateTask(Long id, Tasks updatedTask) {
+    public Tasks updateTask(Long id, Tasks updatedTaskData) {
         Tasks existingTask = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Task with id " + id + " not found."));
+                .orElseThrow(() -> new RuntimeException("Task with ID " + id + " not found."));
 
-        existingTask.setTitle(updatedTask.getTitle());
-        existingTask.setDescription(updatedTask.getDescription());
-        existingTask.setTaskType(updatedTask.getTaskType());
-        existingTask.setProject(updatedTask.getProject());
-        existingTask.setPriorityLevel(updatedTask.getPriorityLevel());
+        existingTask.setTitle(updatedTaskData.getTitle());
+        existingTask.setDescription(updatedTaskData.getDescription());
+        existingTask.setTaskType(updatedTaskData.getTaskType());
+        existingTask.setProject(updatedTaskData.getProject());
+        existingTask.setPriorityLevel(updatedTaskData.getPriorityLevel());
 
         return taskRepository.save(existingTask);
     }
 
-    // --------------------------
-// Metoda do usuwania
-// --------------------------
     public void deleteTask(Long id) {
         if (!taskRepository.existsById(id)) {
-            throw new RuntimeException(
-                    "Task with id " + id + " does not exist.");
+            throw new RuntimeException("Task with ID " + id + " does not exist.");
         }
         taskRepository.deleteById(id);
+    }
+
+    public Tasks createTask(Tasks task) {
+        return taskRepository.save(task);
     }
 }

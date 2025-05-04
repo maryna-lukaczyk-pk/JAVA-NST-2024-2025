@@ -19,28 +19,16 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping
-    @Operation(summary = "Get all projects")
-    public List<Project> getAllProjects() {
-        return projectService.getAllProjects();
+    @GetMapping("/{id}")
+    @Operation(summary = "Get project by ID", description = "Retrieve a project by its ID")
+    public Project getProjectById(
+            @Parameter(description = "ID of the project to be retrieved", required = true)
+            @PathVariable Long id) {
+        return projectService.getProjectById(id);
     }
 
-    @PostMapping
-    @Operation(summary = "Create a new project")
-    public Project createProject(
-            @Parameter(description = "Project to be created", required = true)
-            @RequestBody Project project) {
-        return projectService.createProject(project);
-    }
-
-    // ========================
-// Metoda PUT (aktualizacja)
-// ========================
     @PutMapping("/{id}")
-    @Operation(
-            summary = "Update existing project",
-            description = "Updates an existing project by its ID"
-    )
+    @Operation(summary = "Update existing project", description = "Updates an existing project by its ID")
     public Project updateProject(
             @Parameter(description = "ID of the project to be updated", required = true)
             @PathVariable Long id,
@@ -49,17 +37,19 @@ public class ProjectController {
         return projectService.updateProject(id, updatedProject);
     }
 
-    // ==========================
-// Metoda DELETE (usuwanie)
-// ==========================
     @DeleteMapping("/{id}")
-    @Operation(
-            summary = "Delete a project by ID",
-            description = "Deletes the project with the specified ID"
-    )
+    @Operation(summary = "Delete project by ID", description = "Deletes the project with the specified ID")
     public void deleteProject(
             @Parameter(description = "ID of the project to be deleted", required = true)
             @PathVariable Long id) {
         projectService.deleteProject(id);
+    }
+
+    @PostMapping
+    @Operation(summary = "Create a new project", description = "Creates a new project in the database")
+    public Project createProject(
+            @Parameter(description = "Project to be created", required = true)
+            @RequestBody Project project) {
+        return projectService.createProject(project);
     }
 }

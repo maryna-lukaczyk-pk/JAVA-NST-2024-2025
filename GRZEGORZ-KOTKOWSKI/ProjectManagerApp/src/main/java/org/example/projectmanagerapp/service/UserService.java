@@ -14,36 +14,28 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<Users> getAllUsers() {
-        return userRepository.findAll();
+    public Users getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User with ID " + id + " not found."));
     }
 
-    public Users createUser(Users user) {
-        return userRepository.save(user);
-    }
-
-    // --------------------------
-// Metoda do aktualizacji
-// --------------------------
-    public Users updateUser(Long id, Users updatedUser) {
+    public Users updateUser(Long id, Users updatedUserData) {
         Users existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "User with id " + id + " not found."));
+                .orElseThrow(() -> new RuntimeException("User with ID " + id + " not found."));
 
-        existingUser.setUsername(updatedUser.getUsername());
-        // W razie potrzeby można ustawiać także np. existingUser.setProjects(...)
+        existingUser.setUsername(updatedUserData.getUsername());
 
         return userRepository.save(existingUser);
     }
 
-    // --------------------------
-// Metoda do usuwania
-// --------------------------
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new RuntimeException(
-                    "User with id " + id + " does not exist.");
+            throw new RuntimeException("User with ID " + id + " does not exist.");
         }
         userRepository.deleteById(id);
+    }
+
+    public Users createUser(Users user) {
+        return userRepository.save(user);
     }
 }

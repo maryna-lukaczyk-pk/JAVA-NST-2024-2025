@@ -19,28 +19,16 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping
-    @Operation(summary = "Get all tasks")
-    public List<Tasks> getAllTasks() {
-        return taskService.getAllTasks();
+    @GetMapping("/{id}")
+    @Operation(summary = "Get task by ID", description = "Retrieve a task by its ID")
+    public Tasks getTaskById(
+            @Parameter(description = "ID of the task to be retrieved", required = true)
+            @PathVariable Long id) {
+        return taskService.getTaskById(id);
     }
 
-    @PostMapping
-    @Operation(summary = "Create a new task")
-    public Tasks createTask(
-            @Parameter(description = "Task to be created", required = true)
-            @RequestBody Tasks task) {
-        return taskService.createTask(task);
-    }
-
-    // ========================
-// Metoda PUT (aktualizacja)
-// ========================
     @PutMapping("/{id}")
-    @Operation(
-            summary = "Update existing task",
-            description = "Updates an existing task by its ID"
-    )
+    @Operation(summary = "Update existing task", description = "Updates an existing task by its ID")
     public Tasks updateTask(
             @Parameter(description = "ID of the task to be updated", required = true)
             @PathVariable Long id,
@@ -49,17 +37,19 @@ public class TaskController {
         return taskService.updateTask(id, updatedTask);
     }
 
-    // ==========================
-// Metoda DELETE (usuwanie)
-// ==========================
     @DeleteMapping("/{id}")
-    @Operation(
-            summary = "Delete a task by ID",
-            description = "Deletes the task with the specified ID"
-    )
+    @Operation(summary = "Delete task by ID", description = "Deletes the task with the specified ID")
     public void deleteTask(
             @Parameter(description = "ID of the task to be deleted", required = true)
             @PathVariable Long id) {
         taskService.deleteTask(id);
+    }
+
+    @PostMapping
+    @Operation(summary = "Create a new task", description = "Creates a new task in the database")
+    public Tasks createTask(
+            @Parameter(description = "Task to be created", required = true)
+            @RequestBody Tasks task) {
+        return taskService.createTask(task);
     }
 }
