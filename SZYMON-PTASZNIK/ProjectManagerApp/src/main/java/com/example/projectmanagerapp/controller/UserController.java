@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("users/{id}")
-    @Operation(summary = "Get task by ID", description = "Returns task details by ID")
+    @Operation(summary = "Get user by ID", description = "Returns user details by ID")
     public User getUserById(@PathVariable Long id) {return userService.getUserById(id);}
 
     @PostMapping("/users")

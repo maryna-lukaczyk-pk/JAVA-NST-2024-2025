@@ -31,7 +31,7 @@ public class ProjectController {
     }
 
     @GetMapping("projects/{id}")
-    @Operation(summary = "Get task by ID", description = "Returns task details by ID")
+    @Operation(summary = "Get project by ID", description = "Returns project details by ID")
     public Project getProjectById(@PathVariable Long id) {return projectService.getProjectById(id);}
 
     @PostMapping("/projects")
