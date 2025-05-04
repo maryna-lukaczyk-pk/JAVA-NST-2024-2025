@@ -56,6 +56,7 @@ class ProjectServiceTest {
 
         Project result = projectService.createProject(project);
 
+
         assertNotNull(result);
         assertEquals("NewProject", result.getName());
         verify(projectRepository, times(1)).save(project);
