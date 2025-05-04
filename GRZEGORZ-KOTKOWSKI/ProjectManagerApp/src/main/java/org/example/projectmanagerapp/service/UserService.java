@@ -38,4 +38,8 @@ public class UserService {
     public Users createUser(Users user) {
         return userRepository.save(user);
     }
+
+    public List<Users> getAllUsers() {
+        return userRepository.findAll();
+    }
 }

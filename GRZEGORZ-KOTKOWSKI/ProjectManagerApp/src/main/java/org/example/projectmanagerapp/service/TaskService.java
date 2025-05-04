@@ -39,6 +39,10 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
+    public List<Tasks> getAllTasks() {
+        return taskRepository.findAll();
+    }
+
     public Tasks createTask(Tasks task) {
         return taskRepository.save(task);
     }
