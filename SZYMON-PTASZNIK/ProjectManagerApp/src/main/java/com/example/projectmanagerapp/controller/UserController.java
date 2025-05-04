@@ -30,6 +30,10 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("users/{id}")
+    @Operation(summary = "Get task by ID", description = "Returns task details by ID")
+    public User getUserById(@PathVariable Long id) {return userService.getUserById(id);}
+
     @PostMapping("/users")
     @Operation(summary = "Add new user", description = "Creates new user")
     public User createUser(@RequestBody User user) {

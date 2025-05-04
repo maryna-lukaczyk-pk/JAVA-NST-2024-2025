@@ -25,4 +25,8 @@ public class TaskService {
         existingTask.setTitle(updatedTask.getTitle());
         return taskRepository.save(existingTask);
     }
+
+    public Task getTaskById(long taskId) {
+        return taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task not found"));
+    }
 }

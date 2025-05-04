@@ -30,4 +30,8 @@ public class UserService {
         existingUser.setUsername(updatedUser.getUsername());
         return userRepository.save(existingUser);
     }
+
+    public User getUserById(long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Task not found"));
+    }
 }

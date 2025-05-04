@@ -29,6 +29,10 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
+    @GetMapping("tasks/{id}")
+    @Operation(summary = "Get task by ID", description = "Returns task details by ID")
+    public Task getTaskById(@PathVariable Long id) {return taskService.getTaskById(id);}
+
     @PostMapping("/tasks")
     @Operation(summary="Add new task", description="Cretes new task")
     public Task saveTask(@RequestBody Task task) {return taskService.createTask(task);

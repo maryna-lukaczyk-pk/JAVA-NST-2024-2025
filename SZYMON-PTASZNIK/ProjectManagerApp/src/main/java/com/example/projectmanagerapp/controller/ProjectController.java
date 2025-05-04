@@ -30,6 +30,10 @@ public class ProjectController {
         return projectService.getAllProjects();
     }
 
+    @GetMapping("projects/{id}")
+    @Operation(summary = "Get task by ID", description = "Returns task details by ID")
+    public Project getProjectById(@PathVariable Long id) {return projectService.getProjectById(id);}
+
     @PostMapping("/projects")
     @Operation(summary="Add new project", description="Creates new project")
     public Project createProject(@RequestBody Project project) {return projectService.createProject(project);
