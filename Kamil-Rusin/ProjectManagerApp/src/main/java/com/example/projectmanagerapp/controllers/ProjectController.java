@@ -2,12 +2,16 @@ package com.example.projectmanagerapp.controllers;
 
 import com.example.projectmanagerapp.entity.Project;
 import com.example.projectmanagerapp.repository.ProjectRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name = "Projects", description = "Operations to manage projects")
 @RestController
 @RequestMapping("api/projects")
 public class ProjectController {
@@ -18,16 +22,21 @@ public class ProjectController {
         this.projectRepository = projectRepository;
     }
 
+    @Operation(summary = "Retrieve all projects")
     @GetMapping("/all")
     public List<Project> getAll() {
         return projectRepository.findAll();
     }
 
+    @Operation(summary = "Retrieve project by Id")
     @GetMapping("/{id}")
-    public Optional<Project> getProjectById(@PathVariable("id") Long id) {
+    public Optional<Project> getProjectById(
+            @Parameter(description = "Id of the project to retrieve", example = "5")
+            @PathVariable("id") Long id) {
         return projectRepository.findById(id);
     }
 
+    @Operation(summary = "Save project to database")
     @PostMapping
     public Project createProject(@RequestBody Project project) {
         projectRepository.save(project);
