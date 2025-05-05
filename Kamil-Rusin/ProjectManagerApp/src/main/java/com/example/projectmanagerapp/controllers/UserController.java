@@ -2,6 +2,7 @@ package com.example.projectmanagerapp.controllers;
 
 import com.example.projectmanagerapp.entity.User;
 import com.example.projectmanagerapp.repository.UserRepository;
+import com.example.projectmanagerapp.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,17 +16,17 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/users")
 public class UserController {
-    public final UserRepository userRepository;
+    public final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @Operation(summary = "Retrieve all users")
     @GetMapping("/all")
     public List<User> getAll() {
-        return userRepository.findAll();
+        return userService.getAll();
     }
 
     @Operation(summary = "Retrieve user by Id")
@@ -33,14 +34,13 @@ public class UserController {
     public Optional<User> getUserById(
             @Parameter(description = "Id of the user to retrieve", example = "5")
             @PathVariable("id") Long id) {
-        return userRepository.findById(id);
+        return userService.getUserById(id);
     }
 
     @Operation(summary = "Save user to database")
     @PostMapping
     public User createUser(@RequestBody User user) {
-        userRepository.save(user);
-        return user;
+        return userService.createUser(user);
     }
 
 

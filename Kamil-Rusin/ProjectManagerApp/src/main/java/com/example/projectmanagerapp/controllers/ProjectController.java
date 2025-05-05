@@ -2,6 +2,7 @@ package com.example.projectmanagerapp.controllers;
 
 import com.example.projectmanagerapp.entity.Project;
 import com.example.projectmanagerapp.repository.ProjectRepository;
+import com.example.projectmanagerapp.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,17 +16,17 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/projects")
 public class ProjectController {
-    public final ProjectRepository projectRepository;
+    public final ProjectService projectService;
 
     @Autowired
-    public ProjectController(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     @Operation(summary = "Retrieve all projects")
     @GetMapping("/all")
     public List<Project> getAll() {
-        return projectRepository.findAll();
+        return projectService.getAll();
     }
 
     @Operation(summary = "Retrieve project by Id")
@@ -33,13 +34,14 @@ public class ProjectController {
     public Optional<Project> getProjectById(
             @Parameter(description = "Id of the project to retrieve", example = "5")
             @PathVariable("id") Long id) {
-        return projectRepository.findById(id);
+        return projectService.getProjectById(id);
     }
 
     @Operation(summary = "Save project to database")
     @PostMapping
     public Project createProject(@RequestBody Project project) {
-        projectRepository.save(project);
-        return project;
+        return projectService.createProject(project);
     }
 }
+
+
