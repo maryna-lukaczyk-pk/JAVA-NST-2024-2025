@@ -13,7 +13,7 @@ import java.util.Optional;
 @Tag(name="Task Controller", description="Tasks management")
 public class TaskController {
 
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     public TaskController(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
