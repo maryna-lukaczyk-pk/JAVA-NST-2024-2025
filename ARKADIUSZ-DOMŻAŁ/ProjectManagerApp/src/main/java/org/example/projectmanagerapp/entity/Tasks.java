@@ -1,4 +1,5 @@
 package org.example.projectmanagerapp.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class Tasks {
 
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @JsonIgnore
     private Projects project;
 
     public enum TaskType {

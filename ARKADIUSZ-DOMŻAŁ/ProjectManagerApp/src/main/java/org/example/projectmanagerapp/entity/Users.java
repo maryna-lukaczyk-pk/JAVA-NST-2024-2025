@@ -1,4 +1,5 @@
 package org.example.projectmanagerapp.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,6 @@ public class Users {
     private String username;
 
     @ManyToMany(mappedBy= "users")
+    @JsonIgnore // zeby uniknać rekurencji w swaggerze
     private List<Projects> projects;
 }

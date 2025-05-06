@@ -1,4 +1,5 @@
 package org.example.projectmanagerapp.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 public class Projects {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String name;
 
     @ManyToMany
@@ -25,6 +26,7 @@ public class Projects {
     private List<Users> users;
 
     @OneToMany(mappedBy = "project")
+    @JsonIgnore
     private List<Tasks> tasks;
 
 }

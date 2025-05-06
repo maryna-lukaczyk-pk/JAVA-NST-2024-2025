@@ -34,4 +34,45 @@ public class UsersController {
         Users createdUser = userService.createUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+
+    @Operation(summary = "Update the User", description = "Updates an existing User by Id")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateUser(
+            @Parameter(description = "The ID of the User to update", required = true)
+            @PathVariable Long id,
+            @Parameter(description = "Updated User object", required = true)
+            @RequestBody Users updatedUser) {
+
+        return userService.updateUser(id, updatedUser)
+                .map(updated -> ResponseEntity.ok("User updated successfully"))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("User with id: " + id + " not found"));
+    }
+
+    @Operation(summary = "Delete a User", description = "Deletes a User by Id")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteUser(
+            @Parameter(description = "ID of the User to delete", required = true)
+            @PathVariable Long id) {
+
+        boolean deleted = userService.deleteUser(id);
+        if (deleted) {
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //Wyszukanie uzytkownika po ID
+    @Operation(summary = "Get a User by ID", description = "Returns a single User by their ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<String> getUserById(
+            @Parameter(description = "The ID of the User to retrieve", required = true)
+            @PathVariable Long id) {
+
+        return userService.getUserById(id)
+                .map(user -> ResponseEntity.ok("User found: " + user.getUsername()))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("User with id: " + id + " not found"));
+    }
 }

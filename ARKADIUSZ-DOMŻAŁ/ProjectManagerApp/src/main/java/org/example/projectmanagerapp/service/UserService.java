@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.example.projectmanagerapp.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -19,5 +20,24 @@ public class UserService {
 
     public Users createUser(Users user){
         return userRepository.save(user);
+    }
+
+    public Optional<Users> updateUser(Long id, Users updatedUser) {
+        return userRepository.findById(id).map(user -> {
+            user.setUsername(updatedUser.getUsername());
+            return userRepository.save(user);
+        });
+    }
+
+    public boolean deleteUser(Long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public Optional<Users> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 }
