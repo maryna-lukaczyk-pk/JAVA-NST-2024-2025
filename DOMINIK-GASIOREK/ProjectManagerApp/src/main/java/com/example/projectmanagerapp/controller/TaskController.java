@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -37,5 +38,22 @@ public class TaskController {
     @PostMapping("/create-task")
     public Task create(@RequestBody Task newTask) {
         return taskService.create(newTask);
+    }
+
+    @Operation(summary="Updates existing task", description="Updates a task with the given id")
+    @PutMapping("/update-task/{id}")
+    public Optional<Task> update(
+            @Parameter(description = "Task id") @PathVariable Long id,
+            @RequestBody Task updatedTask
+    ) {
+        return taskService.update(id, updatedTask);
+    }
+
+    @Operation(summary="Deletes task by id", description="Deletes the task with the given id")
+    @DeleteMapping("/delete-task/{id}")
+    public void delete(
+            @Parameter(description = "Task id") @PathVariable Long id
+    ) {
+        taskService.delete(id);
     }
 }

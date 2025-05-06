@@ -38,4 +38,21 @@ public class ProjectController {
     public Project create(@RequestBody Project newProject) {
         return projectService.create(newProject);
     }
+
+    @Operation(summary="Updates existing project", description="Updates a project with the given id")
+    @PutMapping("/update-project/{id}")
+    public Optional<Project> update(
+            @Parameter(description = "Project id") @PathVariable Long id,
+            @RequestBody Project updatedProject
+    ) {
+        return projectService.update(id, updatedProject);
+    }
+
+    @Operation(summary="Deletes project by id", description="Deletes the project with the given id")
+    @DeleteMapping("/delete-project/{id}")
+    public void delete(
+            @Parameter(description = "Project id") @PathVariable Long id
+    ) {
+        projectService.delete(id);
+    }
 }
