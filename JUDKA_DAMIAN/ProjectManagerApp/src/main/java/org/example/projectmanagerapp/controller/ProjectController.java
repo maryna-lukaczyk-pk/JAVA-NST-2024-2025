@@ -1,5 +1,10 @@
 package org.example.projectmanagerapp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.example.projectmanagerapp.schemes.ProjectDTO;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.springframework.http.HttpStatus;
@@ -14,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
+@Tag(name = "Projects", description = "Operations for managing projects")
 public class ProjectController {
     private final ProjectRepository projectRepository;
 
@@ -22,10 +28,15 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> createProject(@RequestBody Project project) {
-        Project savedProject = projectRepository.save(project);
-
+    @Operation(summary = "Create a new project",
+            description = "Create a new project in database")
+    public ResponseEntity<Map<String, String>> createProject(@RequestBody ProjectDTO projectDTO) {
         Map<String, String> response = new HashMap<>();
+
+        Project project = new Project();
+        project.setName(projectDTO.getName());
+
+        Project savedProject = projectRepository.save(project);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(savedProject.getId()).toUri();
@@ -35,11 +46,16 @@ public class ProjectController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all projects",
+            description = "Get a list of all projects from the database")
     public List<Project> getProjects() {
         return projectRepository.findAll();
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a project",
+            description = "Delete a project by ID from database")
+    @Parameter(in = ParameterIn.PATH, name = "id", description = "Project ID")
     public ResponseEntity<Map<String, String>> deleteProject(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
         if(projectRepository.existsById(id)) {
@@ -53,17 +69,21 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, String>> updateProject(@RequestBody Project project, @PathVariable Integer id) {
+    @Operation(summary = "Update a project",
+            description = "Update project attributes by ID")
+    @Parameter(in = ParameterIn.PATH, name = "id", description = "Project ID")
+    public ResponseEntity<Map<String, String>> updateProject(@RequestBody ProjectDTO projectDTO, @PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
         if(projectRepository.existsById(id)) {
+            Project project = new Project();
             project.setId(id);
+            project.setName(projectDTO.getName());
             projectRepository.save(project);
-            Map<String, String> response = new HashMap<>();
             response.put("success", "Project updated");
             return ResponseEntity.ok(response);
         } else {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Project not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            response.put("error", "Project not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 }
