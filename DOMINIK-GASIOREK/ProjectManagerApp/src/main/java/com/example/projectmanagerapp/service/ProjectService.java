@@ -26,4 +26,15 @@ public class ProjectService {
     public Project create(Project newProject) {
         return projectRepository.save(newProject);
     }
+
+    public Optional<Project> update(Long id, Project updatedProject) {
+        return projectRepository.findById(id).map(project -> {
+            project.setName(updatedProject.getName());
+            return projectRepository.save(project);
+        });
+    }
+
+    public void delete(Long id) {
+        projectRepository.deleteById(id);
+    }
 }
