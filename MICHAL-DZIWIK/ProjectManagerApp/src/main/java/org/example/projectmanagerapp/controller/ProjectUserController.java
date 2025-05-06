@@ -35,6 +35,17 @@ public class ProjectUserController {
         return projectUserService.createProjectUser(projectUser);
     }
 
+    // Pobranie project-user po ID
+    @GetMapping("/{id}")
+    @Operation(summary = "Get project-user by ID", description = "Returns a project-user relationship by its ID.")
+    public ProjectUser getProjectUserById(
+            @Parameter(description = "ID of the project-user relationship to be retrieved")
+            @PathVariable Long id
+    ) {
+        return projectUserService.getProjectUserById(id);
+    }
+
+    // Aktualizacja project-user po ID
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing project-user relationship", description = "Updates an existing project-user relationship by its ID.")
     public ProjectUser updateProjectUser(
@@ -46,6 +57,7 @@ public class ProjectUserController {
         return projectUserService.updateProjectUser(id, projectUser);
     }
 
+    // Usuwanie project-user po ID
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a project-user relationship", description = "Deletes a project-user relationship by its ID.")
     public void deleteProjectUser(

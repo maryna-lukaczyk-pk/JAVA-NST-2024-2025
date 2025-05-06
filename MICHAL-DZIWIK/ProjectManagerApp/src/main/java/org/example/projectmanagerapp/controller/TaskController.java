@@ -28,30 +28,25 @@ public class TaskController {
 
     @PostMapping
     @Operation(summary = "Create a new task", description = "Adds a new task to the database.")
-    public Task createTask(
-            @Parameter(description = "Task object to be created")
-            @RequestBody Task task
-    ) {
+    public Task createTask(@Parameter(description = "Task object to be created") @RequestBody Task task) {
         return taskService.createTask(task);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get task by ID", description = "Returns a task by its ID.")
+    public Task getTaskById(@PathVariable Long id) {
+        return taskService.getTaskById(id);
+    }
+
     @PutMapping("/{id}")
-    @Operation(summary = "Update an existing task", description = "Updates an existing task by its ID.")
-    public Task updateTask(
-            @Parameter(description = "ID of the task to be updated")
-            @PathVariable Long id,
-            @Parameter(description = "Updated task object")
-            @RequestBody Task task
-    ) {
+    @Operation(summary = "Update task", description = "Updates an existing task by its ID.")
+    public Task updateTask(@PathVariable Long id, @RequestBody Task task) {
         return taskService.updateTask(id, task);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a task", description = "Deletes a task by its ID.")
-    public void deleteTask(
-            @Parameter(description = "ID of the task to be deleted")
-            @PathVariable Long id
-    ) {
+    @Operation(summary = "Delete task", description = "Deletes a task by its ID.")
+    public void deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
     }
 }

@@ -24,17 +24,20 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Project updateProject(Long id, Project project) {
+    public Project getProjectById(Long id) {
+        Optional<Project> project = projectRepository.findById(id);
+        return project.orElse(null);  // Można tu dodać wyjątek, jeśli nie znaleziono
+    }
+
+    public Project updateProject(Long id, Project projectDetails) {
         Optional<Project> existingProject = projectRepository.findById(id);
         if (existingProject.isPresent()) {
             Project updatedProject = existingProject.get();
-            updatedProject.setName(project.getName());
-            updatedProject.setProjectUsers(project.getProjectUsers());
-            updatedProject.setTasks(project.getTasks());
+            updatedProject.setName(projectDetails.getName());
             // Zaktualizuj inne pola, jeśli to konieczne
             return projectRepository.save(updatedProject);
         }
-        return null;  // lub inne podejście, np. rzucenie wyjątku
+        return null;  // Można tu rzucić wyjątek
     }
 
     public void deleteProject(Long id) {

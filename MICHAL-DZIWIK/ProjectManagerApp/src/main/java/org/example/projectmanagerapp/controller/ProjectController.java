@@ -28,30 +28,25 @@ public class ProjectController {
 
     @PostMapping
     @Operation(summary = "Create a new project", description = "Adds a new project to the database.")
-    public Project createProject(
-            @Parameter(description = "Project object to be created")
-            @RequestBody Project project
-    ) {
+    public Project createProject(@Parameter(description = "Project object to be created") @RequestBody Project project) {
         return projectService.createProject(project);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get project by ID", description = "Returns a project by its ID.")
+    public Project getProjectById(@PathVariable Long id) {
+        return projectService.getProjectById(id);
+    }
+
     @PutMapping("/{id}")
-    @Operation(summary = "Update an existing project", description = "Updates an existing project by its ID.")
-    public Project updateProject(
-            @Parameter(description = "ID of the project to be updated")
-            @PathVariable Long id,
-            @Parameter(description = "Updated project object")
-            @RequestBody Project project
-    ) {
+    @Operation(summary = "Update project", description = "Updates an existing project by its ID.")
+    public Project updateProject(@PathVariable Long id, @RequestBody Project project) {
         return projectService.updateProject(id, project);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a project", description = "Deletes a project by its ID.")
-    public void deleteProject(
-            @Parameter(description = "ID of the project to be deleted")
-            @PathVariable Long id
-    ) {
+    @Operation(summary = "Delete project", description = "Deletes a project by its ID.")
+    public void deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
     }
 }

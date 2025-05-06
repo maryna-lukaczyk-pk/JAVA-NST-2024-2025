@@ -24,25 +24,27 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task updateTask(Long id, Task task) {
-        // Sprawdzamy, czy zadanie istnieje
+    public Task getTaskById(Long id) {
+        Optional<Task> task = taskRepository.findById(id);
+        return task.orElse(null);  // Można tu dodać wyjątek, jeśli nie znaleziono
+    }
+
+    public Task updateTask(Long id, Task taskDetails) {
         Optional<Task> existingTask = taskRepository.findById(id);
         if (existingTask.isPresent()) {
             Task updatedTask = existingTask.get();
-            updatedTask.setTitle(task.getTitle());
-            updatedTask.setDescription(task.getDescription());
-            updatedTask.setTaskType(task.getTaskType());
-            updatedTask.setPriority(task.getPriority());
-            updatedTask.setProject(task.getProject());
-            // Możesz dodać inne pola do zaktualizowania, jeśli to konieczne
+            updatedTask.setTitle(taskDetails.getTitle());
+            updatedTask.setDescription(taskDetails.getDescription());
+            updatedTask.setTaskType(taskDetails.getTaskType());
+            updatedTask.setPriority(taskDetails.getPriority());
+            updatedTask.setProject(taskDetails.getProject());
+            // Zaktualizuj inne pola, jeśli to konieczne
             return taskRepository.save(updatedTask);
         }
-        // Jeśli zadanie nie istnieje, można zwrócić null lub wykonać inną akcję
-        return null;
+        return null;  // Można tu rzucić wyjątek
     }
 
     public void deleteTask(Long id) {
-        // Sprawdzamy, czy zadanie istnieje przed usunięciem
         if (taskRepository.existsById(id)) {
             taskRepository.deleteById(id);
         }

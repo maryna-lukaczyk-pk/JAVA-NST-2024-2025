@@ -23,21 +23,23 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, User user) {
-        // Sprawdzenie, czy użytkownik istnieje
+    public User getUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.orElse(null);  // Można tu dodać wyjątek, jeśli nie znaleziono
+    }
+
+    public User updateUser(Long id, User userDetails) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
             User updatedUser = existingUser.get();
-            updatedUser.setUsername(user.getUsername());
-            // Możesz dodać inne pola do zaktualizowania, jeśli to konieczne
+            updatedUser.setUsername(userDetails.getUsername());
+            // Zaktualizuj inne pola, jeśli to konieczne
             return userRepository.save(updatedUser);
         }
-        // Jeśli użytkownik nie istnieje, można zwrócić null lub wykonać inną akcję
-        return null;
+        return null;  // Można tu rzucić wyjątek
     }
 
     public void deleteUser(Long id) {
-        // Sprawdzamy, czy użytkownik istnieje przed usunięciem
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
         }

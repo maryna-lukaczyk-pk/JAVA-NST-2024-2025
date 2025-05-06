@@ -24,6 +24,13 @@ public class ProjectUserService {
         return projectUserRepository.save(projectUser);
     }
 
+    // Wyszukiwanie po ID
+    public ProjectUser getProjectUserById(Long id) {
+        Optional<ProjectUser> projectUser = projectUserRepository.findById(id);
+        return projectUser.orElse(null);  // Można rzucić wyjątek, jeśli nie znaleziono
+    }
+
+    // Aktualizacja po ID
     public ProjectUser updateProjectUser(Long id, ProjectUser projectUser) {
         Optional<ProjectUser> existingProjectUser = projectUserRepository.findById(id);
         if (existingProjectUser.isPresent()) {
@@ -33,9 +40,10 @@ public class ProjectUserService {
             // Zaktualizuj inne pola, jeśli to konieczne
             return projectUserRepository.save(updatedProjectUser);
         }
-        return null;  // lub rzucić wyjątek, np. EntityNotFoundException
+        return null;  // Można rzucić wyjątek
     }
 
+    // Usuwanie po ID
     public void deleteProjectUser(Long id) {
         if (projectUserRepository.existsById(id)) {
             projectUserRepository.deleteById(id);
