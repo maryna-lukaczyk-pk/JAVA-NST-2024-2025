@@ -1,7 +1,7 @@
 package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.entity.Task;
-import com.example.projectmanagerapp.repository.TaskRepository;
+import com.example.projectmanagerapp.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,16 +13,16 @@ import java.util.Optional;
 @Tag(name="Task Controller", description="Tasks management")
 public class TaskController {
 
-    private final TaskRepository taskRepository;
+    private final TaskService taskService;
 
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @Operation(summary="Get all tasks", description="Receives all tasks stored")
     @GetMapping("/get-all-tasks")
     public List<Task> getAll() {
-        return taskRepository.findAll();
+        return taskService.getAll();
     }
 
     @Operation(summary="Get task by id", description="Receives task with provided id")
@@ -30,12 +30,12 @@ public class TaskController {
     public Optional<Task> getByID(
             @Parameter(description="Task id") @PathVariable Long id
     ) {
-        return taskRepository.findById(id);
+        return taskService.getByID(id);
     }
 
     @Operation(summary="Creates new task", description="Creates new task")
     @PostMapping("/create-task")
     public Task create(@RequestBody Task newTask) {
-        return taskRepository.save(newTask);
+        return taskService.create(newTask);
     }
 }
