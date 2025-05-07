@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import s.kopec.ProjectManagerApp.entity.Project;
 import s.kopec.ProjectManagerApp.entity.Task;
 import s.kopec.ProjectManagerApp.repository.TaskRepository;
+import s.kopec.ProjectManagerApp.service.TaskService;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,16 +16,16 @@ import java.util.Optional;
 @Tag(name = "Tasks", description = "Operation for mapping tasks")
 public class TaskController {
 
-    private final TaskRepository taskRepository;
+    private final TaskService taskService;
 
-    TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @GetMapping("")
     @Operation(summary = "Retrieve all tasks", description = "Returns a list of all tasks from the database")
     public List<Task> getAll() {
-        return taskRepository.findAll();
+        return taskService.getAllTasks();
     }
 
     @GetMapping("/{id}")
@@ -33,7 +33,7 @@ public class TaskController {
     public Optional<Task> getById(
             @Parameter(description = "ID of the task to retrieve", required = true)
             @PathVariable Long id) {
-        return taskRepository.findById(id);
+        return taskService.getTaskById(id);
     }
 
     @PostMapping("/create")
@@ -41,7 +41,7 @@ public class TaskController {
     public Task create(
             @Parameter(description = "Task object to create", required = true)
             @RequestBody Task task) {
-        return taskRepository.save(task);
+        return taskService.createTask(task);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -49,7 +49,7 @@ public class TaskController {
     public void deleteById(
             @Parameter(description = "ID of the task to delete", required = true)
             @PathVariable Long id) {
-        taskRepository.deleteById(id);
+        taskService.deleteTaskById(id);
     }
 
     @PutMapping("/update/{id}/{newTaskTitle}")
@@ -59,10 +59,7 @@ public class TaskController {
             @PathVariable Long id,
             @Parameter(description = "New title for the task", required = true)
             @PathVariable String newTitle) {
-        taskRepository.findById(id);
-        Task myTask = taskRepository.getReferenceById(id);
-        myTask.setTitle(newTitle);
-        taskRepository.save(myTask);
+        taskService.updateTaskTitle(id,newTitle);
     }
 
 }

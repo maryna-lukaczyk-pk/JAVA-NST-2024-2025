@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import s.kopec.ProjectManagerApp.entity.Project;
 import s.kopec.ProjectManagerApp.entity.User;
 import s.kopec.ProjectManagerApp.repository.UserRepository;
+import s.kopec.ProjectManagerApp.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,16 +16,16 @@ import java.util.Optional;
 @Tag(name = "Users", description = "Operations for mapping users")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("")
     @Operation(summary = "Retrieve all users", description = "Returns a list of all users from the database")
     public List<User> getAll() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
 
@@ -35,7 +35,7 @@ public class UserController {
     public Optional<User> getById(
             @Parameter(description = "ID of the user to retrieve", required = true)
             @PathVariable Long id) {
-        return userRepository.findById(id);
+        return userService.findUserById(id);
     }
 
     @PostMapping("/create")
@@ -43,7 +43,7 @@ public class UserController {
     public User create(
             @Parameter(description = "User object to create", required = true)
             @RequestBody User user) {
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 
 
@@ -52,7 +52,7 @@ public class UserController {
     public void deleteById(
             @Parameter(description = "ID of the user to delete", required = true)
             @PathVariable Long id) {
-        userRepository.deleteById(id);
+        userService.deleteUserById(id);
     }
 
     @PutMapping("/update/{id}/{newUserName}")
@@ -62,9 +62,6 @@ public class UserController {
             @PathVariable Long id,
             @Parameter(description = "New username", required = true)
             @PathVariable String newUserName) {
-        userRepository.existsById(id);
-        User myUser = userRepository.getReferenceById(id);
-        myUser.setUsername(newUserName);
-        userRepository.save(myUser);
+        userService.updateUserName(id, newUserName);
     }
 }

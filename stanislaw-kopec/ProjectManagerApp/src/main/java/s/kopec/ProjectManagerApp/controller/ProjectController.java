@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import s.kopec.ProjectManagerApp.entity.Project;
 import s.kopec.ProjectManagerApp.repository.ProjectRepository;
-import s.kopec.ProjectManagerApp.repository.TaskRepository;
+import s.kopec.ProjectManagerApp.service.ProjectService;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,16 +18,16 @@ import java.util.Optional;
 @Tag(name = "Projects", description = "Operations for mapping projects")
 public class ProjectController {
 
-    private final ProjectRepository projectRepository;
+    private final ProjectService projectService;
 
-    ProjectController(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     @GetMapping("")
     @Operation(summary = "Retrieve all projects", description = "Returns a list of all projects from the database")
     public List<Project> getAll() {
-        return projectRepository.findAll();
+        return projectService.getAllProjects();
     }
 
     @GetMapping("/{id}")
@@ -35,7 +35,7 @@ public class ProjectController {
     public Optional<Project> getById(
             @Parameter(description = "ID of the project to retrieve", required = true)
             @PathVariable Long id) {
-        return projectRepository.findById(id);
+        return projectService.findProjectById(id);
     }
 
     @PostMapping("/create")
@@ -43,7 +43,7 @@ public class ProjectController {
     public Project create(
             @Parameter(description = "Project object to create", required = true)
             @RequestBody Project project) {
-        return projectRepository.save(project);
+        return projectService.createProject(project);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -51,7 +51,7 @@ public class ProjectController {
     public void deleteById(
             @Parameter(description = "ID of the project to delete", required = true)
             @PathVariable Long id) {
-        projectRepository.deleteById(id);
+        projectService.deleteProjectById(id);
     }
 
     @PutMapping("/update/{id}/{newName}")
@@ -61,10 +61,7 @@ public class ProjectController {
             @PathVariable Long id,
             @Parameter(description = "New name for the project", required = true)
             @PathVariable String newName) {
-        projectRepository.existsById(id);
-        Project myProject = projectRepository.getReferenceById(id);
-        myProject.setName(newName);
-        projectRepository.save(myProject);
+        projectService.updateProjectName(id,newName);
     }
 
 }
