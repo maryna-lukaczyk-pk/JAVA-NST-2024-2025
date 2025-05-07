@@ -33,7 +33,6 @@ public class UsersService {
     public void deleteUsers(Long id) {
         Users users = usersRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
         usersRepository.delete(users);
     }
 
