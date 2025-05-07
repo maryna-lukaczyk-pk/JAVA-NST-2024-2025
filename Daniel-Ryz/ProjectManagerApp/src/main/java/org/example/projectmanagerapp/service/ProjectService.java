@@ -1,6 +1,8 @@
 package org.example.projectmanagerapp.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.projectmanagerapp.dto.CreateProjectRequest;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.springframework.http.HttpStatus;
@@ -29,13 +31,23 @@ public class ProjectService {
 
     }
 
-    public Project createProject(Project project) {
-       return projectRepository.save(project);
+    @Transactional
+    public Project createProject(CreateProjectRequest request) {
+        Project project = new Project();
+        project.setName(request.name());
+        return projectRepository.save(project);
     }
 
+    @Transactional
+    public Project updateProject(Long Id, CreateProjectRequest request) {
+        Project project = getProjectById(Id);
+        project.setName(request.name());
+        return projectRepository.save(project);
+    }
+
+    @Transactional
     public void deleteProject(Long id) {
         projectRepository.deleteById(id);
     }
-
 
 }

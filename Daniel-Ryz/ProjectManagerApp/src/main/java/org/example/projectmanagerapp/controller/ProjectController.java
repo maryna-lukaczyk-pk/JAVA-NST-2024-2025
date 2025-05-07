@@ -1,6 +1,7 @@
 package org.example.projectmanagerapp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,7 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.example.projectmanagerapp.dto.CreateProjectRequest;
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.Tasks;
 import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +44,9 @@ public class ProjectController {
                     content = @Content(examples = @ExampleObject()))
     })
     @GetMapping("/{id}")
-    public Project getProjectById(@PathVariable Long id) {
+    public Project getProjectById(
+            @Parameter(description = "Project ID", example = "1")
+            @PathVariable Long id) {
         return projectService.getProjectById(id);
     }
 
@@ -50,8 +55,23 @@ public class ProjectController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Project.class)))
     @PostMapping
-    public Project createProject(@RequestBody Project project) {
-        return projectService.createProject(project);
+    public Project createProject(@RequestBody CreateProjectRequest request) {
+        return projectService.createProject(request);
+    }
+
+    @Operation(summary = "Update a project by id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Project updated successfully.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Tasks.class))),
+            @ApiResponse(responseCode = "404", description = "Project not found",
+                    content = @Content(examples = @ExampleObject()))
+    })
+    @PutMapping("/{id}")
+    public Project updateProject(
+            @Parameter(description = "Project ID", example = "1")
+            @PathVariable Long id, @RequestBody CreateProjectRequest request) {
+        return projectService.updateProject(id, request);
     }
 
     @Operation(summary = "Delete a project by id.")
@@ -62,7 +82,9 @@ public class ProjectController {
                     content = @Content(examples = @ExampleObject()))
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProject(@PathVariable Long id) {
+    public ResponseEntity<String> deleteProject(
+            @Parameter(description = "Project ID", example = "1")
+            @PathVariable Long id) {
         projectService.deleteProject(id);
         return ResponseEntity.ok("Project deleted successfully.");
     }
