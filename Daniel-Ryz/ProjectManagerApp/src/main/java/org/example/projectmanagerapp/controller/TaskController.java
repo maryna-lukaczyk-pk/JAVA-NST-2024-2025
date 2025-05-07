@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.projectmanagerapp.dto.CreateTaskRequest;
 import org.example.projectmanagerapp.entity.Tasks;
-import org.example.projectmanagerapp.entity.Users;
 import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
