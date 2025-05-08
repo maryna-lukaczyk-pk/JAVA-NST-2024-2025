@@ -4,8 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Users;
-import org.example.projectmanagerapp.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.projectmanagerapp.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,22 +16,24 @@ import java.util.List;
 @Tag(name = "Users", description = "Operations for managing users")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
 
-    // GET
-    @Operation(summary = "Retrieve all users", description = "Returns a list of all users from the database")
-    @GetMapping
-    public List<Users> getAllUsers() {
-        return userRepository.findAll();
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    // POST
+    @Operation(summary = "Retrieve all users", description = "Returns a list of all users from the database")
+    @GetMapping("/all")
+    public List<Users> getUsers() {
+        return userService.getAllUsers();
+    }
+
     @Operation(summary = "Create a new user", description = "Creates a user with the provided information")
-    @PostMapping
-    public Users createUser(
+    @PostMapping("/create")
+    public ResponseEntity<Users> addUser(
             @Parameter(description = "User object to be created")
             @RequestBody Users user) {
-        return userRepository.save(user);
+        Users createdUser = userService.createUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 }
