@@ -7,6 +7,7 @@ import org.example.projectmanagerapp.service.TaskService;
 import org.example.projectmanagerapp.entity.Task;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/tasks")
@@ -24,9 +25,15 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get task by ID")
+    public Task getTaskById(
+            @Parameter(description = "Task ID", example = "1")
+            @PathVariable Long id) { return taskService.getTaskById(id); }
+
     @PostMapping
     @Operation(summary = "Create a new task", description = "Adds a new task to the system")
-    public Task createTask(@RequestBody Task task) {
+    public Task createTask(@Valid @RequestBody Task task) {
         return taskService.createTask(task);
     }
 

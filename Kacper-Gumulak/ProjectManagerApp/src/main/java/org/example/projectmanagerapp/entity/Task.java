@@ -1,6 +1,7 @@
 package org.example.projectmanagerapp.entity;
 
 import org.example.projectmanagerapp.priority.PriorityLevel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Set;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
+    @JsonIgnore
     private Project project;
 
     @Transient

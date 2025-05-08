@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.service.ProjectService;
 import org.example.projectmanagerapp.entity.Project;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,9 +25,16 @@ public class ProjectController {
         return projectService.getAllProjects();
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get project by ID")
+    public Project getProjectById(
+            @Parameter(description = "Project ID", example = "1")
+            @PathVariable Long id) { return projectService.getProjectById(id); }
+
     @PostMapping
     @Operation(summary = "Create a new project", description = "Adds a new project to the system")
-    public Project createProject(@RequestBody Project project) {
+    public Project createProject(@Valid @RequestBody Project project) {
+        System.out.println("Project received: " + project);
         return projectService.createProject(project);
     }
 

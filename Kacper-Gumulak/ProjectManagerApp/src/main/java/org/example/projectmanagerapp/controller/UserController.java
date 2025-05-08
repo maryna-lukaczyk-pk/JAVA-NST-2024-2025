@@ -14,21 +14,21 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    public UserController(UserService userService) { this.userService = userService; }
 
     @GetMapping
     @Operation(summary = "Download all users", description = "Returns a list of all users")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
+    public List<User> getAllUsers() { return userService.getAllUsers(); }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get user by ID")
+    public User getUserById(
+            @Parameter(description = "User ID", example = "1")
+            @PathVariable Long id) { return userService.getUserById(id); }
 
     @PostMapping
     @Operation(summary = "Add new user", description = "Creates a new user based on the data provided")
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
-    }
+    public User createUser(@RequestBody User user) { return userService.createUser(user); }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update user", description = "Updates the user data with the given ID")

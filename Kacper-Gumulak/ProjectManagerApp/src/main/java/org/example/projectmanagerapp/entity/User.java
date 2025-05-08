@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Getter
@@ -21,6 +23,8 @@ public class User {
     private String username;
 
     @ManyToMany(mappedBy = "users")
+    @JsonIgnore
+    @JsonBackReference
     private Set<Project> projects;
 
     public User(String username) {
