@@ -3,7 +3,7 @@ package com.example;
 
 import com.example.Project;
 import com.example.ProjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +11,12 @@ import java.util.Optional;
 
 @Service
 public class ProjectService {
-    @Autowired
-    private ProjectRepository projectRepository;
+
+    private final ProjectRepository projectRepository;
+
+    public ProjectService(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
 
     public List<Project> findAll() {
         return projectRepository.findAll();
@@ -36,5 +40,9 @@ public class ProjectService {
 
     public void delete(Long id) {
         projectRepository.deleteById(id);
+    }
+
+    public List<Project> getAllProjects() {
+        return projectRepository.findAll();
     }
 }

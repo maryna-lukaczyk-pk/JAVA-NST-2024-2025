@@ -3,6 +3,7 @@ package com.example;
 import com.example.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,15 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete project", description = "Delete a project by its ID")
+
+    @Operation(
+            summary = "Delete a project by ID",
+            description = "Deletes the project with the specified ID",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Project deleted successfully"),
+                    @ApiResponse(responseCode = "404", description = "Project not found")
+            }
+    )
     public void deleteProject(
             @Parameter(description = "ID of the project to delete", required = true) @PathVariable Long id) {
         projectService.delete(id);
