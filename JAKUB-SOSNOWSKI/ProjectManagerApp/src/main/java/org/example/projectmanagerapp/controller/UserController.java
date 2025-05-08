@@ -1,7 +1,7 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.User;
-import org.example.projectmanagerapp.repository.UserRepository;
+import org.example.projectmanagerapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,15 +12,16 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @GetMapping
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 }
+
