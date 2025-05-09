@@ -11,6 +11,9 @@ public class Task {
     private Long id;
 
     @Column(nullable = false)
+    private String name; // ← DODANE POLE
+
+    @Column(nullable = false)
     private String description;
 
     @ManyToOne
@@ -24,7 +27,8 @@ public class Task {
     public Task() {
     }
 
-    public Task(String description, Project project, PriorityLevel priorityLevel) {
+    public Task(String name, String description, Project project, PriorityLevel priorityLevel) {
+        this.name = name;
         this.description = description;
         this.project = project;
         this.priorityLevel = priorityLevel;
@@ -32,6 +36,10 @@ public class Task {
 
     public Long getId() {
         return id;
+    }
+
+    public String getName() { // ← GETTER
+        return name;
     }
 
     public String getDescription() {
@@ -48,6 +56,10 @@ public class Task {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setName(String name) { // ← SETTER
+        this.name = name;
     }
 
     public void setDescription(String description) {
