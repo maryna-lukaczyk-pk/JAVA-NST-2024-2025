@@ -3,16 +3,18 @@ package org.example.projectmanagerapp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.example.projectmanagerapp.repository.UserRepository;
-import org.example.projectmanagerapp.schemes.UserDTO;
+import org.example.projectmanagerapp.schemas.UserDTO;
+import org.example.projectmanagerapp.service.UserService;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.example.projectmanagerapp.entity.User;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,35 +23,41 @@ import java.util.Map;
 @RequestMapping("/api/users")
 @Tag(name = "Users", description = "Operations for managing users")
 public class UserController {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping
     @Operation(summary = "Create a new user",
     description = "Create a new user in database")
-    public ResponseEntity<Map<String, String>> createUser(@RequestBody UserDTO userDTO) {
-        Map<String, String> response = new HashMap<>();
-
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-
-        User savedUser = userRepository.save(user);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(savedUser.getId()).toUri();
-
-        response.put("success", "User created");
-        return ResponseEntity.created(location).body(response);
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
+        userService.addUser(userDTO);
+        return new ResponseEntity<>("User created", HttpStatus.CREATED);
     }
 
     @GetMapping
     @Operation(summary = "Get all users",
     description = "Get a list of all users from the database")
     public List<User> getUsers() {
-        return userRepository.findAll();
+        return userService.findAllUsers();
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a single user",
+            description = "Get a single user with given ID",
+            responses = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))})
+    @Parameter(in = ParameterIn.PATH, name = "id", description = "User ID")
+    public ResponseEntity<?> getUserById(@PathVariable Integer id) {
+        try {
+            User user = userService.findUserById(id);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (NotFoundException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "User not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -57,15 +65,14 @@ public class UserController {
     description = "Delete a user by ID from database")
     @Parameter(in = ParameterIn.PATH, name = "id", description = "User ID")
     public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Integer id) {
-        if(userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            Map<String, String> response = new HashMap<>();
+        Map<String, String> response = new HashMap<>();
+        try {
+            userService.deleteUser(id);
             response.put("success", "User deleted");
             return ResponseEntity.ok(response);
-        } else {
-          Map<String, String> errorResponse = new HashMap<>();
-          errorResponse.put("error", "User not found");
-          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        } catch(NotFoundException e) {
+            response.put("error", "User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 
@@ -75,15 +82,11 @@ public class UserController {
     @Parameter(in = ParameterIn.PATH, name = "id", description = "User ID")
     public ResponseEntity<Map<String, String>> updateUser(@RequestBody UserDTO userDTO, @PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
-
-        if(userRepository.existsById(id)) {
-            User user = new User();
-            user.setId(id);
-            user.setUsername(userDTO.getUsername());
-            userRepository.save(user);
+        try {
+            userService.updateUser(userDTO, id);
             response.put("success", "User updated");
             return ResponseEntity.ok(response);
-        } else {
+        } catch(NotFoundException e) {
             response.put("error", "User not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }

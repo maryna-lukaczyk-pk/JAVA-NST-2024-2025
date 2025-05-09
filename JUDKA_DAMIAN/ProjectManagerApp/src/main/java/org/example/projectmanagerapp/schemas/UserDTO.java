@@ -1,4 +1,4 @@
-package org.example.projectmanagerapp.schemes;
+package org.example.projectmanagerapp.schemas;
 
 import lombok.Getter;
 import lombok.Setter;
