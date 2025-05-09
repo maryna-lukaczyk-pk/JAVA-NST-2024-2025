@@ -30,7 +30,7 @@ public class Task {
     @JsonIgnore
     private PriorityLevel priorityLevel;
 
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
