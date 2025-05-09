@@ -52,4 +52,12 @@ public class ProjectController {
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a project", description = "Retrieve a project by ID")
+    public Project getProjectById(
+            @Parameter(description = "ID of project to retrieve") @PathVariable Long id
+    ) {
+        return projectService.getProjectById(id);
+    }
 }
