@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -32,5 +33,23 @@ public class ProjectController {
     public Project createProject(@Parameter(description = "Project entity to be created") @RequestBody Project project) {
         return projectService.createProject(project);
 
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a project", description = "Update project by ID")
+    public Project updateProject(
+            @Parameter(description = "ID of project to update") @PathVariable Long id,
+            @Parameter(description = "Updated project data") @RequestBody Project project
+    ) {
+        return projectService.updateProject(id, project);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a project", description = "Delete project by ID")
+    public ResponseEntity<Void> deleteProject(
+            @Parameter(description = "ID of project to delete") @PathVariable Long id
+    ) {
+        projectService.deleteProject(id);
+        return ResponseEntity.noContent().build();
     }
 }

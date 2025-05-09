@@ -24,4 +24,18 @@ public class ProjectService {
     public Project createProject(Project project) {
         return projectRepository.save(project);
     }
+
+    public Project updateProject(Long id, Project dto) {
+        Project existing = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found: " + id));
+        existing.setName(dto.getName());
+        // jeśli masz inne pola do aktualizacji, dopisz je tutaj, np.:
+        // existing.setUsers(dto.getUsers());
+        // existing.setTasks(dto.getTasks());
+        return projectRepository.save(existing);
+    }
+
+    public void deleteProject(Long id) {
+        projectRepository.deleteById(id);
+    }
 }

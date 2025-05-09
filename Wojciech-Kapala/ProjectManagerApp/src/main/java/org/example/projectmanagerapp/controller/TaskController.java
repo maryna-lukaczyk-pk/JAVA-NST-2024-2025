@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -31,5 +32,23 @@ public class TaskController {
     @Operation(summary = "Create a new task", description = "Create and save a new task")
     public Task createTask(@Parameter(description = "Task entity to be created") @RequestBody Task task) {
         return taskService.createTask(task);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a task", description = "Update task by ID")
+    public Task updateTask(
+            @Parameter(description = "ID of task to update") @PathVariable Long id,
+            @Parameter(description = "Updated task data") @RequestBody Task task
+    ) {
+        return taskService.updateTask(id, task);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a task", description = "Delete task by ID")
+    public ResponseEntity<Void> deleteTask(
+            @Parameter(description = "ID of task to delete") @PathVariable Long id
+    ) {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }
