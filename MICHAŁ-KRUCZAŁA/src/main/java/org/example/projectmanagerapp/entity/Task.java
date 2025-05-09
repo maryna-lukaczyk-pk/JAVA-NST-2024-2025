@@ -28,8 +28,11 @@ public class Task {
     @Transient
     private PriorityLevel priority;
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    private enum Task_Type {
+    public enum Task_Type {
         TYPE1, TYPE2, TYPE3
     }
 }
