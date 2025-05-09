@@ -1,10 +1,8 @@
 package org.example.projectmanagerapp.schemas;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ProjectDTO {
     private String name;
 }
