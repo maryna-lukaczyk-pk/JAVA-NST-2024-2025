@@ -8,6 +8,7 @@ import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import java.util.List;
 
@@ -35,5 +36,20 @@ public class ProjectController {
             @RequestBody Projects project) {
         Projects createdProject = projectService.createProject(project);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Update a project", description = "Updates an existing project by ID")
+    @PutMapping("/{id}")
+    public Projects updateProject(
+            @Parameter(description = "ID of the project to be updated") @PathVariable Long id,
+            @RequestBody Projects project) {
+        return projectService.updateProject(id, project);
+    }
+
+    @Operation(summary = "Delete a project", description = "Deletes a project by ID")
+    @DeleteMapping("/{id}")
+    public void deleteProject(
+            @Parameter(description = "ID of the project to be deleted") @PathVariable Long id) {
+        projectService.deleteProject(id);
     }
 }

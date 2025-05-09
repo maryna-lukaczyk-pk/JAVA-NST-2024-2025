@@ -36,4 +36,20 @@ public class UserController {
         Users createdUser = userService.createUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+
+    @Operation(summary = "Update a user", description = "Updates an existing user by ID")
+    @PutMapping("/{id}")
+    public Users updateUser(
+            @Parameter(description = "ID of the user to be updated") @PathVariable Long id,
+            @RequestBody Users user) {
+        return userService.updateUser(id, user);
+    }
+
+    @Operation(summary = "Delete a user", description = "Deletes a user by ID")
+    @DeleteMapping("/{id}")
+    public void deleteUser(
+            @Parameter(description = "ID of the task to be deleted") @PathVariable Long id) {
+        userService.deleteUser(id);
+    }
+
 }

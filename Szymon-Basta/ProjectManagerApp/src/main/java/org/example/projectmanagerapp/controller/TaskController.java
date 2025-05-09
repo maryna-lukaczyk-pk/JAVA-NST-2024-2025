@@ -32,5 +32,22 @@ public class TaskController {
             @Parameter(description = "Task object to be created")
             @RequestBody Tasks task) {
         return taskService.createTask(task);
+
     }
+
+    @Operation(summary = "Update an existing task", description = "Updates a task by its ID")
+    @PutMapping("/{id}")
+    public Tasks updateTask(
+            @Parameter(description = "ID of the task to be updated") @PathVariable Long id,
+            @RequestBody Tasks updatedTask) {
+        return taskService.updateTask(id, updatedTask);
+    }
+
+    @Operation(summary = "Delete a task", description = "Deletes a task by its ID")
+    @DeleteMapping("/{id}")
+    public void deleteTask(
+            @Parameter(description = "ID of the task to be deleted") @PathVariable Long id) {
+        taskService.deleteTask(id);
+    }
+
 }
