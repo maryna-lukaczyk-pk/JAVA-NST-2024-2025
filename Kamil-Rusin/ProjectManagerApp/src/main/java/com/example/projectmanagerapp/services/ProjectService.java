@@ -28,4 +28,21 @@ public class ProjectService {
     public Project createProject(Project project) {
         return projectRepository.save(project);
     }
+
+    public Project updateProject(Long id, Project project) {
+        return projectRepository.findById(id)
+                .map(existingProject -> {
+                    existingProject.setName(project.getName());
+                    existingProject.setUsers(project.getUsers());
+                    existingProject.setTasks(project.getTasks());
+                    return projectRepository.save(existingProject);
+                })
+                .orElseGet(() -> projectRepository.save(project));
+    }
+
+    public void deleteProject(Long id) {
+        projectRepository.deleteById(id);
+    }
 }
+
+

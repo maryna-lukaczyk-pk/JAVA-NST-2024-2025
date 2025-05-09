@@ -28,4 +28,20 @@ public class UserService {
     public User createUser(User user) {
         return userRepository.save(user);
     }
+
+    public User updateUser(Long id, User user) {
+        return userRepository.findById(id)
+                .map(existingUser -> {
+                    existingUser.setUserName(user.getUserName());
+                    existingUser.setProjects(user.getProjects());
+                    return userRepository.save(existingUser);
+                })
+                .orElseGet(() -> userRepository.save(user));
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
 }
+
+
