@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
+// Kontroler zarządzający operacjami CRUD na użytkowniku
 @RestController
 @RequestMapping("/users")
 @Tag(name = "Users", description = "User related operations")

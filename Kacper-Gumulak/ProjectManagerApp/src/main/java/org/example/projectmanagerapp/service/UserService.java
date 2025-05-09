@@ -7,13 +7,14 @@ import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.example.projectmanagerapp.repository.ProjectUserRepository;
 import org.example.projectmanagerapp.repository.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+// Serwis zarządzający operacjami na encji użytkownicy
 @Service
 @Transactional
 public class UserService {
@@ -28,8 +29,8 @@ public class UserService {
     }
 
     private UserDTO toDTO(User u) {
-        var projectIds = u.getProjectUsers().stream().map(pu -> pu.getProject().getId()).toList();
-        return new UserDTO(u.getId(), u.getUsername(), projectIds);
+        var projectId = u.getProjectUsers().stream().map(pu -> pu.getProject().getId()).toList();
+        return new UserDTO(u.getId(), u.getUsername(), projectId);
     }
 
     public UserDTO createUser(User user) {
@@ -37,9 +38,7 @@ public class UserService {
         return toDTO(saved);
     }
 
-    public List<UserDTO> getAllUsers() {
-        return userRepository.findAll().stream().map(this::toDTO).toList();
-    }
+    public List<UserDTO> getAllUsers() { return userRepository.findAll().stream().map(this::toDTO).toList(); }
 
     public UserDTO getUserById(Long id) {
         User u = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with ID: " + id));

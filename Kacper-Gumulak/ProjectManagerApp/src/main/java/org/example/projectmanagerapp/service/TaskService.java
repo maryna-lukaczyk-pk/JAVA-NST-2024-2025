@@ -3,30 +3,30 @@ package org.example.projectmanagerapp.service;
 import org.example.projectmanagerapp.dto.TaskDTO;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Task;
-import org.example.projectmanagerapp.entity.TaskType;
 import org.example.projectmanagerapp.priority.PriorityLevel;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.example.projectmanagerapp.repository.TaskRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+// Serwis zarządzający operacjami na encji zadania
 @Service
 @Transactional
 public class TaskService {
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
 
+    private TaskDTO toDTO(Task t) {
+        return new TaskDTO( t.getId(), t.getTitle(), t.getDescription(), t.getTaskType().name(), t.getProject().getId(), t.getPriority());
+    }
+
     public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository) {
         this.taskRepository = taskRepository;
         this.projectRepository = projectRepository;
-    }
-
-    private TaskDTO toDTO(Task t) {
-        return new TaskDTO( t.getId(), t.getTitle(), t.getDescription(), t.getTaskType().name(), t.getProject().getId(), t.getPriority());
     }
 
     public TaskDTO createTask(Task task) {
@@ -34,6 +34,9 @@ public class TaskService {
         Project proj = projectRepository.findById(projId).orElseThrow(()
                 -> new ResponseStatusException( HttpStatus.NOT_FOUND, "Project not found with ID: " + projId));
         task.setProject(proj);
+
+        if (task.getPriorityLevel() == null) { task.setPriorityLevel(PriorityLevel.UNDEFINED); }
+
         Task saved = taskRepository.save(task);
         return toDTO(saved);
     }

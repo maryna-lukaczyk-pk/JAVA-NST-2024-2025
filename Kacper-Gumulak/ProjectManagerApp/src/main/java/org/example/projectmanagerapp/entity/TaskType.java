@@ -1,11 +1,6 @@
 package org.example.projectmanagerapp.entity;
 
-import java.util.Set;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+// Typy zadań w systemie: bugi, nowe funkcje i ulepszenia
 public enum TaskType {
     BUG,
     FEATURE,

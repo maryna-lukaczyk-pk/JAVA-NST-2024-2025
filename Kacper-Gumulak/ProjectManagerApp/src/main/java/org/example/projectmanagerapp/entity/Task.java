@@ -2,17 +2,19 @@ package org.example.projectmanagerapp.entity;
 
 import org.example.projectmanagerapp.priority.PriorityLevel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 
+// Reprezentuje zadanie przypisane do projektu
 @Table(name = "tasks")
 public class Task {
     @Id
@@ -33,10 +35,6 @@ public class Task {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @Transient
-    @JsonIgnore
-    private PriorityLevel priorityLevel;
-
     public Task(String title, String description, TaskType taskType, Project project) {
         this.title = title;
         this.description = description;
@@ -44,27 +42,31 @@ public class Task {
         this.project = project;
     }
 
-    public Long getId() {
-        return id;
+    public Long getId() { return id; }
+
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
+
+    public String getDescription() { return description; }
+
+    public void setDescription(String description) { this.description = description; }
+
+    // Priorytet zadania, ustawiany dynamicznie, nie zapisywany w bazie
+    @Transient
+    @JsonIgnore
+    private PriorityLevel priorityLevel = PriorityLevel.UNDEFINED;
+
+    @JsonProperty("priority")
+    public String getPriority() { return priorityLevel.getPriority(); }
+
+    @JsonProperty("priority")
+    public void setPriority(String value) {
+        switch (value.toUpperCase()) {
+            case "LOW" -> priorityLevel = new org.example.projectmanagerapp.priority.LowPriority();
+            case "MEDIUM" -> priorityLevel = new org.example.projectmanagerapp.priority.MediumPriority();
+            case "HIGH" -> priorityLevel = new org.example.projectmanagerapp.priority.HighPriority();
+            default -> priorityLevel = PriorityLevel.UNDEFINED;
+        }
     }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPriority() { return priorityLevel != null ? priorityLevel.getPriority() : "UNDEFINED"; }
-
-    public void setPriorityLevel(PriorityLevel priorityLevel) { this.priorityLevel = priorityLevel; }
 }

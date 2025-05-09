@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Kontroler zarządzający operacjami CRUD na zadaniu
 @RestController
 @RequestMapping("/tasks")
 @Tag(name = "Tasks", description = "Task operations")

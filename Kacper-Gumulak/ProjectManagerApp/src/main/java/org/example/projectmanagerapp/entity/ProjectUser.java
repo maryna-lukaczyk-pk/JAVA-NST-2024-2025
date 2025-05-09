@@ -1,11 +1,11 @@
 package org.example.projectmanagerapp.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @NoArgsConstructor
 @JsonIdentityInfo( generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 
+// Encja pośrednicząca między użytkownikami a projektami
 @Table(name = "project_users")
 public class ProjectUser {
     @Id
