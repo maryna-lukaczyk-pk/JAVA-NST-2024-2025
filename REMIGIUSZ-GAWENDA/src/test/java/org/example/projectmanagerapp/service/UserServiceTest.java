@@ -38,7 +38,7 @@ class UserServiceTest {
         List<User> users = userService.getAllUsers();
 
         assertEquals(2, users.size());
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository).findAll();
     }
 
     @Test
@@ -68,5 +68,32 @@ class UserServiceTest {
 
         assertEquals("TestUser", saved.getUsername());
         verify(userRepository).save(user);
+    }
+
+    @Test
+    @DisplayName("Should update user")
+    void updateUser() {
+        User existing = new User();
+        existing.setId(1L);
+        existing.setUsername("OldName");
+
+        User updated = new User();
+        updated.setUsername("NewName");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(userRepository.save(existing)).thenReturn(existing);
+
+        User result = userService.updateUser(1L, updated);
+
+        assertEquals("NewName", result.getUsername());
+        verify(userRepository).findById(1L);
+        verify(userRepository).save(existing);
+    }
+
+    @Test
+    @DisplayName("Should delete user")
+    void deleteUser() {
+        userService.deleteUser(1L);
+        verify(userRepository).deleteById(1L);
     }
 }

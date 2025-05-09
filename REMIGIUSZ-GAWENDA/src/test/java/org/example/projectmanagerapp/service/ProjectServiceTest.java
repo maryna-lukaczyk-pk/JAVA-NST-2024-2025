@@ -27,41 +27,67 @@ class ProjectServiceTest {
     @Test
     @DisplayName("Should return all projects")
     void getAllProjects() {
-        Project p1 = new Project("Proj1", "Desc1", "ACTIVE");
-        Project p2 = new Project("Proj2", "Desc2", "INACTIVE");
+        Project p1 = new Project("Project A", "Desc A", "ACTIVE");
+        Project p2 = new Project("Project B", "Desc B", "PLANNED");
 
         when(projectRepository.findAll()).thenReturn(Arrays.asList(p1, p2));
 
-        List<Project> projects = projectService.getAllProjects();
+        List<Project> result = projectService.getAllProjects();
 
-        assertEquals(2, projects.size());
+        assertEquals(2, result.size());
         verify(projectRepository).findAll();
     }
 
     @Test
     @DisplayName("Should return project by ID")
     void getProjectById() {
-        Project p = new Project("Test", "Desc", "ACTIVE");
+        Project p = new Project("Demo", "Testing", "ACTIVE");
         p.setId(1L);
 
         when(projectRepository.findById(1L)).thenReturn(Optional.of(p));
 
         Project result = projectService.getProjectById(1L);
 
-        assertEquals("Test", result.getName());
+        assertEquals("Demo", result.getName());
         verify(projectRepository).findById(1L);
     }
 
     @Test
-    @DisplayName("Should save new project")
+    @DisplayName("Should create project")
     void createProject() {
-        Project p = new Project("ProjX", "Some desc", "PLANNED");
+        Project p = new Project("ProjX", "Important", "PLANNED");
 
         when(projectRepository.save(p)).thenReturn(p);
 
-        Project result = projectService.createProject(p);
+        Project saved = projectService.createProject(p);
 
-        assertEquals("ProjX", result.getName());
+        assertEquals("ProjX", saved.getName());
         verify(projectRepository).save(p);
+    }
+
+    @Test
+    @DisplayName("Should update project")
+    void updateProject() {
+        Project existing = new Project("OldName", "OldDesc", "PLANNED");
+        existing.setId(1L);
+
+        Project updated = new Project("NewName", "NewDesc", "ACTIVE");
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(projectRepository.save(existing)).thenReturn(existing);
+
+        Project result = projectService.updateProject(1L, updated);
+
+        assertEquals("NewName", result.getName());
+        assertEquals("NewDesc", result.getDescription());
+        verify(projectRepository).findById(1L);
+        verify(projectRepository).save(existing);
+    }
+
+    @Test
+    @DisplayName("Should delete project")
+    void deleteProject() {
+        projectService.deleteProject(1L);
+        verify(projectRepository).deleteById(1L);
     }
 }
