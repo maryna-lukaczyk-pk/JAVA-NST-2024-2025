@@ -1,5 +1,7 @@
-package com.example;
+package com.example.controller;
 
+import com.example.service.TaskService;
+import com.example.entity.Task;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

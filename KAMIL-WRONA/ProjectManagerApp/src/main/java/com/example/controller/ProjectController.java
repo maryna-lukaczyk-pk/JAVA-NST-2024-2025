@@ -1,6 +1,7 @@
-package com.example;
+package com.example.controller;
 
-import com.example.ProjectService;
+import com.example.service.ProjectService;
+import com.example.entity.Project;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

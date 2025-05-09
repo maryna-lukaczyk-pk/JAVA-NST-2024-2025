@@ -1,10 +1,10 @@
 import com.example.ProjectManagerAppApplication;
-import com.example.Task;
-import com.example.TaskRepository;
-import com.example.Project;
-import com.example.ProjectRepository;
-import com.example.User;
-import com.example.UserRepository;
+import com.example.entity.Task;
+import com.example.repository.TaskRepository;
+import com.example.entity.Project;
+import com.example.repository.ProjectRepository;
+import com.example.entity.User;
+import com.example.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

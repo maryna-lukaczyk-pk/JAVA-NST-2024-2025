@@ -1,8 +1,8 @@
-package com.example;
+package com.example.service;
 
 
-import com.example.Project;
-import com.example.ProjectRepository;
+import com.example.repository.ProjectRepository;
+import com.example.entity.Project;
 
 import org.springframework.stereotype.Service;
 

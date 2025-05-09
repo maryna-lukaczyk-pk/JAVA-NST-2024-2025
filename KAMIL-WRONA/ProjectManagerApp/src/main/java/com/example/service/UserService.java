@@ -1,5 +1,7 @@
-package com.example;
+package com.example.service;
 
+import com.example.repository.UserRepository;
+import com.example.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
