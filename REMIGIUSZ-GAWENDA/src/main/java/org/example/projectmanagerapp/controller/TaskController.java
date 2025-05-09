@@ -1,7 +1,7 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Task;
-import org.example.projectmanagerapp.repository.TaskRepository;
+import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -9,18 +9,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
-    private final TaskRepository taskRepository;
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    private final TaskService taskService;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
     @Operation(summary = "Get all tasks", description = "Retrieve a list of all tasks")
     @GetMapping
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+        return taskService.getAllTasks();
     }
     @Operation(summary = "Create a new task", description = "Create a new task in the system")
     @PostMapping
     public Task createTask(@RequestBody Task task) {
-        return taskRepository.save(task);
+        return taskService.createTask(task);
     }
 }
