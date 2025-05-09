@@ -24,12 +24,12 @@ public class TaskService {
 
     public Task updateTask(Long id, Task taskDetails) {
         Task task = taskRepository.findById(id).orElseThrow();
-        task.setName(taskDetails.getName());
+        task.setTitle(taskDetails.getTitle());
         task.setDescription(taskDetails.getDescription());
-        task.setDueDate(taskDetails.getDueDate());
-        task.setPriority(taskDetails.getPriority());
+        task.setTaskType(taskDetails.getTaskType());
+        task.setProject(taskDetails.getProject());
         return taskRepository.save(task);
-    }
+    }    
 
     public void deleteTask(Long id) {
         taskRepository.deleteById(id);

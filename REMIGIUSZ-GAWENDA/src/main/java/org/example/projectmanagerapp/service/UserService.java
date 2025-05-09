@@ -1,4 +1,4 @@
-package org.example.projectmanagerapp.repository;
+package org.example.projectmanagerapp.service;
 
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.UserRepository;
@@ -24,10 +24,10 @@ public class UserService {
 
     public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id).orElseThrow();
-        user.setName(userDetails.getName());
-        user.setEmail(userDetails.getEmail());
+        user.setUsername(userDetails.getUsername());
         return userRepository.save(user);
     }
+    
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
