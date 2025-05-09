@@ -47,4 +47,13 @@ public class ProjectController {
     ) {
         projectService.deleteProject(id);
     }
+    
+    @Operation(summary = "Get project by ID")
+    @GetMapping("/{id}")
+    public Project getProjectById(
+    @Parameter(description = "ID of the project to retrieve") @PathVariable Long id
+    ) {
+        return projectService.getProjectById(id);
+    }
+
 }

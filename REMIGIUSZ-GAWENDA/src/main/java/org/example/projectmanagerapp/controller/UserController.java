@@ -47,4 +47,13 @@ public class UserController {
     ) {
         userService.deleteUser(id);
     }
+
+    @Operation(summary = "Get user by ID")
+    @GetMapping("/{id}")
+    public User getUserById(
+    @Parameter(description = "ID of the user to retrieve") @PathVariable Long id
+    ) {
+        return userService.getUserById(id);
+    }
+
 }

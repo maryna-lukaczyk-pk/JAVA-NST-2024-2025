@@ -29,7 +29,12 @@ public class TaskService {
         task.setTaskType(taskDetails.getTaskType());
         task.setProject(taskDetails.getProject());
         return taskRepository.save(task);
-    }    
+    }
+    
+    public Task getTaskById(Long id) {
+        return taskRepository.findById(id).orElseThrow();
+    }
+    
 
     public void deleteTask(Long id) {
         taskRepository.deleteById(id);

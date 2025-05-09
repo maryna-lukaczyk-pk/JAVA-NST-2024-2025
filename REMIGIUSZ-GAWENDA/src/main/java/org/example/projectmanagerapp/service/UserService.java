@@ -27,6 +27,11 @@ public class UserService {
         user.setUsername(userDetails.getUsername());
         return userRepository.save(user);
     }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow();
+    }
+    
     
 
     public void deleteUser(Long id) {
