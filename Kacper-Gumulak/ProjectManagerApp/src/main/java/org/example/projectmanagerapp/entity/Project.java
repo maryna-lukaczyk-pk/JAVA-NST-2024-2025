@@ -3,15 +3,16 @@ package org.example.projectmanagerapp.entity;
 import java.util.Set;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIdentityInfo( generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 
 @Table(name = "projects")
 public class Project {
@@ -22,17 +23,10 @@ public class Project {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-            name = "project_users",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    @JsonIgnore
-    @JsonManagedReference
-    private Set<User> users;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProjectUser> projectUsers;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Set<Task> tasks;
 
     public Project(String name) {

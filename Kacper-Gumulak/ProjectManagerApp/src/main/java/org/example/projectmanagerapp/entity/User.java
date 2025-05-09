@@ -3,15 +3,17 @@ package org.example.projectmanagerapp.entity;
 import java.util.Set;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import java.util.HashSet;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIdentityInfo( generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 
 @Table(name = "users")
 public class User {
@@ -22,10 +24,8 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @ManyToMany(mappedBy = "users")
-    @JsonIgnore
-    @JsonBackReference
-    private Set<Project> projects;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProjectUser> projectUsers = new HashSet<>();
 
     public User(String username) {
         this.username = username;

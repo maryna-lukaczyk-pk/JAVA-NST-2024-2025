@@ -31,10 +31,10 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
-    @JsonIgnore
     private Project project;
 
     @Transient
+    @JsonIgnore
     private PriorityLevel priorityLevel;
 
     public Task(String title, String description, TaskType taskType, Project project) {
