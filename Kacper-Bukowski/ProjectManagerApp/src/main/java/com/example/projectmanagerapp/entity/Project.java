@@ -1,6 +1,7 @@
 package com.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -22,7 +23,7 @@ public class Project {
 
     @OneToMany(mappedBy = "project")
     @JsonIgnore
-    private Set<Task> tasks;
+    private Set<Task> tasks = new HashSet<>();
 
     public Long getId() {
         return id;
