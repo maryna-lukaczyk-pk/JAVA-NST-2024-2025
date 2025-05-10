@@ -1,33 +1,35 @@
 package org.example.projectmanagerapp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
+import lombok.RequiredArgsConstructor;
 import org.example.projectmanagerapp.entity.Project;
-import org.example.projectmanagerapp.repository.ProjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-
+@Tag(name = "Projects", description = "Operacje na projektach")
 @RestController
-@RequestMapping("/api/projects")
-@Tag(name = "Projects", description = "Operacje-projekt")
+@RequestMapping("/projects")
+@RequiredArgsConstructor
 public class ProjectController {
 
-    @Autowired
-    private ProjectRepository projectRepository;
+    private final ProjectService projectService;
 
+    @Operation(summary = "Pobierz wszystkie projekty")
     @GetMapping
-    @Operation(summary = "Pobierz wszystkie projekty", description = "Zwraca listę wszystkich projektów")
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+        return projectService.getAllProjects();
     }
 
+
+    @Operation(summary = "Dodaj nowy projekt")
     @PostMapping
-    @Operation(summary = "Dodaj nowy projekt", description = "Tworzy nowy projekt")
-    public Project createProject(@Parameter(description = "Powstaje nowy projekt") @RequestBody Project project) {
-        return projectRepository.save(project);
+    public Project createProject(
+            @Parameter(description = "Dane nowego projektu") @RequestBody Project project
+    ) {
+        return projectService.createProject(project);
     }
 }
