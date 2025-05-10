@@ -5,6 +5,7 @@ import org.example.projectmanagerapp.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -14,11 +15,24 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public List<Task> getAllTasks() {
+    public List<Task> findAll() {
         return taskRepository.findAll();
     }
 
-    public Task createTask(Task task) {
+    public Optional<Task> findById(Long id) {
+        return taskRepository.findById(id);
+    }
+
+    public Task create(Task task) {
         return taskRepository.save(task);
+    }
+
+    public Task update(Long id, Task task) {
+        task.setId(id);
+        return taskRepository.save(task);
+    }
+
+    public void delete(Long id) {
+        taskRepository.deleteById(id);
     }
 }

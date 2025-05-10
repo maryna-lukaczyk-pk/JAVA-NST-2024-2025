@@ -2,6 +2,7 @@ package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,18 +26,52 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/{all}")
     @Operation(summary = "Get all users", description = "Returns list of all users")
     public List<User> getAllUsers() {
-        return userService.getAllUsers();
+        return userService.findAll();
     }
 
-    @PostMapping
+    @GetMapping("/{id}")
+    @Operation(summary = "Get user by ID", description = "Returns user by ID")
+    public ResponseEntity<User> getUserById(
+            @Parameter(description = "ID of user to be retrieved" ,required = true)
+            @PathVariable Long id
+    ) {
+        return userService.findById(id)
+                          .map(ResponseEntity::ok)
+                          .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/create")
     @Operation(summary = "Create a new user", description = "Creates a new user")
     public User createUser(
             @Parameter(description = "User to be created" ,required = true)
             @RequestBody User user
     ) {
-        return userService.createUser(user);
+        return userService.create(user);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an existing user", description = "Updates an existing user")
+    public ResponseEntity<User> updateUser(
+            @Parameter(description = "ID of user to be updated" ,required = true)
+            @PathVariable Long id,
+            @Parameter(description = "New user data" ,required = true)
+            @RequestBody User user
+    ) {
+        return userService.findById(id)
+                          .map(existing -> ResponseEntity.ok(userService.update(id, user)))
+                          .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete an existing user", description = "Deletes an existing user")
+    public ResponseEntity<Void> deleteUser(
+            @Parameter(description = "ID of user to be deleted" ,required = true)
+            @PathVariable Long id
+    ) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
