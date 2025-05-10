@@ -5,6 +5,7 @@ import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectService {
@@ -32,5 +33,9 @@ public class ProjectService {
             project.setName(updatedProject.getName());
             return projectRepository.save(project);
         }).orElseThrow(() -> new RuntimeException("Project not found"));
+    }
+
+    public Optional<Project> getProjectById(Long id) {
+        return projectRepository.findById(id);
     }
 }

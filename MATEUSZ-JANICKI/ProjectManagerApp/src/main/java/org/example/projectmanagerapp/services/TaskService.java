@@ -6,6 +6,7 @@ import org.example.projectmanagerapp.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -33,5 +34,9 @@ public class TaskService {
             task.setDescription(updatedTask.getDescription());
             return taskRepository.save(task);
         }).orElseThrow(() -> new RuntimeException("Task not found"));
+    }
+
+    public Optional<Task> getTaskById(Long id) {
+        return taskRepository.findById(id);
     }
 }

@@ -5,6 +5,7 @@ import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -32,5 +33,9 @@ public class UserService {
             user.setUsername(updatedUser.getUsername());
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 }
