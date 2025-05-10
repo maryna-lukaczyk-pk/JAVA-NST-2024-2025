@@ -22,6 +22,7 @@ public class UserService {
     }
 
     //pobiera ID i caly obiekt User
+
     public User updateUser(Long id, User updatedUser) {
         User existing = userRepository.findById(id).orElse(null);
         if (existing == null) return null;

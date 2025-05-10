@@ -35,13 +35,15 @@ public class ProjectController {
 
     @Operation(summary = "Zaktualizuj projekt")
     @PutMapping("/{id}")
-    public Project updateProject(@PathVariable Long id, @RequestBody Project project) {
+    public Project updateProject(
+            @Parameter(description = "project ID do zmiany") @PathVariable Long id,
+            @Parameter(description = "nowe dane") @RequestBody Project project) {
         return projectService.updateProject(id, project);
     }
 
     @Operation(summary = "Usuń projekt")
     @DeleteMapping("/{id}")
-    public void deleteProject(@PathVariable Long id) {
+    public void deleteProject(@Parameter(description = "project ID do usuniecia") @PathVariable Long id) {
         projectService.deleteProject(id);
     }
 }
