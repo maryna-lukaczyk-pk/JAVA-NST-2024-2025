@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Users", description = "Operacje na użytkownikach")
+@Tag(name = "Users", description = "Operacje na uzytkownikach")
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -28,5 +28,17 @@ public class UserController {
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
+    }
+
+    @Operation(summary = "Zaktualizuj użytkownika")
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user);
+    }
+
+    @Operation(summary = "Usuń użytkownika")
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
     }
 }

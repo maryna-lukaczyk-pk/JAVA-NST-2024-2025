@@ -20,4 +20,22 @@ public class UserService {
     public User createUser(User user) {
         return userRepository.save(user);
     }
+
+    //pobiera ID i caly obiekt User
+    public User updateUser(Long id, User updatedUser) {
+        User existing = userRepository.findById(id).orElse(null);
+        if (existing == null) return null;
+
+            //dane rozpakowuje z nowego obiektu user
+        existing.setUsername(updatedUser.getUsername());
+        existing.setEmail(updatedUser.getEmail());
+
+        return userRepository.save(existing);
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
 }
+

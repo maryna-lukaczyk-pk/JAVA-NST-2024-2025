@@ -20,4 +20,21 @@ public class ProjectService {
     public Project createProject(Project project) {
         return projectRepository.save(project);
     }
+
+    //pobiera ID i caly obiekt Project z nowymi danymi
+    public Project updateProject(Long id, Project updatedProject) {
+        Project existing = projectRepository.findById(id).orElse(null);
+        if (existing == null) return null;
+        //do existing pobiera wartosci aktualne i zastępuje nowymi
+        existing.setName(updatedProject.getName());
+        existing.setTasks(updatedProject.getTasks());
+        existing.setProjectUsers(updatedProject.getProjectUsers());
+        return projectRepository.save(existing);
+    }
+
+    public void deleteProject(Long id) {
+        projectRepository.deleteById(id);
+    }
+
 }
+//
