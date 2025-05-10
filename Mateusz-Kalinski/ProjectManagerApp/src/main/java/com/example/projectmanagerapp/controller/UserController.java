@@ -1,11 +1,10 @@
 package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.entity.Users;
-import com.example.projectmanagerapp.repository.UserRepository;
+import com.example.projectmanagerapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,20 +14,23 @@ import java.util.List;
 @Tag(name = "Users", description = "Endpoints for managing users")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Operation(summary = "Get all users", description = "Retrieve a list of all users")
     @GetMapping("/all")
     public List<Users> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
     @Operation(summary = "Get user by ID", description = "Retrieve a specific user by their ID")
     @Parameter(name = "id", description = "ID of the user to retrieve", required = true)
     @GetMapping("/{id}")
     public Users getUserById(@PathVariable Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userService.getUserById(id).orElse(null);
     }
 
     @Operation(summary = "Create new user", description = "Create a new user with provided details")
@@ -36,7 +38,7 @@ public class UserController {
     public Users createUser(
             @Parameter(name = "user", description = "User object to create", required = true)
             @RequestBody Users user) {
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 
     @Operation(summary = "Update user", description = "Update an existing user by their ID")
@@ -47,13 +49,13 @@ public class UserController {
             @Parameter(name = "user", description = "Updated user object", required = true)
             @RequestBody Users user) {
         user.setId(id);
-        return userRepository.save(user);
+        return userService.updateUser(id, user);
     }
 
     @Operation(summary = "Delete user", description = "Delete a user by their ID")
     @Parameter(name = "id", description = "ID of the user to delete", required = true)
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
+        userService.deleteUser(id);
     }
 }

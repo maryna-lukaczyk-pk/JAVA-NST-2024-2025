@@ -1,59 +1,82 @@
 package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.entity.Project;
-import com.example.projectmanagerapp.repository.ProjectRepository;
+import com.example.projectmanagerapp.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/projects")
 @Tag(name = "Projects", description = "Endpoints for managing projects")
 public class ProjectController {
 
-    @Autowired
-    private ProjectRepository projectRepository;
+    private final ProjectService projectService;
+
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     @Operation(summary = "Get all projects", description = "Retrieve a list of all projects in the system")
     @GetMapping("/all")
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+        return projectService.getAllProjects();
     }
 
     @Operation(summary = "Get project by ID", description = "Retrieve a specific project by its ID")
-    @Parameter(name = "id", description = "ID of the project to retrieve", required = true)
     @GetMapping("/{id}")
-    public Project getProjectById(@PathVariable Long id) {
-        return projectRepository.findById(id).orElse(null);
+    public ResponseEntity<Project> getProjectById(
+            @Parameter(description = "ID of the project to be retrieved", required = true, example = "1")
+            @PathVariable Long id) {
+        Optional<Project> projectOptional = projectService.getProjectById(id);
+        return projectOptional.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Create new project", description = "Create a new project with provided details")
     @PostMapping("/create")
-    public Project createProject(
-            @Parameter(name = "project", description = "Project object to create", required = true)
+    public ResponseEntity<Project> createProject(
+            @Parameter(description = "Project object to create. Name is required.", required = true)
             @RequestBody Project project) {
-        return projectRepository.save(project);
+        Project createdProject = projectService.createProject(project);
+        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update project", description = "Update an existing project by its ID")
-    @Parameter(name = "id", description = "ID of the project to update", required = true)
     @PutMapping("/update/{id}")
-    public Project updateProject(
+    public ResponseEntity<Project> updateProject(
+            @Parameter(description = "ID of the project to update", required = true, example = "1")
             @PathVariable Long id,
-            @Parameter(name = "project", description = "Updated project object", required = true)
-            @RequestBody Project project) {
-        project.setId(id);
-        return projectRepository.save(project);
+            @Parameter(description = "Project object with updated information. Name is required.", required = true)
+            @RequestBody Project projectDetails) {
+        try {
+            Project updatedProject = projectService.updateProject(id, projectDetails);
+            if (updatedProject != null) {
+                return ResponseEntity.ok(updatedProject);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(summary = "Delete project", description = "Delete a project by its ID")
-    @Parameter(name = "id", description = "ID of the project to delete", required = true)
     @DeleteMapping("/delete/{id}")
-    public void deleteProject(@PathVariable Long id) {
-        projectRepository.deleteById(id);
+    public ResponseEntity<Void> deleteProject(
+            @Parameter(description = "ID of the project to delete", required = true, example = "1")
+            @PathVariable Long id) {
+        try {
+            projectService.deleteProject(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
