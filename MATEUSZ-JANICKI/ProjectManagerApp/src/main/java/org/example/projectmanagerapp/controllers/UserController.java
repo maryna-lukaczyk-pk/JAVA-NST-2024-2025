@@ -1,6 +1,7 @@
 package org.example.projectmanagerapp.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.UserRepository;
@@ -32,5 +33,18 @@ public class UserController {
     public ResponseEntity<User> addUser(@RequestBody User newUser) {
         User createdUser = userService.createUser(newUser);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Update user by ID", description = "Updating user by ID")
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@Parameter(description = "ID of the user to update") @PathVariable Long id, @RequestBody User user) {
+        return ResponseEntity.ok(userService.updateUser(id, user));
+    }
+
+    @Operation(summary = "Delete user by ID", description = "Deleting user by ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@Parameter(description = "ID of the user to delete") @PathVariable Long id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
     }
 }

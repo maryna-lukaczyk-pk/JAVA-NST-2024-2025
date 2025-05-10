@@ -22,4 +22,15 @@ public class ProjectService {
     public Project createProject(Project project) {
         return projectRepository.save(project);
     }
+
+    public void deleteProjectById(Long id) {
+        projectRepository.deleteById(id);
+    }
+
+    public Project updateProject(Long id, Project updatedProject) {
+        return projectRepository.findById(id).map(project -> {
+            project.setName(updatedProject.getName());
+            return projectRepository.save(project);
+        }).orElseThrow(() -> new RuntimeException("Project not found"));
+    }
 }
