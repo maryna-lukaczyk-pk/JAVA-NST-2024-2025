@@ -10,6 +10,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Table(name="Users")
 @NoArgsConstructor
 public class User {
     @Id
