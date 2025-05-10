@@ -3,45 +3,57 @@ package com.example.projectmanagerapp.controller;
 import com.example.projectmanagerapp.entity.Users;
 import com.example.projectmanagerapp.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name="test", description="test")
+@Tag(name = "Users", description = "Endpoints for managing users")
 public class UserController {
 
+    @Autowired
     private UserRepository userRepository;
 
-    @Operation(summary = "test", description = "test")
+    @Operation(summary = "Get all users", description = "Retrieve a list of all users")
     @GetMapping("/all")
     public List<Users> getAllUsers() {
         return userRepository.findAll();
     }
 
-    @Operation (summary = "Tworzy uzytkownika", description = "Tworzy nowego uzytkownika")
-    @PostMapping("/create")
-    public Users createUser(@RequestBody Users user) {
-        return userRepository.save(user);
-    }
-
-    @Operation (summary = "test", description = "test")
+    @Operation(summary = "Get user by ID", description = "Retrieve a specific user by their ID")
+    @Parameter(name = "id", description = "ID of the user to retrieve", required = true)
     @GetMapping("/{id}")
     public Users getUserById(@PathVariable Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    @Operation (summary = "test", description = "test")
-    @DeleteMapping("/delete{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
+    @Operation(summary = "Create new user", description = "Create a new user with provided details")
+    @PostMapping("/create")
+    public Users createUser(
+            @Parameter(name = "user", description = "User object to create", required = true)
+            @RequestBody Users user) {
+        return userRepository.save(user);
     }
 
-    @Operation (summary = "test", description = "test")
-    @PutMapping("/update{id}")
-    public Users updateUser(@PathVariable Long id, @RequestBody Users user) {
+    @Operation(summary = "Update user", description = "Update an existing user by their ID")
+    @Parameter(name = "id", description = "ID of the user to update", required = true)
+    @PutMapping("/update/{id}")
+    public Users updateUser(
+            @PathVariable Long id,
+            @Parameter(name = "user", description = "Updated user object", required = true)
+            @RequestBody Users user) {
+        user.setId(id);
         return userRepository.save(user);
+    }
+
+    @Operation(summary = "Delete user", description = "Delete a user by their ID")
+    @Parameter(name = "id", description = "ID of the user to delete", required = true)
+    @DeleteMapping("/delete/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userRepository.deleteById(id);
     }
 }
