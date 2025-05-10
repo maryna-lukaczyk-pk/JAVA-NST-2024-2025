@@ -25,6 +25,46 @@ public class Task {
 
     private String priorityName;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public task_type getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(task_type taskType) {
+        this.taskType = taskType;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     public void loadPriorityFromName() {
         switch (priorityName) {
             case "High" -> priority = new HighPriority();
