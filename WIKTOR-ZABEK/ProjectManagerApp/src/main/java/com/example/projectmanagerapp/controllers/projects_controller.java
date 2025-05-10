@@ -6,9 +6,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Projects Controller")
 @RestController
@@ -24,29 +27,38 @@ public class projects_controller {
         return projects_service.getAllProjects();
     }
 
-    @PostMapping
+    @PostMapping("/")
     @Operation(summary = "Create a project", description = "Saving a project")
-    public projects createProject(
-            @Parameter(description = "Project object that needs to be saved", required = true)
-            @RequestBody projects project) {
+    public projects createProject(@RequestBody projects project) {
         return projects_service.create_project(project);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Find project by ID", description = "Returns a single project by ID")
+    public ResponseEntity<projects> getProjectById(
+            @Parameter(description = "ID of the project to retrieve") @PathVariable Long id) {
+        Optional<projects> project = projects_service.getProjectById(id);
+        return project.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/{id}")
-    @Operation(summary = "Updates a project", description = "Updates a project by its ID")
-    public projects updateProject(
-            @Parameter(description = "ID of the project to update", required = true)
-            @PathVariable Long id,
-            @Parameter(description = "Updated project object", required = true)
+    @Operation(summary = "Update a project", description = "Updates project information by ID")
+    public ResponseEntity<projects> updateProject(
+            @Parameter(description = "ID of the project to update") @PathVariable Long id,
             @RequestBody projects project) {
-        return projects_service.update_project(id, project);
+        projects updatedProject = projects_service.updateProject(id, project);
+        if (updatedProject != null) {
+            return ResponseEntity.ok(updatedProject);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Deletes a project", description = "Deletes a project by its ID")
-    public void deleteProject(
-            @Parameter(description = "ID of the project to delete", required = true)
-            @PathVariable Long id) {
-        projects_service.delete_project(id);
+    @Operation(summary = "Delete a project", description = "Deletes a project by ID")
+    public ResponseEntity<Void> deleteProject(
+            @Parameter(description = "ID of the project to delete") @PathVariable Long id) {
+        projects_service.deleteProjectById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -6,9 +6,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Users Controller")
 @RestController
@@ -24,29 +27,38 @@ public class users_controller {
         return user_service.getAllUsers();
     }
 
-    @PostMapping
+    @PostMapping("/")
     @Operation(summary = "Creating a user", description = "Saving a user")
-    public users createUser(
-            @Parameter(description = "User object that needs to be saved", required = true)
-            @RequestBody users user) {
+    public users createUser(@RequestBody users user){
         return user_service.create_user(user);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Find user by ID", description = "Returns a single user by ID")
+    public ResponseEntity<users> getUserById(
+            @Parameter(description = "ID of the user to retrieve") @PathVariable Long id) {
+        Optional<users> user = user_service.getUserById(id);
+        return user.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/{id}")
-    @Operation(summary = "Updates a user", description = "Updates a user by its ID")
-    public users updateUser(
-            @Parameter(description = "ID of the user to update", required = true)
-            @PathVariable Long id,
-            @Parameter(description = "Updated user object", required = true)
+    @Operation(summary = "Update a user", description = "Updates user information by ID")
+    public ResponseEntity<users> updateUser(
+            @Parameter(description = "ID of the user to update") @PathVariable Long id,
             @RequestBody users user) {
-        return user_service.update_user(id, user);
+        users updatedUser = user_service.updateUser(id, user);
+        if (updatedUser != null) {
+            return ResponseEntity.ok(updatedUser);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Deletes a user", description = "Deletes a user by its ID")
-    public void deleteUser(
-            @Parameter(description = "ID of the user to delete", required = true)
-            @PathVariable Long id) {
-        user_service.delete_user(id);
+    @Operation(summary = "Delete a user", description = "Deletes a user by ID")
+    public ResponseEntity<Void> deleteUser(
+            @Parameter(description = "ID of the user to delete") @PathVariable Long id) {
+        user_service.deleteUserById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
