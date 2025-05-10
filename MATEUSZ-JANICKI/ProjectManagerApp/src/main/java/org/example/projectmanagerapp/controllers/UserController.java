@@ -7,15 +7,13 @@ import org.example.projectmanagerapp.repository.UserRepository;
 import org.example.projectmanagerapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "User")
+@Tag(name = "User", description = "Operations for mapping users")
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
 
@@ -23,15 +21,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Operation(summary = "API User POST method")
-    @GetMapping("/users")
-    List<User> all() {
+    @Operation(summary = "Retrieve all users", description = "Return a list of all users from database")
+    @GetMapping("/all")
+    List<User> getUsers() {
         return userService.getAllUsers();
     }
 
-    @Operation(summary = "API User POST method")
-    @PostMapping("/users")
-    public ResponseEntity<User> newUser(@RequestBody User newUser) {
+    @Operation(summary = "Create new users", description = "Adds a new user to database")
+    @PostMapping("/create")
+    public ResponseEntity<User> addUser(@RequestBody User newUser) {
         User createdUser = userService.createUser(newUser);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }

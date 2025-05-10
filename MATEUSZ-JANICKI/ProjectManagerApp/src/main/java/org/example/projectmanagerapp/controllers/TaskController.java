@@ -7,15 +7,13 @@ import org.example.projectmanagerapp.repository.TaskRepository;
 import org.example.projectmanagerapp.services.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Task")
+@Tag(name = "Task", description = "Operations for mapping tasks")
 @RestController
+@RequestMapping("/api/tasks")
 public class TaskController {
     private final TaskService taskService;
 
@@ -23,15 +21,15 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @Operation(summary = "API Task Get method")
-    @GetMapping("/tasks")
-    List<Task> all() {
+    @Operation(summary = "Retrieve all tasks", description = "Return a list of all tasks from database")
+    @GetMapping("/all")
+    List<Task> getTasks() {
         return taskService.getTasks();
     }
 
-    @Operation(summary = "API Task POST method")
-    @PostMapping("/tasks")
-    public ResponseEntity<Task> newTask(@RequestBody Task newTask) {
+    @Operation(summary = "Create new task", description = "Adds a new task to database")
+    @PostMapping("/create")
+    public ResponseEntity<Task> addTask(@RequestBody Task newTask) {
         Task createdTask = taskService.createTask(newTask);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }

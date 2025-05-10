@@ -6,15 +6,13 @@ import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.services.ProjectService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Project")
+@Tag(name = "Project", description = "Operations for mapping projects")
 @RestController
+@RequestMapping("/api/projects")
 public class ProjectController {
     private final ProjectService projectService;
 
@@ -22,15 +20,15 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @Operation(summary = "API Project POST method")
-    @GetMapping("/projects")
-    List<Project> all() {
+    @Operation(summary = "Retrieve all projects", description = "Return a list of all projects from database")
+    @GetMapping("/all")
+    List<Project> getProjects() {
         return projectService.getAllProjects();
     }
 
-    @Operation(summary = "API Project POST method")
-    @PostMapping("/projects")
-    public ResponseEntity<Project> newProject(@RequestBody Project newProject) {
+    @Operation(summary = "Create new project", description = "Adds a new project to database")
+    @PostMapping("/create")
+    public ResponseEntity<Project> addProject(@RequestBody Project newProject) {
         Project createdProject = projectService.createProject(newProject);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
