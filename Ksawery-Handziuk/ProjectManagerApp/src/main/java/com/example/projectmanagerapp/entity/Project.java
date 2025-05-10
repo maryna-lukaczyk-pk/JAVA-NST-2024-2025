@@ -4,36 +4,29 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.Set;
+
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 
-public class Project
-{
+public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
     private String name;
 
-package com.example.projectmanagerapp.entity;
+    @ManyToMany
+    @JoinTable(
+            name = "project_users",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Entity
-@Getter
-@Setter
-@NoArgsConstructor
-
-public class Project
-{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
->>>>>>> 14102b1829a8b1ff467b2f25f459562da1583947
+    private  Set<User> users;
 }
+

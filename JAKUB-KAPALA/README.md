@@ -1,3 +1,3 @@
 - Jakub Kapała
 - GRUPA GK02
-- Projekt: _placeholder_
+- Projekt: Tracker kart kolekcjonerskich
