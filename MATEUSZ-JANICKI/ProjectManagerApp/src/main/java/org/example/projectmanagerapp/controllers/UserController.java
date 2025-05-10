@@ -47,4 +47,13 @@ public class UserController {
         userService.deleteUserById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Get user by ID", description = "Getting user by ID from database")
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(
+            @Parameter(description = "ID of the user") @PathVariable Long id) {
+        return userService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

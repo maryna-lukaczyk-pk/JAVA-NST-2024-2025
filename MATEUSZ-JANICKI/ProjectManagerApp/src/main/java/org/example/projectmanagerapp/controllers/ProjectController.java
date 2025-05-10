@@ -46,4 +46,12 @@ public class ProjectController {
         projectService.deleteProjectById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Get project by ID", description = "Getting project by ID from database")
+    @GetMapping("/{id}")
+    public ResponseEntity<Project> getProjectById(@Parameter(description = "ID of the project") @PathVariable Long id) {
+        return projectService.getProjectById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

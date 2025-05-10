@@ -48,4 +48,12 @@ public class TaskController {
         taskService.deleteTaskById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Get task by ID", description = "Getting task by ID from database")
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> getTaskById(@Parameter(description = "ID of the task") @PathVariable Long id) {
+        return taskService.getTaskById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
