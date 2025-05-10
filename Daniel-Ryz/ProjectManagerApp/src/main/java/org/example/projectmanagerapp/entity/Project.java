@@ -3,7 +3,6 @@ package org.example.projectmanagerapp.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.scheduling.config.Task;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package org.example.projectmanagerapp.service;
+package org.example.projectmanagerapp.service.priority;
 
 import org.springframework.stereotype.Component;
 
