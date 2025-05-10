@@ -1,16 +1,19 @@
 package org.example.projectmanagerapp.entity;
 
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIdentityInfo( generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 
+// Encja pośrednicząca między użytkownikami a projektami
 @Table(name = "project_users")
 public class ProjectUser {
     @Id
