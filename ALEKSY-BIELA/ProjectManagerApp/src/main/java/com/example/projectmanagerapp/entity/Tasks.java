@@ -9,8 +9,6 @@ import lombok.Setter;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 public class Tasks {
     @Id
@@ -38,5 +36,45 @@ public class Tasks {
             default:
                 this.task_type = new LowPriority().getPriority();
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Priority getTask_type() {
+        return task_type;
+    }
+
+    public void setTask_type(Priority task_type) {
+        this.task_type = task_type;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }
