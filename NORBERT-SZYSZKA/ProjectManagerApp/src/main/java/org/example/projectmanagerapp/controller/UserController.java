@@ -4,10 +4,15 @@ import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "User", description = "User management")
 public class UserController {
 
     // userRepository field declaration
@@ -21,12 +26,17 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all users", description = "Returns list of all users")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    @Operation(summary = "Create a new user", description = "Creates a new user")
+    public User createUser(
+            @Parameter(description = "User to be created" ,required = true)
+            @RequestBody User user
+    ) {
         return userRepository.save(user);
     }
 }
