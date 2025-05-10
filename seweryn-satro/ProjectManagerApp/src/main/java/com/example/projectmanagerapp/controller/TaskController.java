@@ -52,4 +52,10 @@ public class TaskController {
         taskService.delete(id);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get task by ID", description = "Return task by ID")
+    public Task taskById(@PathVariable Integer id) {
+        return taskService.taskById(id);
+    }
+
 }

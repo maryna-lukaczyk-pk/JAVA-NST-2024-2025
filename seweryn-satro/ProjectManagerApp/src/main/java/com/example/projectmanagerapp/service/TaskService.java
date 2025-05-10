@@ -41,4 +41,9 @@ public class TaskService {
             taskRepository.deleteById(id);
         }
     }
+
+    public Task taskById(Integer id) {
+        return taskRepository.findById(id).orElse(null);
+    }
+
 }
