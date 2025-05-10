@@ -32,4 +32,32 @@ public class ProjectController {
     public Project newProject(@RequestBody Project project) {
         return projectRepository.save(project);
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update project", description = "Update project data based on project ID")
+    public Project updateProject(
+            @Parameter(description = "Project ID", required = true)
+            @PathVariable Integer id,
+            @RequestBody Project newProject) {
+
+        return projectRepository.findById(id)
+                .map(project -> {
+                    project.setName(newProject.getName());
+                    project.setUsers(newProject.getUsers());
+                    return projectRepository.save(project);
+                })
+                .orElse(null);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete project", description = "Delete project data based on project ID")
+    public void deleteProject(
+            @Parameter(description = "Project ID", required = true)
+            @PathVariable Integer id) {
+
+        if (projectRepository.existsById(id)) {
+            projectRepository.deleteById(id);
+        }
+    }
+
 }

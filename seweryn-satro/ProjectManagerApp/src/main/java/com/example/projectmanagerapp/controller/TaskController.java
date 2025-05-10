@@ -32,4 +32,35 @@ public class TaskController {
     public Task newTask(@RequestBody Task task) {
         return taskRepository.save(task);
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update task", description = "Update task data based on task ID")
+    public Task updateTask(
+            @Parameter(description = "Task ID")
+            @PathVariable Integer id,
+            @RequestBody Task newTask) {
+
+        return taskRepository.findById(id)
+                .map(task -> {
+                    task.setTitle(newTask.getTitle());
+                    task.setDescription(newTask.getDescription());
+                    task.setTask_type(newTask.getTask_type());
+                    task.setPriority(newTask.getPriority());
+                    task.setProject(newTask.getProject());
+                    return taskRepository.save(task);
+                })
+                .orElse(null);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete task", description = "Delete task data based on task ID")
+    public void deleteTask(
+            @Parameter(description = "Task ID", required = true)
+            @PathVariable Integer id) {
+
+        if (taskRepository.existsById(id)) {
+            taskRepository.deleteById(id);
+        }
+    }
+
 }

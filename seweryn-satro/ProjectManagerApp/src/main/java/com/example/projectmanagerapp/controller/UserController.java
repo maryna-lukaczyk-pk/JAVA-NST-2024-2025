@@ -32,4 +32,32 @@ public class UserController {
     public User newUser(@RequestBody User user) {
         return userRepository.save(user);
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update user", description = "Update user data based on user ID")
+    public User updateUser(
+            @Parameter(description = "User ID")
+            @PathVariable Integer id,
+            @RequestBody User newUser) {
+
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setUsername(newUser.getUsername());
+                    user.setProjects(newUser.getProjects());
+                    return userRepository.save(user);
+                })
+                .orElse(null);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete user", description = "Delete user data based on user ID")
+    public void deleteUser(
+            @Parameter(description = "User ID", required = true)
+            @PathVariable Integer id) {
+
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+        }
+    }
+
 }
