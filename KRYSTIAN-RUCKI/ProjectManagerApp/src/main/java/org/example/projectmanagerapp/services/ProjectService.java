@@ -30,4 +30,7 @@ public class ProjectService {
         existingProject.setName(updatedProject.getName());
         return projectRepository.save(existingProject);
     }
+    public Project getProjectById(long projectId) {
+        return projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found"));
+    }
 }
