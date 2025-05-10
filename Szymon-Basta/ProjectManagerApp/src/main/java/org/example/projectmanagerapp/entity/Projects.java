@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Entity
 @Getter
@@ -19,6 +22,7 @@ public class Projects {
 
     private String name;
 
-    @OneToMany(mappedBy = "projects")
+    @OneToMany(mappedBy = "projects", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Tasks> tasks;
 }
