@@ -1,36 +1,38 @@
 package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.entity.User;
-import com.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Parameter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import com.example.projectmanagerapp.service.UserService;
 import java.util.List;
 
 @RestController
 @Tag(name = "Users", description = "Managing users")
-@RequestMapping("/users")
+@RequestMapping("api/users")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService= userService;
     }
 
-    @GetMapping
-    @Operation(summary = "Users list", description = "Returns the list of every user")
+    @GetMapping("/all")
+    @Operation(summary = "Users list", description = "Returns the list of every user from database")
     public List<User> allUsers() {
-        return userRepository.findAll();
+        return userService.allUsers();
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @Operation(summary = "Add new user", description = "Add new user to the database")
     public User newUser(@RequestBody User user) {
-        return userRepository.save(user);
+        return userService.newUser(user);
     }
 
     @PutMapping("/{id}")
@@ -40,13 +42,7 @@ public class UserController {
             @PathVariable Integer id,
             @RequestBody User newUser) {
 
-        return userRepository.findById(id)
-                .map(user -> {
-                    user.setUsername(newUser.getUsername());
-                    user.setProjects(newUser.getProjects());
-                    return userRepository.save(user);
-                })
-                .orElse(null);
+        return userService.update(id, newUser);
     }
 
     @DeleteMapping("/{id}")
@@ -54,10 +50,7 @@ public class UserController {
     public void deleteUser(
             @Parameter(description = "User ID", required = true)
             @PathVariable Integer id) {
-
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-        }
+        userService.delete(id);
     }
 
 }
