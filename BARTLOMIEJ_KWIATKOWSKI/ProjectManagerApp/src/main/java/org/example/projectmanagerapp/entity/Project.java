@@ -1,6 +1,9 @@
 package org.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import java.util.Set;
 
 @Entity
 @Table(name = "project")
@@ -12,6 +15,13 @@ public class Project {
 
     private String name;
     private String description;
+    @ManyToMany
+    @JoinTable(
+            name = "project_users",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<Users> users;
 
     public Project() {}
 

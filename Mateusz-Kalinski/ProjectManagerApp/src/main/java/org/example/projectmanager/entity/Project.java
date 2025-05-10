@@ -22,3 +22,4 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<Users> users;
 }
+
