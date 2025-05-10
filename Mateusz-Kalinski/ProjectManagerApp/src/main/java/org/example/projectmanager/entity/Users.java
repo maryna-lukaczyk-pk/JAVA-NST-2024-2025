@@ -10,16 +10,12 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Project {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String username;
 
-    @ManyToMany
-    @JoinTable(name = "project_users",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<Users> users;
+    @ManyToMany(mappedBy = "users")
+    private Set<Project> projects;
 }
-
