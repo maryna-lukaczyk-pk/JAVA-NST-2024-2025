@@ -1,69 +1,94 @@
 package org.example.projectmanagerapp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.example.projectmanagerapp.schemas.ProjectDTO;
 import org.example.projectmanagerapp.entity.Project;
-import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.service.ProjectService;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
+@Tag(name = "Projects", description = "Operations for managing projects")
 public class ProjectController {
-    private final ProjectRepository projectRepository;
+    private final ProjectService projectService;
 
-    public ProjectController(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> createProject(@RequestBody Project project) {
-        Project savedProject = projectRepository.save(project);
-
-        Map<String, String> response = new HashMap<>();
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(savedProject.getId()).toUri();
-
-        response.put("success", "Project created");
-        return ResponseEntity.created(location).body(response);
+    @Operation(summary = "Create a new project",
+            description = "Create a new project in database")
+    public ResponseEntity<?> createProject(@RequestBody ProjectDTO projectDTO) {
+        projectService.addProject(projectDTO);
+        return new ResponseEntity<>("Project created", HttpStatus.CREATED);
     }
 
     @GetMapping
+    @Operation(summary = "Get all projects",
+            description = "Get a list of all projects from the database")
     public List<Project> getProjects() {
-        return projectRepository.findAll();
+        return projectService.findAllProjects();
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a single project",
+            description = "Get a single project with given ID",
+            responses = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Project.class)))})
+    @Parameter(in = ParameterIn.PATH, name = "id", description = "Project ID")
+    public ResponseEntity<?> getProjectById(@PathVariable Integer id) {
+        try {
+            Project project = projectService.findProjectById(id);
+            return new ResponseEntity<>(project, HttpStatus.OK);
+        } catch (NotFoundException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "Project not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a project",
+            description = "Delete a project by ID from database")
+    @Parameter(in = ParameterIn.PATH, name = "id", description = "Project ID")
     public ResponseEntity<Map<String, String>> deleteProject(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
-        if(projectRepository.existsById(id)) {
-            projectRepository.deleteById(id);
+        try {
+            projectService.deleteProject(id);
             response.put("success", "Project deleted");
             return ResponseEntity.ok(response);
-        } else {
+        } catch (NotFoundException e) {
             response.put("error", "Project not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, String>> updateProject(@RequestBody Project project, @PathVariable Integer id) {
-        if(projectRepository.existsById(id)) {
-            project.setId(id);
-            projectRepository.save(project);
-            Map<String, String> response = new HashMap<>();
+    @Operation(summary = "Update a project",
+            description = "Update project attributes by ID")
+    @Parameter(in = ParameterIn.PATH, name = "id", description = "Project ID")
+    public ResponseEntity<Map<String, String>> updateProject(@RequestBody ProjectDTO projectDTO, @PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            projectService.updateProject(projectDTO, id);
             response.put("success", "Project updated");
             return ResponseEntity.ok(response);
-        } else {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Project not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        } catch (NotFoundException e) {
+            response.put("error", "Project not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 }
