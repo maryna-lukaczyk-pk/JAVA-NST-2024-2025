@@ -25,4 +25,8 @@ public class User {
     private String userName;
     @ManyToMany(mappedBy = "users")
     private Set<Project> projects;
+    public void setId(int id) {
+        this.id = id;
+    }
 }
+
