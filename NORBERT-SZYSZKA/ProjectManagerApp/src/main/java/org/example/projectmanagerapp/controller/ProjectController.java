@@ -1,7 +1,7 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Project;
-import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,17 +18,17 @@ public class ProjectController {
     // projectRepository field declaration
     // "final" means that a field needs to be initialized
     // using constructor and cannot be changed later
-    private final ProjectRepository projectRepository;
+    private final ProjectService projectService;
 
     // constructor for ProjectController class
-    public ProjectController(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     @GetMapping
     @Operation(summary = "Get all projects", description = "Returns list of all projects")
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+        return projectService.getAllProjects();
     }
 
     @PostMapping
@@ -37,6 +37,6 @@ public class ProjectController {
             @Parameter(description = "Project to be created" ,required = true)
             @RequestBody Project project
     ) {
-        return projectRepository.save(project);
+        return projectService.createProject(project);
     }
 }

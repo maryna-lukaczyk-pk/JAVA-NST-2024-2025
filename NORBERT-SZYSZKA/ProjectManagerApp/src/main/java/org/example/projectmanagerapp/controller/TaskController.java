@@ -1,7 +1,7 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Task;
-import org.example.projectmanagerapp.repository.TaskRepository;
+import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,17 +18,17 @@ public class TaskController {
     // taskRepository field declaration
     // "final" means that a field needs to be initialized
     // using constructor and cannot be changed later
-    private final TaskRepository taskRepository;
+    private final TaskService taskService;
 
     // constructor for TaskController class
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @GetMapping
     @Operation(summary = "Get all tasks", description = "Returns list of all tasks")
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+        return taskService.getAllTasks();
     }
 
     @PostMapping
@@ -37,6 +37,6 @@ public class TaskController {
             @Parameter(description = "Task to be created" ,required = true)
             @RequestBody Task task
     ) {
-        return taskRepository.save(task);
+        return taskService.createTask(task);
     }
 }

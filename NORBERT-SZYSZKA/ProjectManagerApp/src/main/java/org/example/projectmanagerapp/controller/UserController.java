@@ -1,7 +1,7 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.User;
-import org.example.projectmanagerapp.repository.UserRepository;
+import org.example.projectmanagerapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,17 +18,17 @@ public class UserController {
     // userRepository field declaration
     // "final" means that a field needs to be initialized
     // using constructor and cannot be changed later
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     // constructor for UserController class
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
     @Operation(summary = "Get all users", description = "Returns list of all users")
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
     @PostMapping
@@ -37,6 +37,6 @@ public class UserController {
             @Parameter(description = "User to be created" ,required = true)
             @RequestBody User user
     ) {
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 }
