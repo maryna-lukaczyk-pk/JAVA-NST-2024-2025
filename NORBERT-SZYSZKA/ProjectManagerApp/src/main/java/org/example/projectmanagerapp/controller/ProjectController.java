@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/projects")
+@Tag(name = "Project", description = "Project management")
 public class ProjectController {
 
     // projectRepository field declaration
@@ -25,12 +26,17 @@ public class ProjectController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all projects", description = "Returns list of all projects")
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
 
     @PostMapping
-    public Project createProject(@RequestBody Project project) {
+    @Operation(summary = "Create a new project", description = "Creates a new project")
+    public Project createProject(
+            @Parameter(description = "Project to be created" ,required = true)
+            @RequestBody Project project
+    ) {
         return projectRepository.save(project);
     }
 }

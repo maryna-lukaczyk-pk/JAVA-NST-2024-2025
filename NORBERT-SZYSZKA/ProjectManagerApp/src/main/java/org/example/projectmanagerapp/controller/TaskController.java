@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
+@Tag(name = "Task", description = "Task management")
 public class TaskController {
 
     // taskRepository field declaration
@@ -25,12 +26,17 @@ public class TaskController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all tasks", description = "Returns list of all tasks")
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
+    @Operation(summary = "Create a new task", description = "Creates a new task")
+    public Task createTask(
+            @Parameter(description = "Task to be created" ,required = true)
+            @RequestBody Task task
+    ) {
         return taskRepository.save(task);
     }
 }
