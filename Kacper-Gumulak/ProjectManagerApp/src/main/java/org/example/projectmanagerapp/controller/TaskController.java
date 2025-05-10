@@ -39,7 +39,7 @@ public class TaskController {
     public TaskDTO updateTask(
             @Parameter(description = "Task ID to update", example = "1")
             @PathVariable Long id,
-            @RequestBody Task task) { return taskService.updateTask(id, task); }
+            @Valid @RequestBody Task task) { return taskService.updateTask(id, task); }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete task", description = "Deletes the task with the given ID")

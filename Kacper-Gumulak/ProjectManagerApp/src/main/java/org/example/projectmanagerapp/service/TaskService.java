@@ -59,7 +59,9 @@ public class TaskService {
 
         if (updatedTask.getTaskType() != null) { existing.setTaskType(updatedTask.getTaskType()); }
 
-        if (updatedTask.getPriorityLevel() != null) { existing.setPriorityLevel(updatedTask.getPriorityLevel()); }
+        if (updatedTask.getPriorityLevel() != null && updatedTask.getPriorityLevel() != PriorityLevel.UNDEFINED) {
+            existing.setPriorityLevel(updatedTask.getPriorityLevel());
+        }
 
         if (updatedTask.getProject() != null && updatedTask.getProject().getId() != null) {
             Long newProjId = updatedTask.getProject().getId();

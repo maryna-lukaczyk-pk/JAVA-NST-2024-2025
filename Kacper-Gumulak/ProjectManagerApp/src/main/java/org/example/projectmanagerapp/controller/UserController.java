@@ -3,6 +3,7 @@ package org.example.projectmanagerapp.controller;
 import org.example.projectmanagerapp.dto.UserDTO;
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,7 +36,7 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Add new user", description = "Creates a new user based on the data provided")
-    public UserDTO createUser(@RequestBody User user) {
+    public UserDTO createUser(@Valid @RequestBody User user) {
         return userService.createUser(user);
     }
 
@@ -52,7 +53,7 @@ public class UserController {
     public UserDTO updateUser(
             @Parameter(description = "User ID to be updated", example = "1")
             @PathVariable Long id,
-            @RequestBody User user) {
+            @Valid @RequestBody User user) {
         return userService.updateUser(id, user);
     }
 

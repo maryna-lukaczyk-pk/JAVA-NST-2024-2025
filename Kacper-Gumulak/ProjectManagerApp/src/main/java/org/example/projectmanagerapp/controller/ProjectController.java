@@ -38,7 +38,7 @@ public class ProjectController {
     @Operation(summary = "Update project", description = "Updates the project data with the given ID")
     public ProjectDTO updateProject(
             @Parameter(description = "Project ID to update", example = "1")
-            @PathVariable Long id, @RequestBody Project project) { return projectService.updateProject(id, project); }
+            @PathVariable Long id, @Valid @RequestBody Project project) { return projectService.updateProject(id, project); }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete project", description = "Deletes the project with the given ID")
