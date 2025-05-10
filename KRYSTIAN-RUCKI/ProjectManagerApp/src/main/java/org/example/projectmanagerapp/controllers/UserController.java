@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @Tag(name = "Users", description = "Operations for managing users")
-class UserController {
+public class UserController {
 
     private final UserService userService;
 
