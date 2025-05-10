@@ -1,7 +1,7 @@
 package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.entity.Task;
-import com.example.projectmanagerapp.repository.TaskRepository;
+import com.example.projectmanagerapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,26 +11,26 @@ import java.util.List;
 
 @RestController
 @Tag(name = "Tasks", description = "Managing tasks")
-@RequestMapping("/tasks")
+@RequestMapping("api/tasks")
 public class TaskController {
 
-    private final TaskRepository taskRepository;
+    private final TaskService taskService;
 
     @Autowired
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @Operation(summary = "Project task", description = "Returns the list of every task")
     public List<Task> allTasks() {
-        return taskRepository.findAll();
+        return taskService.allTasks();
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @Operation(summary = "Add new task", description = "Add new task to the database")
     public Task newTask(@RequestBody Task task) {
-        return taskRepository.save(task);
+        return taskService.newTask(task);
     }
 
     @PutMapping("/{id}")
@@ -40,16 +40,7 @@ public class TaskController {
             @PathVariable Integer id,
             @RequestBody Task newTask) {
 
-        return taskRepository.findById(id)
-                .map(task -> {
-                    task.setTitle(newTask.getTitle());
-                    task.setDescription(newTask.getDescription());
-                    task.setTask_type(newTask.getTask_type());
-                    task.setPriority(newTask.getPriority());
-                    task.setProject(newTask.getProject());
-                    return taskRepository.save(task);
-                })
-                .orElse(null);
+        return taskService.update(id, newTask);
     }
 
     @DeleteMapping("/{id}")
@@ -58,9 +49,7 @@ public class TaskController {
             @Parameter(description = "Task ID", required = true)
             @PathVariable Integer id) {
 
-        if (taskRepository.existsById(id)) {
-            taskRepository.deleteById(id);
-        }
+        taskService.delete(id);
     }
 
 }
