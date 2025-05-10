@@ -1,5 +1,6 @@
 package org.example.projectmanagerapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,9 +21,11 @@ public class Project {
     private String name;
 
     @ManyToMany(mappedBy = "projects")
+    @JsonManagedReference
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "project")
+    @JsonManagedReference
     private List<Task> tasks = new ArrayList<>();
 
     public Project() {
