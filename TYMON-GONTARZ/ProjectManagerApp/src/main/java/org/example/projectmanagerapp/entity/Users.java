@@ -6,13 +6,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "users")
+
 @Getter
 @Setter
 @NoArgsConstructor
 
-public class Project {
+public class Users {
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @Column(name = "username", nullable = false)
+    private String username;
 }

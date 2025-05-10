@@ -1,3 +1,3 @@
-#LAB01
+krystian-rucki-lab03-2
 Krystian Rucki
-GK03
+GK03 

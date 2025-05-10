@@ -1,15 +1,13 @@
 package org.example.projectmanagerapp.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.example.projectmanagerapp.entity.Project;
-import org.example.projectmanagerapp.entity.Task;
-import org.example.projectmanagerapp.entity.User;
-import org.example.projectmanagerapp.repository.ProjectRepository;
-import org.example.projectmanagerapp.repository.UserRepository;
+import org.example.projectmanagerapp.interfaces.ProjectResponseDTO;
+import org.example.projectmanagerapp.interfaces.ProjectTasksResponseDTO;
+import org.example.projectmanagerapp.interfaces.UserResponseDTO;
+import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,107 +16,63 @@ import java.util.List;
 @RequestMapping("/api/projects")
 @Tag(name = "Project API")
 public class ProjectController {
-    private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final ProjectService projectService;
 
     @Autowired
-    public ProjectController(ProjectRepository projectRepository, UserRepository userRepository) {
-        this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     @GetMapping("/all")
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+    public List<ProjectResponseDTO> getAllProjects() {
+        return projectService.getAllProjects();
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<Project> getProjectById(@PathVariable Long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElse(null);
-
-        if (project == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found");
-        }
-
+    public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable Long projectId) {
+        ProjectResponseDTO project = projectService.getProjectById(projectId);
         return ResponseEntity.ok(project);
     }
 
     @GetMapping("/{projectId}/users")
-    public ResponseEntity<List<User>> getAssociatedUsers(@PathVariable Long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
-
-        List<User> users = project.getUsers().stream().toList();
-
+    public ResponseEntity<List<UserResponseDTO>> getAssociatedUsers(@PathVariable Long projectId) {
+        List<UserResponseDTO> users = projectService.getAssociatedUsers(projectId);
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{projectId}/tasks")
-    public ResponseEntity<List<Task>> getAssociatedTasks(@PathVariable Long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
-
-        List<Task> tasks = project.getTasks().stream().toList();
-
+    public ResponseEntity<List<ProjectTasksResponseDTO>> getAssociatedTasks(@PathVariable Long projectId) {
+        List<ProjectTasksResponseDTO> tasks = projectService.getAssociatedTasks(projectId);
         return ResponseEntity.ok(tasks);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Project> createProject(@RequestBody String projectName) {
-        Project createdProject = projectRepository.save(new Project(projectName));
+    public ResponseEntity<ProjectResponseDTO> createProject(@RequestBody String projectName) {
+        ProjectResponseDTO createdProject = projectService.createProject(projectName);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
     @PutMapping("/rename/{projectId}")
-    public ResponseEntity<Project> renameProject(@PathVariable Long projectId, @RequestBody String projectName) {
-        Project project =  projectRepository.findById(projectId)
-                .map(existingProject -> {
-                    existingProject.setName(projectName);
-                    return projectRepository.save(existingProject);
-                })
-                .orElse(null);
-
-        if (project == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Operation was not successful");
-        }
-
+    public ResponseEntity<ProjectResponseDTO> renameProject(@PathVariable Long projectId, @RequestBody String projectName) {
+        ProjectResponseDTO project = projectService.renameProject(projectId, projectName);
         return ResponseEntity.ok(project);
     }
 
     @DeleteMapping("/remove/{projectId}")
     public ResponseEntity<Object> deleteProject(@PathVariable Long projectId) {
-        return projectRepository.findById(projectId)
-                .map(project -> {
-                    projectRepository.delete(project);
-                    return ResponseEntity.noContent().build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+        projectService.deleteProject(projectId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{projectId}/users/{userId}")
     public ResponseEntity<Void> associateUserWithProject(@PathVariable Long userId, @PathVariable Long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
-
-        project.getUsers().add(user);
-        projectRepository.save(project);
-
+        projectService.associateUserWithProject(userId, projectId);
         return ResponseEntity.ok(null);
     }
 
     @DeleteMapping("/{projectId}/users/{userId}")
     public ResponseEntity<Void> removeUserFromProject(@PathVariable Long userId, @PathVariable Long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
-
-        project.getUsers().remove(user);
-        projectRepository.save(project);
-
+        projectService.removeUserFromProject(userId, projectId);
         return ResponseEntity.ok(null);
     }
 }

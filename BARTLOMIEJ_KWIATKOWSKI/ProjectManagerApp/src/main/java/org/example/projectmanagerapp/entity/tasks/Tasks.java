@@ -1,5 +1,6 @@
-package org.example.projectmanagerapp.entity;
+package org.example.projectmanagerapp.entity.tasks;
 
+import org.example.projectmanagerapp.entity.Project;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "tasks")
 public class Tasks {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,10 +26,4 @@ public class Tasks {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
-}
-
-enum TaskType {
-    LOW_PRIORITY,
-    MEDIUM_PRIORITY,
-    HIGH_PRIORITY
 }
