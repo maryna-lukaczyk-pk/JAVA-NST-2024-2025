@@ -46,4 +46,9 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
+    public Tasks getTaskById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found id: " + id));
+    }
+
 }

@@ -52,4 +52,13 @@ public class ProjectController {
             @Parameter(description = "ID of the project to be deleted") @PathVariable Long id) {
         projectService.deleteProject(id);
     }
+
+    @Operation(summary = "Get project by ID", description = "Retrieves a project by its ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<Projects> getProjectById(
+            @Parameter(description = "ID of the project to retrieve") @PathVariable Long id) {
+        Projects project = projectService.getProjectById(id);
+        return ResponseEntity.ok(project);
+    }
+
 }

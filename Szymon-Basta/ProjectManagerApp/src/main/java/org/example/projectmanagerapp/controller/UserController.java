@@ -52,4 +52,12 @@ public class UserController {
         userService.deleteUser(id);
     }
 
+    @Operation(summary = "Get user by ID", description = "Retrieves a user by their ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<Users> getUserById(
+            @Parameter(description = "ID of the user to retrieve") @PathVariable Long id) {
+        Users user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
+    }
+
 }

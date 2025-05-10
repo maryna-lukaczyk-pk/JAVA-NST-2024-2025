@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Tasks;
 import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
@@ -50,4 +50,9 @@ public class TaskController {
         taskService.deleteTask(id);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get task by ID")
+    public ResponseEntity<Tasks> getTaskById(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.getTaskById(id));
+    }
 }

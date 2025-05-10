@@ -42,4 +42,10 @@ public class ProjectService {
             throw new IllegalArgumentException("Project not found id: " + id);
         }
     }
+
+    public Projects getProjectById(Long id) {
+        return projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Project not found id: " + id));
+    }
+
 }
