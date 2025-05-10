@@ -43,4 +43,12 @@ public class UserController {
     public void deleteUser(@Parameter(description = "user ID do usuniecia")@PathVariable Long id) {
         userService.deleteUser(id);
     }
+
+    @Operation(summary = "Pobierz użytkownika po ID")
+    @GetMapping("/{id}")
+    public User getUserById(
+            @Parameter(description = "User id do wyszukania") @PathVariable Long id
+    ) {
+        return userService.getUserById(id);
+    }
 }

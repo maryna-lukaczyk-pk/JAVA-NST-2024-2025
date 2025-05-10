@@ -46,4 +46,12 @@ public class ProjectController {
     public void deleteProject(@Parameter(description = "project ID do usuniecia") @PathVariable Long id) {
         projectService.deleteProject(id);
     }
+
+    @Operation(summary = "Pobierz projekt po ID")
+    @GetMapping("/{id}")
+    public Project getProjectById(
+            @Parameter(description = "ID project") @PathVariable Long id
+    ) {
+        return projectService.getProjectById(id);
+    }
 }

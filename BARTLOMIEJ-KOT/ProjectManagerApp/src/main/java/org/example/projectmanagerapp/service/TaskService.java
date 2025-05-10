@@ -38,4 +38,8 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
+    public Task getTaskById(Long id) {
+        return taskRepository.findById(id).orElse(null);
+    }
+
 }

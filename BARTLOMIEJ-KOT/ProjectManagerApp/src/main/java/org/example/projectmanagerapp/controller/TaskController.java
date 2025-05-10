@@ -47,4 +47,12 @@ public class TaskController {
         taskService.deleteTask(id);
     }
 
+    @Operation(summary = "Pobierz task po ID")
+    @GetMapping("/{id}")
+    public Task getTaskById(
+            @Parameter(description = "ID task") @PathVariable Long id
+    ) {
+        return taskService.getTaskById(id);
+    }
+
 }
