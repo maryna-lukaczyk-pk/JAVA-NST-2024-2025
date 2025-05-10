@@ -38,4 +38,9 @@ public class ProjectService {
             projectRepository.deleteById(id);
         }
     }
+
+    public Project projectById(Integer id) {
+        return projectRepository.findById(id).orElse(null);
+    }
+
 }

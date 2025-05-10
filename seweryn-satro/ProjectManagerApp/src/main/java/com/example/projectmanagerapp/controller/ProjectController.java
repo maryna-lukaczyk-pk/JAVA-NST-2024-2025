@@ -49,4 +49,11 @@ public class ProjectController {
             @PathVariable Integer id) {
         projectService.deleteProject(id);
     }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get project by ID", description = "Return project by ID")
+    public Project projectById(@PathVariable Integer id) {
+        return projectService.projectById(id);
+    }
+
 }
