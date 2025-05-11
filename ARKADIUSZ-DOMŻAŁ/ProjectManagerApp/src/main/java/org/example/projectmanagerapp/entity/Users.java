@@ -1,4 +1,5 @@
 package org.example.projectmanagerapp.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +16,11 @@ import java.util.List;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String username;
 
     @ManyToMany(mappedBy= "users")
+    @JsonIgnore // zeby uniknać rekurencji w swaggerze
     private List<Projects> projects;
 }

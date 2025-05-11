@@ -1,27 +1,82 @@
 package org.example.projectmanagerapp.controller;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.example.projectmanagerapp.entity.Projects;
 import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.example.projectmanagerapp.service.ProjectService;
+
 
 import java.util.List;
 @RestController
-@RequestMapping("/Projects")
+@RequestMapping("api/projects")
+@Tag(name = "Projects")
 public class ProjectsController {
-    private final ProjectRepository projectRepository;
+    private final ProjectService projectService;
 
-    public ProjectsController(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectsController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
-    @GetMapping
+    @Operation(summary = "Retrieve all Projects", description = "Returns a list of Projects")
+    @GetMapping("/get")
     public List<Projects> getAllProjects() {
-        return projectRepository.findAll();
+        return projectService.getAllProjects();
     }
 
-    @PostMapping
-    public ResponseEntity<Projects> createProject(@RequestBody Projects project) {
-        Projects savedProject = projectRepository.save(project);
-        return ResponseEntity.ok(savedProject);
+    @Operation(summary = "Create a new Project", description = "Allows to create a new Project")
+    @PostMapping("/create")
+    public ResponseEntity<Projects> createProject(
+            @Parameter(description="Project object that needs to be created", required=true)
+            @RequestBody Projects project) {
+
+        Projects createdProject = projectService.createProject(project);
+        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
+
+    @Operation(summary = "Update the Project", description = "Updates an existing Project by Id")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateProject(
+            @Parameter(description = "The ID of the project to update", required = true)
+            @PathVariable Long id,
+
+            @Parameter(description = "The project object containing updated information", required = true)
+            @RequestBody Projects updatedProject){
+
+        return projectService.updateProject(id, updatedProject)
+                .map(updated -> ResponseEntity.ok("Project updated succesfully")) // zwraca 200 (ok)
+                .orElseGet(()-> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Project with id: " + id +" not found")); //zwróci blad
+    }
+
+    @Operation(summary = "Delete the Project", description = "Deletes the project by Id")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteProject(
+            @Parameter(description = "The ID of the project to delete", required = true)
+            @PathVariable Long id){
+
+        boolean isDeleted = projectService.deleteProject(id);
+        if(isDeleted){
+            return new ResponseEntity<>("Project deleted succesfully", HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Project not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //metoda wyszukania projektu po jego ID
+    @Operation(summary = "Get a Project by ID", description = "Returns a single Project by its ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<String> getProjectById(
+            @Parameter(description = "The ID of the Project to retrieve", required = true)
+            @PathVariable Long id) {
+
+        return projectService.getProjectById(id)  // Zmieniamy na odpowiednią metodę w serwisie
+                .map(project -> ResponseEntity.ok("Project found: " + project.getName()))  // Zwracamy nazwę projektu
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Project with id: " + id + " not found"));
+    }
+
 }
