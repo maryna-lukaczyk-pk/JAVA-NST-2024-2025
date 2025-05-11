@@ -35,6 +35,9 @@ public class Task
     @JoinColumn(name = "project_id")
     private Project project;
 
+    public Task(int i, String s) {
+    }
+
     public void setPriorityLevel() {
         if (this.task_type == null) {
             priorityLevel = new MediumPriority();
