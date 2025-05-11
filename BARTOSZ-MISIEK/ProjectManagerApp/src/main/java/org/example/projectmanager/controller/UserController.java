@@ -24,6 +24,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Fetch an entity", responses = {
+            @ApiResponse(responseCode = "200", description = "Entity found"),
+            @ApiResponse(responseCode = "400", description = "Entity not found")
+    })
     public UserDto get(
             @Parameter(description = "The id of the entity")
             @PathVariable Long id
@@ -32,11 +36,18 @@ public class UserController {
     }
 
     @PostMapping
+    @Operation(summary = "Creates an entity", responses = {
+            @ApiResponse(responseCode = "200", description = "Entity created"),
+    })
     public Long create(@RequestBody UserCreateDto dto) {
         return this.service.create(dto);
     }
 
     @PutMapping
+    @Operation(summary = "Update an entity", responses = {
+            @ApiResponse(responseCode = "200", description = "Entity has been updated"),
+            @ApiResponse(responseCode = "400", description = "Entity not found")
+    })
     public void update(@RequestBody UserEditDto dto) throws EntityNotFoundException {
         this.service.edit(dto);
     }

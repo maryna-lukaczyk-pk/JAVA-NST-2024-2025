@@ -24,6 +24,10 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Fetch an entity", responses = {
+            @ApiResponse(responseCode = "200", description = "Entity found"),
+            @ApiResponse(responseCode = "400", description = "Entity not found")
+    })
     public TaskDto get(
             @Parameter(description = "The id of the entity")
             @PathVariable Long id
@@ -32,11 +36,18 @@ public class TaskController {
     }
 
     @PostMapping
+    @Operation(summary = "Creates an entity", responses = {
+            @ApiResponse(responseCode = "200", description = "Entity created"),
+    })
     public Long create(@RequestBody TaskCreateDto dto) {
         return this.service.create(dto);
     }
 
     @PutMapping
+    @Operation(summary = "Update an entity", responses = {
+            @ApiResponse(responseCode = "200", description = "Entity has been updated"),
+            @ApiResponse(responseCode = "400", description = "Entity not found")
+    })
     public void update(@RequestBody TaskEditDto dto) throws EntityNotFoundException {
         this.service.edit(dto);
     }
