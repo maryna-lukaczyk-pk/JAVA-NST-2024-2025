@@ -1,8 +1,11 @@
 package org.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.projectmanagerapp.enums.TaskType;
-
+@Setter
+@Getter
 @Entity
 @Table(name = "tasks")
 public class Task {
