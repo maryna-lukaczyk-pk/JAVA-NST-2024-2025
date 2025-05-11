@@ -1,46 +1,58 @@
 package org.example.projectmanagerapp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
+import lombok.RequiredArgsConstructor;
 import org.example.projectmanagerapp.entity.Task;
-import org.example.projectmanagerapp.priority.HighPriority;
-import org.example.projectmanagerapp.priority.LowPriority;
-import org.example.projectmanagerapp.priority.MediumPriority;
-import org.example.projectmanagerapp.priority.PriorityLevel;
-import org.example.projectmanagerapp.repository.TaskRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Tasks", description = "Operacje na zadaniach")
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/tasks")
+@RequiredArgsConstructor
 public class TaskController {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskService taskService;
 
-    @PostMapping("/add")
-    public Task createTask(@RequestParam String name, @RequestParam String priority) {
-        PriorityLevel priorityLevel;
-
-        switch (priority.toUpperCase()) {
-            case "HIGH":
-                priorityLevel = new HighPriority();
-                break;
-            case "MEDIUM":
-                priorityLevel = new MediumPriority();
-                break;
-            case "LOW":
-            default:
-                priorityLevel = new LowPriority();
-                break;
-        }
-
-        Task task = new Task(name, priorityLevel);
-        return taskRepository.save(task);
-    }
-
+    @Operation(summary = "Pobierz wszystkie zadania")
     @GetMapping
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+        return taskService.getAllTasks();
     }
+
+
+    @Operation(summary = "Dodaj nowe zadanie")
+    @PostMapping
+    public Task createTask(
+            @Parameter(description = "Dane nowego zadania") @RequestBody Task task
+    ) {
+        return taskService.createTask(task);
+    }
+
+    @Operation(summary = "Zaktualizuj zadanie")
+    @PutMapping("/{id}")
+    public Task updateTask(
+            @Parameter(description = "Task ID do zmiany") @PathVariable Long id,
+            @Parameter(description = "nowe dane") @RequestBody Task task) {
+        return taskService.updateTask(id, task);
+    }
+
+    @Operation(summary = "Usuń zadanie")
+    @DeleteMapping("/{id}")
+    public void deleteTask( @Parameter(description = "task ID do usuniecia") @PathVariable Long id) {
+        taskService.deleteTask(id);
+    }
+
+    @Operation(summary = "Pobierz task po ID")
+    @GetMapping("/{id}")
+    public Task getTaskById(
+            @Parameter(description = "ID task") @PathVariable Long id
+    ) {
+        return taskService.getTaskById(id);
+    }
+
 }
