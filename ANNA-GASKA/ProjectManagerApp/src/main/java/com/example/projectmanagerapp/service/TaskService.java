@@ -19,6 +19,11 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
+    public Task getTaskById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
+    }
+
     public Task createTask(Task task) {
         return taskRepository.save(task);
     }

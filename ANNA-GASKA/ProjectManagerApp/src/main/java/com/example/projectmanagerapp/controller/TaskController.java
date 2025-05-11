@@ -49,6 +49,16 @@ private final TaskService taskService;
         return taskService.createTask(task);
     }
 
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "Get task by ID",
+            description = "Retrieve a task by ID"
+    )
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+        Task task = taskService.getTaskById(id);
+        return ResponseEntity.ok(task);
+    }
+
     @PutMapping("/{id}")
     @Operation(
             summary = "Update an existing task",

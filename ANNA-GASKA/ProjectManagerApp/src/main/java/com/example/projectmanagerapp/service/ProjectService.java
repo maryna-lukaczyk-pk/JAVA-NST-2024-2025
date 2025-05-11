@@ -19,6 +19,11 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
+    public Projects getProjectById(long id) {
+        return projectRepository.findById((long) id)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + id));
+    }
+
     public Projects createProject(Projects project) {
         return projectRepository.save(project);
     }
