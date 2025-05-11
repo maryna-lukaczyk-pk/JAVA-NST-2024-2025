@@ -1,5 +1,8 @@
 package org.example.projectmanagerapp.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/task")
+@Tag(name = "Kontroler odpowiedzialny za zarządzanie zadaniami")
 public class TaskController {
 
     private final TaskService taskService;
@@ -21,6 +25,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
+    @Operation(description = "Endpoint odpowiedzialny za pobieranie zadania po id")
     public ResponseEntity<Task> getTask(@PathVariable Long id) {
         return taskService.findTaskById(id)
                 .map(ResponseEntity::ok)
@@ -28,13 +33,29 @@ public class TaskController {
     }
 
     @GetMapping
+    @Operation(description = "Endpoint odpowiedzialny za pobieranie listy wszystkich zadań")
     public List<Task> getAllTasks() {
         return taskService.findAllTasks();
     }
 
     @PostMapping
+    @Operation(description = "Endpoint odpowiedzialny za tworzenie zadania")
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         Task savedTask = taskService.createTask(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(description = "Endpoint odpowiedzialny za zmianę pól zadania")
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
+        Task updatedTask = taskService.updateTask(id, task);
+        return ResponseEntity.ok(updatedTask);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(description = "Endpoint odpowiedzialny za usuwanie taska")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }
