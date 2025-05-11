@@ -1,11 +1,12 @@
 package org.jerzy.projectmanagerapp.controller;
 
-import org.jerzy.projectmanagerapp.entity.Task;
-import org.jerzy.projectmanagerapp.repository.TaskRepository;
-import org.jerzy.projectmanagerapp.service.TaskService;
+import org.jerzy.projectmanagerapp.entity.Project;
+import org.jerzy.projectmanagerapp.repository.ProjectRepository;
+import org.jerzy.projectmanagerapp.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -13,78 +14,81 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class TaskControllerTest {
+class ProjectControllerTest {
 
-  private TaskRepository taskRepository;
-  private TaskService taskService;
-  private TaskController taskController;
+  private ProjectRepository projectRepository;
+  private ProjectService projectService;
+  private ProjectController projectController;
 
   @BeforeEach
   void setUp() {
-    taskRepository = Mockito.mock(TaskRepository.class);
-    taskService = new TaskService(taskRepository);
+    projectRepository = Mockito.mock(ProjectRepository.class);
+    projectService = new ProjectService(projectRepository);
+    projectController = new ProjectController(projectRepository);
   }
 
   @Test
-  void testGetAllTasks() {
-    when(taskService.getAllTasks()).thenReturn(List.of(new Task(), new Task()));
+  void testGetAllProjects() {
+    when(projectService.getAllProjects()).thenReturn(List.of(new Project(), new Project()));
 
-    List<Task> result = taskController.get();
+    List<Project> result = projectController.get();
     assertEquals(2, result.size());
+    verify(projectService).getAllProjects();
   }
 
   @Test
-  void testGetTaskById() {
-    Task task = new Task();
-    task.setId(1L);
-    when(taskService.getById("1")).thenReturn(task);
+  void testGetProjectById() {
+    Project project = new Project();
+    project.setId(1L);
+    when(projectService.getById("1")).thenReturn(project);
 
-    Task result = taskController.getTaskById("1");
+    Project result = projectController.getProjectById("1");
     assertEquals(1L, result.getId());
   }
 
   @Test
   void testPost() {
-    Task task = new Task();
-    task.setTitle("New Task");
-    when(taskService.create(any())).thenReturn(task);
+    Project project = new Project();
+    project.setName("Test");
+    when(projectService.create(any())).thenReturn(project);
 
-    ResponseEntity<Task> response = taskController.post(task);
-    assertEquals(201, response.getStatusCode());
-    assertEquals("New Task", response.getBody().getTitle());
+    ResponseEntity<Project> response = projectController.post(project);
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    assertEquals("Test", response.getBody().getName());
   }
 
   @Test
-  void testUpdateTask_valid() {
-    Task task = new Task();
-    task.setTitle("Updated");
-    when(taskService.update("1", task)).thenReturn(task);
+  void testUpdateProject_valid() {
+    Project project = new Project();
+    project.setName("Updated");
+    when(projectService.update("1", project)).thenReturn(project);
 
-    ResponseEntity<Task> response = taskController.updateProject("1", task);
-    assertEquals(200, response.getStatusCode());
-    assertEquals("Updated", response.getBody().getTitle());
+    ResponseEntity<Project> response = projectController.updateProject("1", project);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Updated", response.getBody().getName());
   }
 
   @Test
-  void testUpdateTask_invalid() {
-    when(taskService.update(eq("1"), any())).thenThrow(new IllegalArgumentException());
+  void testUpdateProject_invalid() {
+    Project project = new Project();
+    when(projectService.update(eq("1"), any())).thenThrow(new IllegalArgumentException());
 
-    ResponseEntity<Task> response = taskController.updateProject("1", new Task());
-    assertEquals(404, response.getStatusCode());
+    ResponseEntity<Project> response = projectController.updateProject("1", project);
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
   @Test
-  void testDeleteTask_valid() {
-    ResponseEntity<Void> response = taskController.deleteProject("1");
-    assertEquals(204, response.getStatusCode());
-    verify(taskService).delete("1");
+  void testDeleteProject_valid() {
+    ResponseEntity<Void> response = projectController.deleteProject("1");
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    verify(projectService).delete("1");
   }
 
   @Test
-  void testDeleteTask_invalid() {
-    doThrow(new IllegalArgumentException()).when(taskService).delete("1");
+  void testDeleteProject_invalid() {
+    doThrow(new IllegalArgumentException()).when(projectService).delete("1");
 
-    ResponseEntity<Void> response = taskController.deleteProject("1");
-    assertEquals(404, response.getStatusCode());
+    ResponseEntity<Void> response = projectController.deleteProject("1");
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 }

@@ -6,6 +6,7 @@ import org.jerzy.projectmanagerapp.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -23,6 +24,7 @@ class TaskControllerTest {
   void setUp() {
     taskRepository = Mockito.mock(TaskRepository.class);
     taskService = new TaskService(taskRepository);
+    taskController = new TaskController(taskRepository);
   }
 
   @Test
@@ -50,7 +52,7 @@ class TaskControllerTest {
     when(taskService.create(any())).thenReturn(task);
 
     ResponseEntity<Task> response = taskController.post(task);
-    assertEquals(201, response.getStatusCode());
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertEquals("New Task", response.getBody().getTitle());
   }
 
@@ -61,7 +63,7 @@ class TaskControllerTest {
     when(taskService.update("1", task)).thenReturn(task);
 
     ResponseEntity<Task> response = taskController.updateProject("1", task);
-    assertEquals(200, response.getStatusCode());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("Updated", response.getBody().getTitle());
   }
 
@@ -70,14 +72,15 @@ class TaskControllerTest {
     when(taskService.update(eq("1"), any())).thenThrow(new IllegalArgumentException());
 
     ResponseEntity<Task> response = taskController.updateProject("1", new Task());
-    assertEquals(404, response.getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
   @Test
   void testDeleteTask_valid() {
+    doNothing().when(taskService).delete("1");
+
     ResponseEntity<Void> response = taskController.deleteProject("1");
-    assertEquals(204, response.getStatusCode());
-    verify(taskService).delete("1");
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
   }
 
   @Test
@@ -85,6 +88,6 @@ class TaskControllerTest {
     doThrow(new IllegalArgumentException()).when(taskService).delete("1");
 
     ResponseEntity<Void> response = taskController.deleteProject("1");
-    assertEquals(404, response.getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 }

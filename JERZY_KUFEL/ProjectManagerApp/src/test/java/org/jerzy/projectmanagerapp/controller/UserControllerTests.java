@@ -6,6 +6,7 @@ import org.jerzy.projectmanagerapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -25,6 +26,7 @@ class UserControllerTest {
   void setUp() {
     userRepository = Mockito.mock(UserRepository.class);
     userService = new UserService(userRepository);
+    userController = new UserController(userRepository);
   }
 
   @Test
@@ -52,7 +54,7 @@ class UserControllerTest {
     when(userService.create(any())).thenReturn(user);
 
     ResponseEntity<User> response = userController.postMethodName(user);
-    assertEquals(201, response.getStatusCode());
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertEquals("new_user", response.getBody().getUsername());
   }
 
@@ -63,7 +65,7 @@ class UserControllerTest {
     when(userService.update("1", user)).thenReturn(user);
 
     ResponseEntity<User> response = userController.updateUser("1", user);
-    assertEquals(200, response.getStatusCode());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("updated", response.getBody().getUsername());
   }
 
@@ -72,13 +74,13 @@ class UserControllerTest {
     when(userService.update(eq("1"), any())).thenThrow(new IllegalArgumentException());
 
     ResponseEntity<User> response = userController.updateUser("1", new User());
-    assertEquals(404, response.getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
   @Test
   void testDeleteUser_valid() {
     ResponseEntity<Void> response = userController.deleteUser("1");
-    assertEquals(204, response.getStatusCode());
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     verify(userService).delete("1");
   }
 
@@ -87,6 +89,6 @@ class UserControllerTest {
     doThrow(new IllegalArgumentException()).when(userService).delete("1");
 
     ResponseEntity<Void> response = userController.deleteUser("1");
-    assertEquals(404, response.getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 }
