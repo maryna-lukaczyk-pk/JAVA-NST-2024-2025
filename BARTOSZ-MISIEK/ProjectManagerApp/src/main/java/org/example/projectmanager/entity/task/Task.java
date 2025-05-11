@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.example.projectmanager.entity.prioritylevel.PriorityLevel;
 import org.example.projectmanager.entity.project.Project;
 
+import java.util.Optional;
+
 @Entity(name = "tasks")
 @Getter
 @Setter
@@ -29,4 +31,8 @@ public class Task {
 
     @Transient
     private PriorityLevel priorityLevel;
+
+    public Optional<Project> getProject() {
+        return Optional.ofNullable(project);
+    }
 }

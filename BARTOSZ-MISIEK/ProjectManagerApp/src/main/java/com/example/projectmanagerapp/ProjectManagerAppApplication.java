@@ -7,7 +7,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EntityScan("org.example.projectmanager.entity")
 @EnableJpaRepositories("org.example.projectmanager.repository")
-@SpringBootApplication(scanBasePackages = "org.example.projectmanager.controller")
+@SpringBootApplication(scanBasePackages = {
+        "org.example.projectmanager.controller",
+        "org.example.projectmanager.service",
+        "org.example.projectmanager.repository"
+})
 public class ProjectManagerAppApplication {
 
     public static void main(String[] args) {
