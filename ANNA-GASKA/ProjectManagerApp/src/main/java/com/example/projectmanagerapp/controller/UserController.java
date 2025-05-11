@@ -1,52 +1,50 @@
 package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.entity.User;
-import com.example.projectmanagerapp.repository.UserRepository;
+import com.example.projectmanagerapp.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/api/user")
 @Tag(
         name = "User Management",
         description = "APIs for managing users"
 )
 
-@RestController
-@RequestMapping("/api/user")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
+    @GetMapping
     @Operation(
             summary = "Get all users",
             description = "Retrieve a list of all users"
     )
-    @GetMapping
     public List<User> getUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
+    @PostMapping
     @Operation(
             summary = "Create a new user",
             description = "Create a new user with the provided details"
     )
 
-    @PostMapping
-    public User createUser(
-            @Parameter(
-                    name = "user",
-                    description = "User object to be created",
-                    required = true
-            )
+
+    public ResponseEntity <User> addUser(
             @RequestBody User user) {
-        return userRepository.save(user);
+        User createdUser = userService.createUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
 }

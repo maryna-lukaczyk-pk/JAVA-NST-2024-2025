@@ -1,28 +1,29 @@
 package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.entity.Projects;
-import com.example.projectmanagerapp.repository.ProjectRepository;
+import com.example.projectmanagerapp.service.ProjectService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/api/project")
 @Tag(
         name = "Project Management",
         description = "APIs for managing projects"
 )
 
-@RestController
-@RequestMapping("/api/project")
 public class ProjectController {
 
-    private final ProjectRepository projectRepository;
+    private final ProjectService projectService;
 
-    public ProjectController(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     @Operation(
@@ -32,7 +33,7 @@ public class ProjectController {
 
     @GetMapping
     public List<Projects> getAllProjects() {
-        return projectRepository.findAll();
+        return projectService.getAllProjects();
     }
 
     @Operation(
@@ -41,17 +42,12 @@ public class ProjectController {
     )
 
     @PostMapping
-    public Projects createProject(
-            @Parameter(
-                    name = "project",
-                    description = "Project object to be created",
-                    required = true
-            )
-            @RequestBody Projects project) {
-        return projectRepository.save(project);
+
+    public ResponseEntity <Projects> addProjekt(
+            @RequestBody Projects projects) {
+        Projects createdProject = projectService.createProject(projects);
+        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
-
-
 
 
 }
