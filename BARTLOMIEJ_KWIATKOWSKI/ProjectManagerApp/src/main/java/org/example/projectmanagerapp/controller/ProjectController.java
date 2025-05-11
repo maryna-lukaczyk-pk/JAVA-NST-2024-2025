@@ -76,7 +76,7 @@ public class ProjectController {
         }
         Project project = projectOpt.get();
         project.getUsers().add(userOpt.get());
-        Project updated = projectService.createProject(project); // save again
+        Project updated = projectService.createProject(project);
         return ResponseEntity.ok(updated);
     }
 }
