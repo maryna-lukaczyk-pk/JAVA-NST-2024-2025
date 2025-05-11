@@ -49,5 +49,23 @@ private final TaskService taskService;
         return taskService.createTask(task);
     }
 
+    @PutMapping("/{id}")
+    @Operation(
+            summary = "Update an existing task",
+            description = "Update the details of an existing task"
+    )
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
+        Task updatedTask = taskService.updateTask(id, task);
+        return ResponseEntity.ok(updatedTask);
+    }
 
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete a task",
+            description = "Delete a task by its ID"
+    )
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
+    }
 }

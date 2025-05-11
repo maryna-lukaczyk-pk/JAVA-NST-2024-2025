@@ -50,4 +50,25 @@ public class ProjectController {
     }
 
 
+    @PutMapping("/{id}")
+    @Operation(
+            summary = "Update an existing project",
+            description = "Update the details of an existing project"
+    )
+    public ResponseEntity<Projects> updateProject(
+            @PathVariable Long id,
+            @RequestBody Projects projectData) {
+        Projects updated = projectService.updateProject(id, projectData);
+        return ResponseEntity.ok(updated);
+    }
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete a project",
+            description = "Delete a project by its ID"
+    )
+    public ResponseEntity<Void> deleteProject(
+            @PathVariable Long id) {
+        projectService.deleteProject(id);
+        return ResponseEntity.noContent().build();
+    }
 }
