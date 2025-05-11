@@ -28,4 +28,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "project_id")
     )
     private List<Project> projects;
+
+    public User(int i, String alice) {
+    }
 }
