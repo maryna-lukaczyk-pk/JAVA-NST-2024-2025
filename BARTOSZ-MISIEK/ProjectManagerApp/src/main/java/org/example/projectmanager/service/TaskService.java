@@ -37,9 +37,9 @@ public class TaskService implements ITaskService {
     public void delete(Long id) throws EntityNotFoundException {
         if (this.repository.existsById(id)) {
             this.repository.deleteById(id);
+        } else {
+            throw createEntityNotFoundException(id);
         }
-
-        throw createEntityNotFoundException(id);
     }
 
     @Override
