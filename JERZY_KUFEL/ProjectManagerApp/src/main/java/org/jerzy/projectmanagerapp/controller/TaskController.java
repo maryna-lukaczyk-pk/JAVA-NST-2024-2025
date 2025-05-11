@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,12 +37,11 @@ public class TaskController {
 
   @Operation(summary = "Get a specific task by id")
   @GetMapping("/{id}")
-  public Task getTaskById(@RequestParam String id) {
+  public Task getTaskById(@Parameter(description = "Task id") String id) {
     return this.service.getById(id);
   }
 
   @Operation(summary = "Create new task")
-  @Parameter
   @PostMapping
   public ResponseEntity<Task> post(@RequestBody() Task task) {
     return new ResponseEntity<>(this.service.create(task), HttpStatus.CREATED);
@@ -51,7 +49,7 @@ public class TaskController {
 
   @Operation(summary = "Update existing task")
   @PutMapping("/{id}")
-  public ResponseEntity<Task> updateProject(@RequestParam String id, @RequestBody Task task) {
+  public ResponseEntity<Task> updateProject(@Parameter(description = "Task id") String id, @RequestBody Task task) {
     try {
       Task updatedTask = this.service.update(id, task);
       return ResponseEntity.ok(updatedTask);
@@ -62,7 +60,7 @@ public class TaskController {
 
   @Operation(summary = "Delete project by id")
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteProject(@RequestParam String id) {
+  public ResponseEntity<Void> deleteProject(@Parameter(description = "Task id") String id) {
     try {
       this.service.delete(id);
       return ResponseEntity.noContent().build();

@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Tag(name = "Project", description = "Project managment methods")
@@ -39,19 +39,19 @@ public class ProjectController {
 
   @Operation(summary = "Get a specific project by id")
   @GetMapping("/{id}")
-  public Project getProjectById(@RequestParam String id) {
+  public Project getProjectById(@Parameter(description = "Project id") String id) {
       return this.service.getById(id);
   }
   
   @Operation(summary = "Create new project")
   @PostMapping("/create")
-  public ResponseEntity<Project> post(@RequestBody Project project) {
+  public ResponseEntity<Project> post(@Parameter(description = "Project id") Project project) {
     return new ResponseEntity<>(service.create(project), HttpStatus.CREATED);
   }
 
   @Operation(summary = "Update existing project")
   @PutMapping("/{id}")
-  public ResponseEntity<Project> updateProject(@RequestParam String id, @RequestBody Project project) {
+  public ResponseEntity<Project> updateProject(@Parameter(description = "Project id") String id, @RequestBody Project project) {
     try {
       Project updatedProject = this.service.update(id, project);
       return ResponseEntity.ok(updatedProject);
@@ -62,10 +62,10 @@ public class ProjectController {
 
   @Operation(summary = "Delete project by id")
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteProject(@RequestParam String id) {
+  public ResponseEntity<Void> deleteProject(@Parameter(description = "Project id") String id) {
     try {
       this.service.delete(id);
-      return ResponseEntity.noContent().build(); // 204 No Content
+      return ResponseEntity.noContent().build();
     } catch (IllegalArgumentException e) {
       return ResponseEntity.notFound().build();
     }

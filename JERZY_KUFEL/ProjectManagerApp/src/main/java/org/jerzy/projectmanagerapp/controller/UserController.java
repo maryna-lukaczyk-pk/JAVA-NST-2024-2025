@@ -7,10 +7,10 @@ import org.jerzy.projectmanagerapp.repository.UserRepository;
 import org.jerzy.projectmanagerapp.service.TaskService;
 import org.jerzy.projectmanagerapp.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "User", description = "User managment methods")
 @RestController
@@ -41,7 +40,7 @@ public class UserController {
 
   @Operation(summary = "Get a specific user by id")
   @GetMapping("/{id}")
-  public User getUserById(@RequestParam String id) {
+  public User getUserById(@Parameter(description = "User id") String id) {
     return this.service.getById(id);
   }
 
@@ -53,7 +52,7 @@ public class UserController {
 
   @Operation(summary = "Update existing user")
   @PutMapping("path/{id}")
-  public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+  public ResponseEntity<User> updateUser(@Parameter(description = "User id") String id, @RequestBody User user) {
     try {
       User updatedUser = this.service.update(id, user);
       return ResponseEntity.ok(updatedUser);
@@ -64,7 +63,7 @@ public class UserController {
 
   @Operation(summary = "Delete existing user")
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteUser(@RequestParam String id) {
+  public ResponseEntity<Void> deleteUser(@Parameter(description = "User id") String id) {
     try {
       this.service.delete(id);
       return ResponseEntity.noContent().build();
