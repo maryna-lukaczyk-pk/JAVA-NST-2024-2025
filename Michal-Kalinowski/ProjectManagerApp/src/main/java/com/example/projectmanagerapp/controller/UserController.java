@@ -1,28 +1,37 @@
-package org.example.projectmanagerapp.controller;
-
-import org.springframework.web.bind.annotation.*;
+package com.example.projectmanagerapp.controller;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import com.example.projectmanagerapp.entity.User;
+import com.example.projectmanagerapp.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.example.projectmanagerapp.entity.User;
-import org.example.projectmanagerapp.repository.UserRepository;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "Users", description = "Operation for managing users")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
 
-    @GetMapping
-    public List<User> getAll() {
-        return userRepository.findAll();
+public UserController(UserService userService) {
+    this.userService = userService;
+}
+
+
+    @GetMapping("/all")
+    @Operation(summary = "Retrive all users", description = "Return list of all users from the databse")
+    public ResponseEntity<List<User>> GetUsers() {
+        List<User> users = userService.getUsers();
+        return ResponseEntity.ok(users);
     }
 
-    @PostMapping
+    @PostMapping("/create")
+    @Operation(summary = "Create a new user", description = "Creates a new user in the database")
     public ResponseEntity<User> create(@RequestBody User user) {
-        User saved = userRepository.save(user);
-        return ResponseEntity.ok(saved);
+        User savedUser = userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 }
