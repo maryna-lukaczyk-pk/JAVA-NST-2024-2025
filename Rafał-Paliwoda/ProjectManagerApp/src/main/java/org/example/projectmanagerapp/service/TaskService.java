@@ -7,6 +7,7 @@ import org.example.projectmanagerapp.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -48,5 +49,29 @@ public class TaskService {
 
     public List<Task> findAllTasks() {
         return taskRepository.findAll();
+    }
+
+    @Transactional
+    public Task updateTask(Long id, Task taskDetails) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Zadanie o ID " + id + " nie zostało znalezione"));
+
+        task.setDescription(taskDetails.getDescription());
+        task.setTitle(taskDetails.getTitle());
+        task.setTaskType(task.getTaskType());
+        task.setPriorityLevel(task.getPriorityLevel());
+        task.setProject(task.getProject());
+
+        return taskRepository.save(task);
+    }
+
+    @Transactional
+    public void deleteTask(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Zadanie o ID " + id + " nie zostało znalezione"));
+
+        taskRepository.delete(task);
     }
 }

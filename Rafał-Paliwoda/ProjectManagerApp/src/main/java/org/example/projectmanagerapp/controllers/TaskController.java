@@ -2,6 +2,7 @@ package org.example.projectmanagerapp.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,19 @@ public class TaskController {
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         Task savedTask = taskService.createTask(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(description = "Endpoint odpowiedzialny za zmianę pól zadania")
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
+        Task updatedTask = taskService.updateTask(id, task);
+        return ResponseEntity.ok(updatedTask);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(description = "Endpoint odpowiedzialny za usuwanie taska")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }
