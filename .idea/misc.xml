@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/BARTOSZ-GRAJDEK/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/Bartosz-Walczyk/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/DARIUSZ-MĘDRALA/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/JAKUB-SOSNOWSKI/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/Kacper-Bukowski/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/MATEUSZ-JANICKI/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/MICHAŁ-KRUCZAŁA/pom.xml" />
+        <option value="$PROJECT_DIR$/NORBERT-SZYSZKA/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/SZYMON-PTASZNIK/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/Wojciech-Kapala/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/Aleksander-Dygoń/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/ARKADIUSZ-DOMŻAŁ/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/DOMINIK-GASIOREK/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/Ksawery-Handziuk/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/Michal-Kalinowski/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/REMIGIUSZ-GAWENDA/pom.xml" />
+        <option value="$PROJECT_DIR$/JUSTYNA-KACZKOWSKA/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/GRZEGORZ-NIEDOJADLO/ProjectManagerApp/pom.xml" />
+        <option value="$PROJECT_DIR$/Maksymilian-Stuglik/demo/pom.xml" />
+        <option value="$PROJECT_DIR$/BARTLOMIEJ_KWIATKOWSKI/ProjectManagerApp/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" default="true" project-jdk-name="ms-21 (2)" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>
