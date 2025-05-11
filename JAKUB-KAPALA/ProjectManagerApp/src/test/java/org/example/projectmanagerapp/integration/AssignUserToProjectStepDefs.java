@@ -33,41 +33,41 @@ public class AssignUserToProjectStepDefs {
     private UserRepository userRepository;
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private ScenarioContext scenarioContext;
 
     private MockMvc mockMvc;
-    private User user;
-    private Project project;
     private MvcResult mvcResult;
 
     @Given("a new user exists")
     public void a_new_user_exists() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-        String uniqueUsername = "integrationUser_" + System.currentTimeMillis();
+        scenarioContext.uniqueUsername = "integrationUser_" + System.currentTimeMillis();
         MvcResult result = mockMvc.perform(post("/api/user/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(uniqueUsername))
+                .content(scenarioContext.uniqueUsername))
                 .andExpect(status().isCreated())
                 .andReturn();
         System.out.println("Register user response: " + result.getResponse().getContentAsString());
-        user = userRepository.findByUsername(uniqueUsername).orElseThrow();
+        scenarioContext.user = userRepository.findByUsername(scenarioContext.uniqueUsername).orElseThrow();
     }
 
     @And("a new project exists")
     public void a_new_project_exists() throws Exception {
-        String uniqueProjectName = "integrationProject_" + System.currentTimeMillis();
+        scenarioContext.uniqueProjectName = "integrationProject_" + System.currentTimeMillis();
         MvcResult result = mockMvc.perform(post("/api/projects/add")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(uniqueProjectName))
+                .content(scenarioContext.uniqueProjectName))
                 .andExpect(status().isCreated())
                 .andReturn();
-        project = projectRepository.findAll().stream()
-                .filter(p -> "integrationProject".equals(p.getName()))
+        scenarioContext.project = projectRepository.findAll().stream()
+                .filter(p -> scenarioContext.uniqueProjectName.equals(p.getName()))
                 .findFirst().orElseThrow();
     }
 
     @When("I assign the user to the project")
     public void i_assign_the_user_to_the_project() throws Exception {
-        mvcResult = mockMvc.perform(post("/api/projects/" + project.getId() + "/users/" + user.getId())
+        mvcResult = mockMvc.perform(post("/api/projects/" + scenarioContext.project.getId() + "/users/" + scenarioContext.user.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
     }
@@ -79,21 +79,21 @@ public class AssignUserToProjectStepDefs {
 
     @And("the user should be assigned to the project")
     public void the_user_should_be_assigned_to_the_project() throws Exception {
-        MvcResult result = mockMvc.perform(get("/api/projects/" + project.getId() + "/users")
+        MvcResult result = mockMvc.perform(get("/api/projects/" + scenarioContext.project.getId() + "/users")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         String responseBody = result.getResponse().getContentAsString();
-        Assertions.assertTrue(responseBody.contains(String.valueOf(user.getId())));
+        Assertions.assertTrue(responseBody.contains(String.valueOf(scenarioContext.user.getId())));
     }
 
     @And("the project should be assigned to the user")
     public void the_project_should_be_assigned_to_the_user() throws Exception {
-        MvcResult result = mockMvc.perform(get("/api/user/" + user.getId() + "/projects")
+        MvcResult result = mockMvc.perform(get("/api/user/" + scenarioContext.user.getId() + "/projects")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         String responseBody = result.getResponse().getContentAsString();
-        Assertions.assertTrue(responseBody.contains(String.valueOf(project.getId())));
+        Assertions.assertTrue(responseBody.contains(String.valueOf(scenarioContext.project.getId())));
     }
 }

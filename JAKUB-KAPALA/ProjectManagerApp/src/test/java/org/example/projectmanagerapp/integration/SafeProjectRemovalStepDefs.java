@@ -4,10 +4,11 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.java.Before;
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.repository.TaskRepository;
 import org.example.projectmanagerapp.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ContextConfiguration
-public class SafeUserRemovalStepDefs {
+public class SafeProjectRemovalStepDefs {
     @Autowired
     private WebApplicationContext context;
     @Autowired
@@ -34,66 +35,57 @@ public class SafeUserRemovalStepDefs {
     @Autowired
     private ProjectRepository projectRepository;
     @Autowired
+    private TaskRepository taskRepository;
+    @Autowired
     private ScenarioContext scenarioContext;
 
     private MockMvc mockMvc;
     private MvcResult mvcResult;
 
-    @Given("a user exists")
-    public void a_user_exists() throws Exception {
+    @And("a task exists for the project")
+    public void a_task_exists_for_the_project() throws Exception {
         if (mockMvc == null && context != null) {
             mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         }
-        scenarioContext.uniqueUsername = "removalUser_" + System.currentTimeMillis();
-        mockMvc.perform(post("/api/user/register")
+        String taskJson = "{" +
+                "\"title\":\"removalTask_" + System.currentTimeMillis() + "\"," +
+                "\"description\":\"desc\"," +
+                "\"taskType\":\"HIGH\"," +
+                "\"projectId\":" + scenarioContext.project.getId() + "}";
+        mockMvc.perform(post("/api/tasks/add")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(scenarioContext.uniqueUsername))
+                .content(taskJson))
                 .andExpect(status().isCreated());
-        scenarioContext.user = userRepository.findByUsername(scenarioContext.uniqueUsername).orElseThrow();
-    }
-
-    @And("a project exists")
-    public void a_project_exists() throws Exception {
-        if (mockMvc == null && context != null) {
-            mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-        }
-        scenarioContext.uniqueProjectName = "removalProject_" + System.currentTimeMillis();
-        mockMvc.perform(post("/api/projects/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(scenarioContext.uniqueProjectName))
-                .andExpect(status().isCreated());
-        scenarioContext.project = projectRepository.findAll().stream()
-                .filter(p -> scenarioContext.uniqueProjectName.equals(p.getName()))
+        scenarioContext.task = taskRepository.findAll().stream()
+                .filter(t -> t.getProject().getId().equals(scenarioContext.project.getId()))
                 .findFirst().orElseThrow();
     }
 
-    @And("user is assigned to a project")
-    public void user_is_assigned_to_a_project() throws Exception {
-        mockMvc.perform(post("/api/projects/" + scenarioContext.project.getId() + "/users/" + scenarioContext.user.getId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @When("I delete the user")
-    public void i_delete_the_user() throws Exception {
-        mvcResult = mockMvc.perform(delete("/api/user/remove/" + scenarioContext.user.getId())
+    @When("I delete the project")
+    public void i_delete_the_project() throws Exception {
+        mvcResult = mockMvc.perform(delete("/api/projects/remove/" + scenarioContext.project.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
     }
 
-    @Then("user is deleted")
-    public void user_is_deleted() {
+    @Then("project is deleted")
+    public void project_is_deleted() {
         Assertions.assertEquals(204, mvcResult.getResponse().getStatus());
-        Assertions.assertTrue(userRepository.findById(scenarioContext.user.getId()).isEmpty());
+        Assertions.assertTrue(projectRepository.findById(scenarioContext.project.getId()).isEmpty());
     }
 
-    @And("project does not preserve user assignment")
-    public void project_does_not_preserve_user_assignment() throws Exception {
-        MvcResult result = mockMvc.perform(get("/api/projects/" + scenarioContext.project.getId() + "/users")
+    @And("user does not preserve project assignment")
+    public void user_does_not_preserve_project_assignment() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/user/" + scenarioContext.user.getId() + "/projects")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         String responseBody = result.getResponse().getContentAsString();
-        Assertions.assertFalse(responseBody.contains(String.valueOf(scenarioContext.user.getId())));
+        Assertions.assertFalse(responseBody.contains(String.valueOf(scenarioContext.project.getId())));
+    }
+
+    @And("task is deleted")
+    public void task_is_deleted() {
+        Assertions.assertTrue(taskRepository.findById(scenarioContext.task.getId()).isEmpty());
     }
 }
