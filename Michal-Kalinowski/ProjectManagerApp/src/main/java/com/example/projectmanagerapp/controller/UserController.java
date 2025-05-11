@@ -34,4 +34,19 @@ public UserController(UserService userService) {
         User savedUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a user", description = "Updates an existing user by ID")
+    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
+        user.setId(id);
+        User updatedUser = userService.createUser(user);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a user", description = "Deletes a user by ID")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }

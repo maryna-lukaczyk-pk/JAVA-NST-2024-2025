@@ -33,4 +33,18 @@ public class ProjectController {
         Project savedProject = projectService.createProject(project);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a project", description = "Updates an existing project by ID")
+    public ResponseEntity<Project> update(@PathVariable Long id, @RequestBody Project project) {
+        Project updatedProject = projectService.updateProject(id, project);
+        return ResponseEntity.ok(updatedProject);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a project", description = "Deletes a project by ID")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        projectService.deleteProject(id);
+        return ResponseEntity.noContent().build();
+    }
 }

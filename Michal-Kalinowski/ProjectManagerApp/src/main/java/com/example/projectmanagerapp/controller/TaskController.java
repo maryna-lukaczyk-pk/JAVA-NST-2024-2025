@@ -33,4 +33,18 @@ public class TaskController {
         Task savedTask = taskService.createTask(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a task", description = "Updates an existing task by ID")
+    public ResponseEntity<Task> update(@PathVariable Long id, @RequestBody Task task) {
+        Task updatedTask = taskService.updateTask(id, task);
+        return ResponseEntity.ok(updatedTask);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a task", description = "Deletes a task by ID")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
+    }
 }
