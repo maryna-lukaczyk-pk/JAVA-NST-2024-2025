@@ -2,11 +2,14 @@ package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.entity.User;
 import com.example.projectmanagerapp.service.UserService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 
 import java.util.List;
 
@@ -34,19 +37,6 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping
-    @Operation(
-            summary = "Create a new user",
-            description = "Create a new user with the provided details"
-    )
-
-
-    public ResponseEntity <User> addUser(
-            @RequestBody User user) {
-        User createdUser = userService.createUser(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
-
     @GetMapping("/{id}")
     @Operation(summary = "Get user by ID", description = "Retrieve a user by ID")
 
@@ -55,13 +45,29 @@ public class UserController {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
+
+    @PostMapping
+    @Operation(
+            summary = "Create a new user",
+            description = "Create a new user with the provided details"
+    )
+
+    public ResponseEntity <User> addUser(
+            @RequestBody User user) {
+        User createdUser = userService.createUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
+
     @PutMapping("/{id}")
     @Operation(
             summary = "Update an existing user",
             description = "Update the details of an existing user"
     )
     public ResponseEntity<User> updateUser(
+            @Parameter(description = "ID of the user to update", required = true)
             @PathVariable Long id,
+            @Parameter(description = "Updated user data", required = true)
             @RequestBody User userData) {
         User updated = userService.updateUser(id, userData);
         return ResponseEntity.ok(updated);
