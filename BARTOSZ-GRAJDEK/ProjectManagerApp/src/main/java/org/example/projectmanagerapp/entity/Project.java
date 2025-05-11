@@ -1,7 +1,7 @@
 package org.example.projectmanagerapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,9 +15,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "projects")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +23,11 @@ public class Project {
     private String name;
 
     @ManyToMany(mappedBy = "projects")
-    @JsonManagedReference
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "project")
-    @JsonManagedReference
+    @JsonIgnore
     private List<Task> tasks = new ArrayList<>();
 
     public Project() {

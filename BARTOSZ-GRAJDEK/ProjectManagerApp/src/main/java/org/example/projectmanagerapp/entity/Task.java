@@ -1,8 +1,5 @@
 package org.example.projectmanagerapp.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "tasks")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class Task {
 
     @Id
@@ -29,7 +23,6 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
-    @JsonBackReference
     private Project project;
 
     public Task() { }
