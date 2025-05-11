@@ -2,6 +2,7 @@ package org.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "projects")
 public class Project {
     @Id
@@ -26,4 +28,7 @@ public class Project {
     @ManyToMany
     @JoinTable(name = "project_user", joinColumns = @JoinColumn(name = "projects_id"), inverseJoinColumns = @JoinColumn(name = "users_id"))
     private Set<User> users;
+    public void setId(int id) {
+        this.id = id;
+    }
 }

@@ -23,7 +23,8 @@ public class Task {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "task_type", columnDefinition = "ENUM('HIGH_PRIORITY', 'MEDIUM_PRIORITY', 'LOW_PRIORITY')")
+//    @Column(name = "task_type", columnDefinition = "ENUM('HIGH_PRIORITY', 'MEDIUM_PRIORITY', 'LOW_PRIORITY')")
+    @Column(name = "task_type")
     private TaskType taskType;
 
     @ManyToOne

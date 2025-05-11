@@ -1,6 +1,8 @@
 package com.example.projectmanagerapp.entity;
 
 import com.example.projectmanagerapp.enums.TaskType;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "tasks")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id",
+        scope = Task.class
+)
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,23 +1,26 @@
 package org.example.projectmanagerapp.entity;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "projects")
 @NoArgsConstructor
-@Getter
-@Setter
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+    private Long id;
     private String name;
 
+    @OneToMany(mappedBy = "project")
+    private List<Task> tasks;
+
+    @ManyToMany(mappedBy = "projects")
+    private Set<User> users = new HashSet<>();
 }

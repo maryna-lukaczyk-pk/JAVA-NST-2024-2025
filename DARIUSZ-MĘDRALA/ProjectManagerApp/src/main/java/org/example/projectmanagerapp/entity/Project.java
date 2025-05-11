@@ -26,9 +26,6 @@ public class Project {
     )
     private List<User> users;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> tasks;
-
     @Transient
     private PriorityLevel priorityLevel;
 }

@@ -11,7 +11,7 @@ import org.example.projectmanagerapp.priority.PriorityLevel;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "title", nullable = false)
     private String title;
