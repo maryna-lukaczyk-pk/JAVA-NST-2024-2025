@@ -1,5 +1,5 @@
 Feature: Assign user to project
-  Scenario: Assign a user to a project
+  Scenario: User registers, creates a project and assigns themself to it
     Given a new user exists
     And a new project exists
     When I assign the user to the project
