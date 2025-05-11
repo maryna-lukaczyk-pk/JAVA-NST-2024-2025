@@ -13,6 +13,12 @@ public class ProjectService {
     @Autowired
     private ProjectRepository projectRepository;
 
+    @Autowired
+    public ProjectService(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
+
+
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
