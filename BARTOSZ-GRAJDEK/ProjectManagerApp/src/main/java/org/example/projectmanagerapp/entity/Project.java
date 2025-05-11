@@ -1,5 +1,8 @@
 package org.example.projectmanagerapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,9 +23,11 @@ public class Project {
     private String name;
 
     @ManyToMany(mappedBy = "projects")
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "project")
+    @JsonIgnore
     private List<Task> tasks = new ArrayList<>();
 
     public Project() {
