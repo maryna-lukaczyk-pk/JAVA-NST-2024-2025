@@ -33,6 +33,10 @@ public class UserService {
             throw new RuntimeException("User not found with id " + id);
         }
     }
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id " + id));
+    }
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);

@@ -1,6 +1,7 @@
 package com.example.projectmanagerapp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import com.example.projectmanagerapp.entity.Task;
 import com.example.projectmanagerapp.service.TaskService;
@@ -21,7 +22,7 @@ public class TaskController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Retrieve all tasks", description = "Returns a list of all tasks from the database")
+    @Operation(summary = "Retrieve all tasks", description = "Returns a list of all tasks")
     public ResponseEntity<List<Task>> getTasks() {
         List<Task> tasks = taskService.getTasks();
         return ResponseEntity.ok(tasks);
@@ -29,21 +30,37 @@ public class TaskController {
 
     @PostMapping("/create")
     @Operation(summary = "Create a new task", description = "Creates a new task in the database")
-    public ResponseEntity<Task> create(@RequestBody Task task) {
+    public ResponseEntity<Task> create(
+            @Parameter(description = "Task object to create", required = true)
+            @RequestBody Task task) {
         Task savedTask = taskService.createTask(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a task", description = "Updates an existing task by ID")
-    public ResponseEntity<Task> update(@PathVariable Long id, @RequestBody Task task) {
+    public ResponseEntity<Task> update(
+            @Parameter(description = "ID of the task to update", required = true)
+            @PathVariable Long id,
+            @Parameter(description = "Updated task object", required = true)
+            @RequestBody Task task) {
         Task updatedTask = taskService.updateTask(id, task);
         return ResponseEntity.ok(updatedTask);
+    }
+    @GetMapping("/{id}")
+    @Operation(summary = "Retrieve a task by ID", description = "Fetches a single task by its ID")
+    public ResponseEntity<Task> getTaskById(
+            @Parameter(description = "ID of the task to retrieve", required = true)
+            @PathVariable Long id) {
+        Task task = taskService.getTaskById(id);
+        return ResponseEntity.ok(task);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a task", description = "Deletes a task by ID")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(
+            @Parameter(description = "ID of the task to delete", required = true)
+            @PathVariable Long id) {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
