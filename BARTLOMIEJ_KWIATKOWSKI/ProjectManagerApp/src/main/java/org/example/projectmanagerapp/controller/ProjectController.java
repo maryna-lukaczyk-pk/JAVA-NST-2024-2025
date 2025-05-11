@@ -1,7 +1,9 @@
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.Users;
 import org.example.projectmanagerapp.service.ProjectService;
+import org.example.projectmanagerapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -18,6 +21,10 @@ public class ProjectController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private UserService userService;
+
 
     @GetMapping
     @Operation(summary = "Pobierz wszystkie projekty")
@@ -58,5 +65,18 @@ public class ProjectController {
         }
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
+    }
+    @PutMapping("/{projectId}/users/{userId}")
+    @Operation(summary = "Przypisz użytkownika do projektu")
+    public ResponseEntity<Project> addUserToProject(@PathVariable Long projectId, @PathVariable Long userId) {
+        Optional<Project> projectOpt = projectService.getProjectById(projectId);
+        Optional<Users> userOpt = userService.getUserById(userId);
+        if (projectOpt.isEmpty() || userOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Project project = projectOpt.get();
+        project.getUsers().add(userOpt.get());
+        Project updated = projectService.createProject(project); // save again
+        return ResponseEntity.ok(updated);
     }
 }
