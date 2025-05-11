@@ -1,4 +1,4 @@
-package org.projectmanagerapp.entity;
+package org.example.projectmanagerapp.entity;
 
 public enum TaskType {
     LOW_PRIORITY,
