@@ -2,7 +2,6 @@ package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.user.User;
 import org.example.projectmanagerapp.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,8 +15,11 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private  final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Operation(summary = "Retrieve all users")
     @GetMapping
