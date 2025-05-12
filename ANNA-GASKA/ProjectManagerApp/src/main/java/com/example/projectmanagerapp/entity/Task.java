@@ -1,6 +1,6 @@
 package com.example.projectmanagerapp.entity;
 
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.projectmanagerapp.priority.PriorityLevel;
 import com.example.projectmanagerapp.priority.HighPriority;
 import com.example.projectmanagerapp.priority.MediumPriority;
@@ -30,6 +30,7 @@ public class Task {
     private String priorityName;
 
     @Transient
+    @JsonIgnore
     private PriorityLevel priorityLevel;
 
     @ManyToOne
@@ -73,7 +74,11 @@ public class Task {
     }
 
 
+    @JsonIgnore
     public PriorityLevel getPriority() {
+        if (this.priorityLevel == null && this.priorityName == null) {
+            this.priorityLevel = new MediumPriority();
+        }
         if(this.priorityLevel == null && this.priorityName != null) {
             switch (priorityName){
                 case "High":
