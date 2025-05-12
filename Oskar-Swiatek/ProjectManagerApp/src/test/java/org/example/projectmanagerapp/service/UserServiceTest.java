@@ -81,4 +81,73 @@ class UserServiceTest {
         assertEquals("User not found", exception.getMessage());
         verify(userRepository, times(1)).findById(userId);
     }
+
+    @Test
+    @DisplayName("Should create and return new user")
+    void testCreateUser() {
+        // given
+        User userToCreate = new User();
+        userToCreate.setUsername("NewUser");
+
+        User savedUser = new User();
+        savedUser.setId(1L);
+        savedUser.setUsername("NewUser");
+
+        when(userRepository.save(userToCreate)).thenReturn(savedUser);
+
+        // when
+        User result = userService.createUser(userToCreate);
+
+        // then
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("NewUser", result.getUsername());
+        verify(userRepository, times(1)).save(userToCreate);
+    }
+
+    @Test
+    @DisplayName("Should update user when user exists")
+    void testUpdateUser_WhenUserExists() {
+        // given
+        Long userId = 1L;
+
+        User existingUser = new User();
+        existingUser.setId(userId);
+        existingUser.setUsername("OldName");
+
+        User updatedDetails = new User();
+        updatedDetails.setUsername("UpdatedName");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(existingUser)).thenReturn(existingUser);
+
+        // when
+        User result = userService.updateUser(userId, updatedDetails);
+
+        // then
+        assertNotNull(result);
+        assertEquals("UpdatedName", result.getUsername());
+        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, times(1)).save(existingUser);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when updating non-existent user")
+    void testUpdateUser_WhenUserNotFound() {
+        // given
+        Long userId = 99L;
+        User userDetails = new User();
+        userDetails.setUsername("Whatever");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // when & then
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.updateUser(userId, userDetails);
+        });
+
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, never()).save(any());
+    }
 }
