@@ -20,34 +20,28 @@ public class Tasks {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Explicit setter for id
     public void setId(Long id) {
         this.id = id;
     }
 
-    // Explicit getter for id
     public Long getId() {
         return id;
     }
     private String title;
     private String description;
 
-    // Explicit setter for title
     public void setTitle(String title) {
         this.title = title;
     }
 
-    // Explicit getter for title
     public String getTitle() {
         return title;
     }
 
-    // Explicit setter for description
     public void setDescription(String description) {
         this.description = description;
     }
 
-    // Explicit getter for description
     public String getDescription() {
         return description;
     }
@@ -57,7 +51,6 @@ public class Tasks {
     private Long projectId;
     private String priority;
 
-    // Explicit getter for priority
     public String getPriority() {
         return priority;
     }
@@ -68,6 +61,7 @@ public class Tasks {
         DONE;
     }
     @Transient
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private PriorityLevel priorityLevel;
 
     public void setPriority(String priority) {

@@ -49,7 +49,6 @@ public class ProjectIntegrationTest {
 
     @Test
     public void testAssignUserToProject() throws Exception {
-        // Create a user
         Users user = new Users();
         user.setUsername("testUser");
 
@@ -62,8 +61,6 @@ public class ProjectIntegrationTest {
 
         Users createdUser = objectMapper.readValue(userResult.getResponse().getContentAsString(), Users.class);
         assertNotNull(createdUser.getId());
-
-        // Create a project
         Project project = new Project();
         project.setName("testProject");
 
@@ -77,12 +74,10 @@ public class ProjectIntegrationTest {
         Project createdProject = objectMapper.readValue(projectResult.getResponse().getContentAsString(), Project.class);
         assertNotNull(createdProject.getId());
 
-        // Assign user to project
         mockMvc.perform(post("/api/projects/{id}/users", createdProject.getId())
                         .param("userId", createdUser.getId().toString()))
                 .andExpect(status().isOk());
 
-        // Verify user is in project's user list
         mockMvc.perform(get("/api/projects/{id}/users", createdProject.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
@@ -90,7 +85,6 @@ public class ProjectIntegrationTest {
 
     @Test
     public void testCrudOperations() throws Exception {
-        // Create a project
         Project project = new Project();
         project.setName("crudProject");
 
@@ -105,12 +99,10 @@ public class ProjectIntegrationTest {
         assertNotNull(createdProject.getId());
         assertEquals("crudProject", createdProject.getName());
 
-        // Read the project
         mockMvc.perform(get("/api/projects"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.id == " + createdProject.getId() + ")].name").value("crudProject"));
 
-        // Update the project
         createdProject.setName("updatedProject");
         String updatedProjectJson = objectMapper.writeValueAsString(createdProject);
         mockMvc.perform(put("/api/projects/{id}", createdProject.getId())
@@ -119,11 +111,9 @@ public class ProjectIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("updatedProject"));
 
-        // Delete the project
         mockMvc.perform(delete("/api/projects/{id}", createdProject.getId()))
                 .andExpect(status().isOk());
 
-        // Verify project is deleted
         mockMvc.perform(get("/api/projects"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.id == " + createdProject.getId() + ")]").isEmpty());
@@ -131,7 +121,6 @@ public class ProjectIntegrationTest {
 
     @Test
     public void testDatabaseRelationships() throws Exception {
-        // Create a user
         Users user = new Users();
         user.setUsername("relationUser");
 
@@ -144,7 +133,6 @@ public class ProjectIntegrationTest {
 
         Users createdUser = objectMapper.readValue(userResult.getResponse().getContentAsString(), Users.class);
 
-        // Create multiple projects
         Project project1 = new Project();
         project1.setName("relationProject1");
         String project1Json = objectMapper.writeValueAsString(project1);
@@ -165,7 +153,6 @@ public class ProjectIntegrationTest {
                 .andReturn();
         Project createdProject2 = objectMapper.readValue(project2Result.getResponse().getContentAsString(), Project.class);
 
-        // Assign user to both projects
         mockMvc.perform(post("/api/projects/{id}/users", createdProject1.getId())
                         .param("userId", createdUser.getId().toString()))
                 .andExpect(status().isOk());
@@ -174,7 +161,6 @@ public class ProjectIntegrationTest {
                         .param("userId", createdUser.getId().toString()))
                 .andExpect(status().isOk());
 
-        // Verify user is in both projects
         mockMvc.perform(get("/api/projects/{id}/users", createdProject1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
