@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class UserServiceTest {
@@ -44,5 +44,41 @@ class UserServiceTest {
         assertEquals(2, users.size());
         assertEquals("TestUser1", users.get(0).getUsername());
         verify(userRepository, times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("Should return user by ID when exists")
+    void testGetUserById_WhenUserExists() {
+        // given
+        Long userId = 1L;
+        User user = new User();
+        user.setId(userId);
+        user.setUsername("TestUser1");
+
+        when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user));
+
+        // when
+        User result = userService.getUserById(userId);
+
+        // then
+        assertNotNull(result);
+        assertEquals("TestUser1", result.getUsername());
+        verify(userRepository, times(1)).findById(userId);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when user not found")
+    void testGetUserById_WhenUserNotFound() {
+        // given
+        Long userId = 999L;
+        when(userRepository.findById(userId)).thenReturn(java.util.Optional.empty());
+
+        // when & then
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.getUserById(userId);
+        });
+
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository, times(1)).findById(userId);
     }
 }
