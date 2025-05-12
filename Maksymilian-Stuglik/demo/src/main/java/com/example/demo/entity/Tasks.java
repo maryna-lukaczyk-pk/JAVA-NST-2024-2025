@@ -4,6 +4,7 @@ import com.example.demo.priority.HighPriority;
 import com.example.demo.priority.LowPriority;
 import com.example.demo.priority.MediumPriority;
 import com.example.demo.priority.PriorityLevel;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -95,6 +96,7 @@ public class Tasks {
     }
     @ManyToOne
     @JoinColumn(name = "projectId")
+    @JsonBackReference("project-tasks")
     private Project project;
 
     // Explicit setter for project

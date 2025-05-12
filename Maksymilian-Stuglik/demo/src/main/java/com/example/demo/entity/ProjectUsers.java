@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,12 @@ public class ProjectUsers {
 
     @ManyToOne
     @JoinColumn(name = "projectId")
+    @JsonBackReference("project-users")
     private Project project;
 
     @ManyToOne
     @JoinColumn(name = "userId")
+    @JsonBackReference("user-projects")
     private Users user;
 
     // Explicit setter for id

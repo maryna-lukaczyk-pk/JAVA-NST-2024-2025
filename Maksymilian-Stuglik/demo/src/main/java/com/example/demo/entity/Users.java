@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class Users {
     }
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference("user-projects")
     private Set<ProjectUsers> projectUsers;
 
     // Explicit setter for id
