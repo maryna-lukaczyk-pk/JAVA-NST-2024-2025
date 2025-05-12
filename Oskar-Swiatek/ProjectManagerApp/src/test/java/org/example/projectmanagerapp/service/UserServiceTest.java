@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -149,5 +150,35 @@ class UserServiceTest {
         assertEquals("User not found", exception.getMessage());
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should delete user by ID")
+    void testDeleteUser_WhenUserExists() {
+        // given
+        Long userId = 1L;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
+
+        // when
+        userService.deleteUser(userId);
+
+        // then
+        verify(userRepository, times(1)).deleteById(userId);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when deleting non-existent user")
+    void testDeleteUser_WhenUserNotFound() {
+        // given
+        Long userId = 999L;
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // when & then
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.deleteUser(userId);
+        });
+
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository, never()).deleteById(any());
     }
 }
