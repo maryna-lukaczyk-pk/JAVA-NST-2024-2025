@@ -15,12 +15,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -136,5 +138,44 @@ class ProjectControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(projectService, times(1)).deleteProject(1L);
+    }
+
+    @Test
+    @DisplayName("Should assign a user to a project")
+    void assignUserToProject() throws Exception {
+        Project testProject = new Project();
+        setIdField(testProject, 1L);
+        testProject.setName("TestProject");
+
+        User testUser = new User();
+        setIdField(testUser, 1L);
+        testUser.setUsername("TestUser");
+
+        Project resultProject = new Project();
+        setIdField(resultProject, 1L);
+        resultProject.setName("TestProject");
+        Set<User> users = new HashSet<>();
+        users.add(testUser);
+        resultProject.setUsers(users);
+
+        when(projectService.addUserToProject(1L, 1L)).thenReturn(resultProject);
+
+        mockMvc.perform(post("/projects/1/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("TestProject")))
+                .andExpect(jsonPath("$.users", hasSize(1)))
+                .andExpect(jsonPath("$.users[0].username", is("TestUser")));
+
+        verify(projectService, times(1)).addUserToProject(1L, 1L);
+    }
+
+    private void setIdField(Object entity, Long id) {
+        try {
+            Field idField = entity.getClass().getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(entity, id);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to set ID field", e);
+        }
     }
 }

@@ -3,12 +3,14 @@ package com.example.projectmanagerapp.service;
 import com.example.projectmanagerapp.entity.Project;
 import com.example.projectmanagerapp.entity.User;
 import com.example.projectmanagerapp.repository.ProjectRepository;
+import com.example.projectmanagerapp.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -23,12 +25,15 @@ class ProjectServiceTest {
     @Mock
     private ProjectRepository projectRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     private ProjectService projectService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        projectService = new ProjectService(projectRepository);
+        projectService = new ProjectService(projectRepository, userRepository);
     }
 
     @Test
@@ -162,5 +167,106 @@ class ProjectServiceTest {
         assertEquals("Project not found with id: 1", exception.getMessage());
         verify(projectRepository, times(1)).findById(1L);
         verify(projectRepository, never()).save(any(Project.class));
+    }
+
+    @Test
+    @DisplayName("Should add a user to a project")
+    void addUserToProject() {
+        Project project = new Project();
+        setIdField(project, 1L);
+        project.setName("TestProject");
+        project.setUsers(new HashSet<>());
+
+        User user = new User();
+        setIdField(user, 1L);
+        user.setUsername("TestUser");
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Project updatedProject = projectService.addUserToProject(1L, 1L);
+
+        assertNotNull(updatedProject);
+        assertNotNull(updatedProject.getUsers());
+        assertEquals(1, updatedProject.getUsers().size());
+        assertTrue(updatedProject.getUsers().contains(user));
+
+        // Verify the repository methods were called
+        verify(projectRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).findById(1L);
+        verify(projectRepository, times(1)).save(project);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when project not found during add user")
+    void addUserToProject_ProjectNotFound() {
+        when(projectRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            projectService.addUserToProject(1L, 1L);
+        });
+
+        assertEquals("Project not found with id: 1", exception.getMessage());
+        verify(projectRepository, times(1)).findById(1L);
+        verify(userRepository, never()).findById(anyLong());
+        verify(projectRepository, never()).save(any(Project.class));
+    }
+
+    @Test
+    @DisplayName("Should throw exception when user not found during add user")
+    void addUserToProject_UserNotFound() {
+        Project project = new Project();
+        setIdField(project, 1L);
+        project.setName("TestProject");
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            projectService.addUserToProject(1L, 1L);
+        });
+
+        assertEquals("User not found with id: 1", exception.getMessage());
+        verify(projectRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).findById(1L);
+        verify(projectRepository, never()).save(any(Project.class));
+    }
+
+    @Test
+    @DisplayName("Should initialize users set when it's null")
+    void addUserToProject_WithNullUsers() {
+        Project project = new Project();
+        setIdField(project, 1L);
+        project.setName("TestProject");
+
+        User user = new User();
+        setIdField(user, 1L);
+        user.setUsername("TestUser");
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Project updatedProject = projectService.addUserToProject(1L, 1L);
+
+        assertNotNull(updatedProject);
+        assertNotNull(updatedProject.getUsers(), "Users set should be initialized");
+        assertEquals(1, updatedProject.getUsers().size(), "Users set should contain one user");
+        assertTrue(updatedProject.getUsers().contains(user), "Users set should contain the added user");
+
+        verify(projectRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).findById(1L);
+        verify(projectRepository, times(1)).save(project);
+    }
+
+    private void setIdField(Object entity, Long id) {
+        try {
+            Field idField = entity.getClass().getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(entity, id);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to set ID field", e);
+        }
     }
 }
