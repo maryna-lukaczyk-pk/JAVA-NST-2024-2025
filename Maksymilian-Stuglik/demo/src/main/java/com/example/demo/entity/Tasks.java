@@ -18,13 +18,48 @@ public class Tasks {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // Explicit setter for id
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    // Explicit getter for id
+    public Long getId() {
+        return id;
+    }
     private String title;
     private String description;
+
+    // Explicit setter for title
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    // Explicit getter for title
+    public String getTitle() {
+        return title;
+    }
+
+    // Explicit setter for description
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    // Explicit getter for description
+    public String getDescription() {
+        return description;
+    }
     @Enumerated(EnumType.STRING)
     private taskType taskType;
     @Column(name = "projectId", insertable = false, updatable = false)
     private Long projectId;
     private String priority;
+
+    // Explicit getter for priority
+    public String getPriority() {
+        return priority;
+    }
 
     private enum taskType {
         NEW,
@@ -61,4 +96,14 @@ public class Tasks {
     @ManyToOne
     @JoinColumn(name = "projectId")
     private Project project;
+
+    // Explicit setter for project
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    // Explicit getter for project
+    public Project getProject() {
+        return project;
+    }
 }

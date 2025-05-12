@@ -17,9 +17,29 @@ public class Project {
     private Long id;
     private String name; // no message
 
+    // Explicit setter for name
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    // Explicit getter for name
+    public String getName() {
+        return name;
+    }
+
     @OneToMany(mappedBy = "project")
     private Set<ProjectUsers> projectUsers;
 
     @OneToMany(mappedBy = "project")
     private Set<Tasks> tasks;
+
+    // Explicit setter for id
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    // Explicit getter for id
+    public Long getId() {
+        return id;
+    }
 }

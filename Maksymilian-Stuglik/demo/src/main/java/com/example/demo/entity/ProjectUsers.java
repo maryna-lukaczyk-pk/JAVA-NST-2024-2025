@@ -9,9 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"projectId", "userId"}))
 public class ProjectUsers {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "projectId")
     private Project project;
@@ -19,4 +22,34 @@ public class ProjectUsers {
     @ManyToOne
     @JoinColumn(name = "userId")
     private Users user;
+
+    // Explicit setter for id
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    // Explicit getter for id
+    public Long getId() {
+        return id;
+    }
+
+    // Explicit setter for project
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    // Explicit getter for project
+    public Project getProject() {
+        return project;
+    }
+
+    // Explicit setter for user
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
+    // Explicit getter for user
+    public Users getUser() {
+        return user;
+    }
 }
