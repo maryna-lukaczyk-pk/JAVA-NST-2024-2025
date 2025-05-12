@@ -1,21 +1,22 @@
-package org.example.projectmanagerapp.entity;
+package com.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import java.util.List;
+import lombok.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "projects")
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "projects")
+@AllArgsConstructor
+@Builder
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
 
     @ManyToMany
@@ -24,8 +25,8 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<Users> users; // Corrected to User and added semicolon
+    private Set<User> users;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tasks> tasks;
+    private Set<Task> tasks;
 }
