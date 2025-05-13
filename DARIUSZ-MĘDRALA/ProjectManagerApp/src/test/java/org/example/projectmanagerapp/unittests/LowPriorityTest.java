@@ -1,3 +1,5 @@
+package org.example.projectmanagerapp.unittests;
+
 import org.example.projectmanagerapp.entity.LowPriority;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
