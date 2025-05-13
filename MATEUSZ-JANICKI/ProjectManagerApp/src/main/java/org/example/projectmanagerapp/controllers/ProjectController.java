@@ -4,21 +4,27 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.services.ProjectService;
+import org.example.projectmanagerapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Tag(name = "Project", description = "Operations for mapping projects")
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
     private final ProjectService projectService;
+    private final UserService userService;
 
-    ProjectController(ProjectService projectService) {
+    ProjectController(ProjectService projectService, UserService userService) {
         this.projectService = projectService;
+        this.userService = userService;
     }
 
     @Operation(summary = "Retrieve all projects", description = "Return a list of all projects from database")
@@ -53,5 +59,19 @@ public class ProjectController {
         return projectService.getProjectById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{projectId}/users")
+    public ResponseEntity<?> assignUserToProject(@PathVariable Long projectId, @RequestBody Long userId) {
+        Optional<Project> optionalProject = projectService.getProjectById(projectId);
+        Optional<User> optionalUser = userService.getUserById(userId);
+        if (optionalProject.isEmpty() || optionalUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Project project = optionalProject.get();
+        User user = optionalUser.get();
+        project.getUsers().add(user);
+        projectService.updateProject(projectId, project);
+        return ResponseEntity.ok().build();
     }
 }
