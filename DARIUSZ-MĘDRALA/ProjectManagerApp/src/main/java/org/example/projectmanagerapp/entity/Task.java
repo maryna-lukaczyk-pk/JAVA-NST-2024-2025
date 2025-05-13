@@ -28,13 +28,5 @@ public class Task {
     private Project project;
 }
 
-enum TaskType {
-    BUGFIX,
-    FEATURE,
-    RELEASE,
-    DOCUMENTATION,
-    TEST
-}
-
 
 
