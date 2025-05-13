@@ -1,7 +1,9 @@
 package org.example.projectmanagerapp.unittests;
 
 import org.example.projectmanagerapp.entity.Task;
+import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.example.projectmanagerapp.repository.TaskRepository;
+import org.example.projectmanagerapp.services.ProjectService;
 import org.example.projectmanagerapp.services.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +23,13 @@ public class TaskServiceTest {
     private TaskRepository taskRepository;
     private TaskService taskService;
 
+    private ProjectRepository projectRepository;
+
     @BeforeEach
     public void setUp() {
         taskRepository = Mockito.mock(TaskRepository.class);
-        taskService = new TaskService(taskRepository);
+        projectRepository = Mockito.mock(ProjectRepository.class);
+        taskService = new TaskService(taskRepository, projectRepository);
     }
 
     @Test

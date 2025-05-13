@@ -1,8 +1,11 @@
 package org.example.projectmanagerapp.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,6 +28,9 @@ public class Project {
             inverseJoinColumns = { @JoinColumn(name = "user_id")}
     )
     private List<User> users;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
 
     @Transient
     private PriorityLevel priorityLevel;

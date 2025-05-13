@@ -175,4 +175,45 @@ public class TaskControllerIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value("Test Task to Retrieve"));
     }
+
+    @Test
+    void testAssignTaskToProjectViaApi() throws Exception {
+        Project project = new Project();
+        project.setName("Project for Task Assignment");
+        projectRepository.save(project);
+
+        String projectJson = objectMapper.writeValueAsString(project);
+        String projectCreationResponse = mockMvc.perform(MockMvcRequestBuilders.post("/api/projects/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(projectJson))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+
+        Project createdProject = objectMapper.readValue(projectCreationResponse, Project.class);
+
+        Task taskToCreate = new Task();
+        taskToCreate.setTitle("Task to Assign");
+        taskToCreate.setProject(createdProject);
+
+        String taskJson = objectMapper.writeValueAsString(taskToCreate);
+
+        String taskCreationResponse = mockMvc.perform(MockMvcRequestBuilders.post("/api/task/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(taskJson))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+
+        Task createdTask = objectMapper.readValue(taskCreationResponse, Task.class);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/task/assign/" + createdTask.getId() + "/" + createdProject.getId())
+                .content(objectMapper.writeValueAsString(createdTask.getId())))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/projects/" + project.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.tasks", hasSize(1)))
+                .andExpect(jsonPath("$.tasks[0].title").value("Task to Assign"));
+    }
 }
