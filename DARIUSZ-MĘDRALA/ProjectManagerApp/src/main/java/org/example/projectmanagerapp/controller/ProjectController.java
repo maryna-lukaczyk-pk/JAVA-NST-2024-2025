@@ -20,9 +20,7 @@ public class ProjectController {
     }
     @Operation(summary = "Get all projects", description = "Retrieve a list of all projects")
     @GetMapping("/all")
-    public List<Project> getProjects() {
-        return projectService.findAll();
-    }
+    public List<Project> getProjects() { return projectService.findAll(); }
 
     @Operation(summary = "Create a new project", description = "Create a new project with the provided details")
     @PostMapping("/create")
@@ -53,5 +51,14 @@ public class ProjectController {
     public ResponseEntity<Project> getProjectById(@PathVariable Long id) {
         Project project = projectService.findById(id);
         return new ResponseEntity<>(project, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Assign a user to a project", description = "Assign a user to a project by their IDs")
+    @Parameter(name = "projectId", description = "ID of the project to assign the user to")
+    @Parameter(name = "userId", description = "ID of the user to assign to the project")
+    @PostMapping("/assign/{projectId}/{userId}")
+    public ResponseEntity<Void> assignUserToProject(@PathVariable Long projectId, @PathVariable Long userId) {
+        projectService.assignUserToProject(projectId, userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

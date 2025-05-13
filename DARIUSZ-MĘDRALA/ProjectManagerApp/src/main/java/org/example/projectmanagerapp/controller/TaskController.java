@@ -55,4 +55,13 @@ public class TaskController {
         Task task = taskService.findById(id);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
+
+    @Operation(summary = "Assign a task to a project", description = "Assign a task to a project by their IDs")
+    @Parameter(name = "taskId", description = "ID of the task to assign")
+    @Parameter(name = "projectId", description = "ID of the project to assign the task to")
+    @PostMapping("/assign/{taskId}/{projectId}")
+    public ResponseEntity<Void> assignTaskToProject(@PathVariable Long taskId, @PathVariable Long projectId) {
+        taskService.assignTaskToProject(taskId, projectId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

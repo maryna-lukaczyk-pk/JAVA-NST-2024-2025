@@ -1,3 +1,5 @@
+package org.example.projectmanagerapp.unittests;
+
 import org.example.projectmanagerapp.controller.UserController;
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.services.UserService;
