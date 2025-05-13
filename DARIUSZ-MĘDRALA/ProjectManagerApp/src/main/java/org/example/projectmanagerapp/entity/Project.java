@@ -18,7 +18,7 @@ public class Project {
     @Column(columnDefinition="VARCHAR(255)")
     private String name;
 
-    @ManyToMany(cascade = { CascadeType.ALL})
+    @ManyToMany(cascade = { CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "project_users",
             joinColumns = { @JoinColumn(name = "project_id") },

@@ -2,6 +2,7 @@ package org.example.projectmanagerapp.integrationtests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -121,5 +122,44 @@ public class ProjectControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Project to Get"));
+    }
+    @Test
+    void testAssignUserToProjectViaApi() throws Exception {
+
+        User userToCreate = new User();
+        userToCreate.setUsername("apiuser");
+
+        String userJson = objectMapper.writeValueAsString(userToCreate);
+
+        String userCreationResponse = mockMvc.perform(MockMvcRequestBuilders.post("/api/users/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+
+        User createdUser = objectMapper.readValue(userCreationResponse, User.class);
+
+        Project project = new Project();
+        project.setName("API Project");
+
+        String projectJson = objectMapper.writeValueAsString(project);
+
+        String projectCreationResponse = mockMvc.perform(MockMvcRequestBuilders.post("/api/projects/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(projectJson))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+
+        project = objectMapper.readValue(projectCreationResponse, Project.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/projects/assign/" + project.getId() + "/" + createdUser.getId())
+                        .content(objectMapper.writeValueAsString(createdUser.getId())))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/projects/" + project.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.users", hasSize(1)))
+                .andExpect(jsonPath("$.users[0].username").value("apiuser"));
     }
 }

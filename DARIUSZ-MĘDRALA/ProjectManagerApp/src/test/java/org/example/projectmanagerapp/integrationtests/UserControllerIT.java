@@ -1,7 +1,9 @@
 package org.example.projectmanagerapp.integrationtests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.User;
+import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.example.projectmanagerapp.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,9 @@ public class UserControllerIT {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository; // Assuming you have a ProjectRepository
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
