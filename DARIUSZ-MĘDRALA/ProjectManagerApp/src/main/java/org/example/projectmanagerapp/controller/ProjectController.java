@@ -20,9 +20,7 @@ public class ProjectController {
     }
     @Operation(summary = "Get all projects", description = "Retrieve a list of all projects")
     @GetMapping("/all")
-    public List<Project> getProjects() {
-        return projectService.findAll();
-    }
+    public List<Project> getProjects() { return projectService.findAll(); }
 
     @Operation(summary = "Create a new project", description = "Create a new project with the provided details")
     @PostMapping("/create")
