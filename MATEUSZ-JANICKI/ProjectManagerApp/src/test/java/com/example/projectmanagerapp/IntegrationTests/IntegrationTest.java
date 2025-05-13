@@ -73,4 +73,87 @@ public class IntegrationTest {
                 .andExpect(jsonPath("$.name").value("IntegrationProject"))
                 .andExpect(jsonPath("$.users[0].username").value("TestUser2"));
     }
+
+    @Test
+    public void testCreateUser() throws Exception {
+        User user = new User();
+        user.setUsername("NewUser");
+
+        mockMvc.perform(post("/api/users/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("NewUser"));
+    }
+
+    @Test
+    public void testGetUserById() throws Exception {
+        User user = new User();
+        user.setUsername("FetchUser");
+
+        String response = mockMvc.perform(post("/api/users/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
+                .andReturn().getResponse().getContentAsString();
+
+        User created = objectMapper.readValue(response, User.class);
+
+        mockMvc.perform(get("/api/users/" + created.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("FetchUser"));
+    }
+
+    @Test
+    public void testUpdateUser() throws Exception {
+        User user = new User();
+        user.setUsername("BeforeUpdate");
+
+        String response = mockMvc.perform(post("/api/users/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
+                .andReturn().getResponse().getContentAsString();
+
+        User created = objectMapper.readValue(response, User.class);
+        created.setUsername("AfterUpdate");
+
+        mockMvc.perform(put("/api/users/" + created.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(created)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("AfterUpdate"));
+    }
+
+    @Test
+    public void testDeleteUser() throws Exception {
+        User user = new User();
+        user.setUsername("ToDelete");
+
+        String response = mockMvc.perform(post("/api/users/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
+                .andReturn().getResponse().getContentAsString();
+
+        User created = objectMapper.readValue(response, User.class);
+
+        mockMvc.perform(delete("/api/users/" + created.getId()))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/users/" + created.getId()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetAllUsers() throws Exception {
+        User user = new User();
+        user.setUsername("ListedUser");
+
+        mockMvc.perform(post("/api/users/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/users/all"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
+    }
 }
