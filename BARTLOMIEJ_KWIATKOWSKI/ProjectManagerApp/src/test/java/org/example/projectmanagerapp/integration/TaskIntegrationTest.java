@@ -5,6 +5,7 @@ import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.tasks.Tasks;
 import org.example.projectmanagerapp.entity.tasks.TaskType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+@Tag("integration")
 @SpringBootTest(properties = "spring.profiles.active=test")
 @AutoConfigureMockMvc
 class TaskIntegrationTest {
