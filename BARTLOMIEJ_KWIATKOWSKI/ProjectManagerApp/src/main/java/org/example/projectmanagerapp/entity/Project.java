@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Set;
+import org.example.projectmanagerapp.entity.Users;
 
 @Entity
 @Table(name = "project")
@@ -38,4 +39,7 @@ public class Project {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public Set<Users> getUsers() { return users; }
+    public void setUsers(Set<Users> users) { this.users = users; }
 }

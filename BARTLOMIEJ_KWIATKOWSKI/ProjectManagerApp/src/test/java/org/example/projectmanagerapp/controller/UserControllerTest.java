@@ -144,7 +144,6 @@ class UserControllerTest {
     @Test
     void testDeleteUserFound() {
         Long id = 1L;
-
         when(userService.getUserById(id)).thenReturn(Optional.of(new Users()));
 
         ResponseEntity<Void> response = userController.deleteUser(id);

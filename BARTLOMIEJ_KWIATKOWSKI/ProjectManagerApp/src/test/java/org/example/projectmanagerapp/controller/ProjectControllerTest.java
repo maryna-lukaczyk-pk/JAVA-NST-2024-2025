@@ -1,11 +1,15 @@
 package org.example.projectmanagerapp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.Users;
 import org.example.projectmanagerapp.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.Arrays;
 import java.util.List;
@@ -158,4 +162,5 @@ class ProjectControllerTest {
         verify(projectService, times(1)).getProjectById(id);
         verify(projectService, never()).deleteProject(anyLong());
     }
+
 }
