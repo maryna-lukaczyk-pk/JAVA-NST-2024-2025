@@ -1,3 +1,5 @@
+// src/main/java/org/example/projectmanagerapp/service/UserService.java
+
 package org.example.projectmanagerapp.service;
 
 import org.example.projectmanagerapp.entity.User;
@@ -5,43 +7,42 @@ import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private final UserRepository repo;
+
+    public UserService(UserRepository repo) {
+        this.repo = repo;
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return repo.findAll();
     }
 
     public User createUser(User user) {
-        return userRepository.save(user);
+        return repo.save(user);
     }
 
     public User getUserById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        return user.orElse(null);  // Można tu dodać wyjątek, jeśli nie znaleziono
+        return repo.findById(id).orElse(null);
     }
 
-    public User updateUser(Long id, User userDetails) {
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            User updatedUser = existingUser.get();
-            updatedUser.setUsername(userDetails.getUsername());
-            // Zaktualizuj inne pola, jeśli to konieczne
-            return userRepository.save(updatedUser);
-        }
-        return null;  // Można tu rzucić wyjątek
+    public User updateUser(Long id, User payload) {
+        return repo.findById(id)
+                .map(existing -> {
+                    existing.setUsername(payload.getUsername());
+                    return repo.save(existing);
+                })
+                .orElse(null);
     }
 
-    public void deleteUser(Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
+    public boolean deleteUser(Long id) {
+        if (repo.existsById(id)) {
+            repo.deleteById(id);
+            return true;
         }
+        return false;
     }
 }

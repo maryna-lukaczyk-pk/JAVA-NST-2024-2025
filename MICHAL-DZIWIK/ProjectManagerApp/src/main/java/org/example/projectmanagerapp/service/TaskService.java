@@ -28,6 +28,9 @@ public class TaskService {
         Optional<Task> task = taskRepository.findById(id);
         return task.orElse(null);  // Można tu dodać wyjątek, jeśli nie znaleziono
     }
+    public void deleteAllTasks() {
+        taskRepository.deleteAll();
+    }
 
     public Task updateTask(Long id, Task taskDetails) {
         Optional<Task> existingTask = taskRepository.findById(id);
