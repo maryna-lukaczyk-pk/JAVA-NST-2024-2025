@@ -26,7 +26,7 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-    @GetMapping("/all")
+    @GetMapping
     @Operation (summary = "Retrieve all users",description = "Return a list of all users from the database")
     public List<Users> getAllUsers() {
         return usersService.getAllUsers();
