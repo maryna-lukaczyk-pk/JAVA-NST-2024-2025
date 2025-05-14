@@ -7,7 +7,7 @@ import com.example.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
+import com.example.repository.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,11 +20,14 @@ public class ProjectServiceTest {
 
     private ProjectService projectService;
     private ProjectRepository projectRepository;
+    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
         projectRepository = mock(ProjectRepository.class);
-        projectService = new ProjectService(projectRepository);
+        userRepository = mock(UserRepository.class);
+        projectService = new ProjectService(projectRepository, userRepository);
+
     }
 
     @Test

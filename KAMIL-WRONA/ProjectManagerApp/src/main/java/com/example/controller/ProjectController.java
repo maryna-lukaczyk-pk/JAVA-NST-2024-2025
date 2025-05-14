@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,4 +61,13 @@ public class ProjectController {
             @Parameter(description = "ID of the project to delete", required = true) @PathVariable Long id) {
         projectService.delete(id);
     }
+
+    @PutMapping("/{projectId}/users")
+    @Operation(summary = "Assign users to project")
+    public ResponseEntity<Project> assignUsersToProject(@PathVariable Long projectId, @RequestBody List<Long> userIds) {
+        Project updated = projectService.assignUsers(projectId, userIds);
+        return ResponseEntity.ok(updated);
+    }
+
+
 }
