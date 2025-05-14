@@ -22,7 +22,7 @@ public class ProjectController {
     @GetMapping
     @Operation(summary = "Get all projects", description = "Retrieve a list of all projects")
     public List<Project> getAllProjects() {
-        return projectService.findAll();
+        return projectService.getAllProjects();
     }
 
 
