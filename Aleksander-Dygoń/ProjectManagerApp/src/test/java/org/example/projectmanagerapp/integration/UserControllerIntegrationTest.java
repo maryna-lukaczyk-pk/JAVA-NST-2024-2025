@@ -72,4 +72,37 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
         assertFalse(userRepository.findById(savedUser.getId()).isPresent());
     }
+
+    @Test
+    public void testGetNonExistentUser() throws Exception {
+        mockMvc.perform(get("/users/9999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUpdateNonExistentUser() throws Exception {
+        User update = new User();
+        update.setUsername("Updated Username");
+
+        mockMvc.perform(put("/users/9999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testDeleteNonExistentUser() throws Exception {
+        mockMvc.perform(delete("/users/9999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetAllUsersEmpty() throws Exception {
+        userRepository.deleteAll();
+
+        mockMvc.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
+    }
 }

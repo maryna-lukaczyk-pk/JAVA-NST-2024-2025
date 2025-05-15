@@ -1,15 +1,18 @@
 package org.example.projectmanagerapp.integration;
 
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.Task;
+import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.repository.TaskRepository;
+import org.example.projectmanagerapp.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,6 +21,12 @@ public class ProjectControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Test
     public void testCreateAndGetProject() throws Exception {
@@ -72,4 +81,28 @@ public class ProjectControllerIntegrationTest extends AbstractIntegrationTest {
 
         assertFalse(projectRepository.findById(savedProject.getId()).isPresent());
     }
+
+    @Test
+    public void testGetNonExistentProject() throws Exception {
+        mockMvc.perform(get("/projects/9999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUpdateNonExistentProject() throws Exception {
+        Project update = new Project();
+        update.setName("Updated Name");
+
+        mockMvc.perform(put("/projects/9999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testDeleteNonExistentProject() throws Exception {
+        mockMvc.perform(delete("/projects/9999"))
+                .andExpect(status().isNotFound());
+    }
+
 }

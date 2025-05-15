@@ -89,4 +89,68 @@ public class TaskControllerIntegrationTest extends AbstractIntegrationTest {
 
         assertFalse(taskRepository.findById(savedTask.getId()).isPresent());
     }
+
+    @Test
+    public void testGetNonExistentTask() throws Exception {
+        mockMvc.perform(get("/tasks/9999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUpdateNonExistentTask() throws Exception {
+        Task update = new Task();
+        update.setTitle("Updated Title");
+
+        mockMvc.perform(put("/tasks/9999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testDeleteNonExistentTask() throws Exception {
+        mockMvc.perform(delete("/tasks/9999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testCreateTaskWithAllTaskTypes() throws Exception {
+        Project project = projectRepository.save(new Project());
+
+        Task highTask = new Task();
+        highTask.setTitle("High Priority Task");
+        highTask.setTaskType(Task.TaskType.HIGH_PRIORITY);
+        highTask.setProject(project);
+
+        String highTaskJson = objectMapper.writeValueAsString(highTask);
+        mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(highTaskJson))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.taskType").value("HIGH_PRIORITY"));
+
+        Task mediumTask = new Task();
+        mediumTask.setTitle("Medium Priority Task");
+        mediumTask.setTaskType(Task.TaskType.MEDIUM_PRIORITY);
+        mediumTask.setProject(project);
+
+        String mediumTaskJson = objectMapper.writeValueAsString(mediumTask);
+        mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mediumTaskJson))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.taskType").value("MEDIUM_PRIORITY"));
+
+        Task lowTask = new Task();
+        lowTask.setTitle("Low Priority Task");
+        lowTask.setTaskType(Task.TaskType.LOW_PRIORITY);
+        lowTask.setProject(project);
+
+        String lowTaskJson = objectMapper.writeValueAsString(lowTask);
+        mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(lowTaskJson))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.taskType").value("LOW_PRIORITY"));
+    }
 }
