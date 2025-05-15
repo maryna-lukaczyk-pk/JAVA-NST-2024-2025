@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.service.ProjectService;
+import org.example.projectmanagerapp.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +19,12 @@ import java.util.Optional;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final UserService userService;
 
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, UserService userService) {
+
         this.projectService = projectService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -69,5 +74,47 @@ public class ProjectController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{projectId}/users/{userId}")
+    @Operation(summary = "Przypisz użytkownika do projektu", description = "Dodaje użytkownika do projektu")
+    public ResponseEntity<Project> assignUserToProject(
+            @Parameter(description = "ID projektu") @PathVariable Integer projectId,
+            @Parameter(description = "ID użytkownika") @PathVariable Integer userId) {
+
+        Optional<Project> projectOpt = projectService.getProjectById(projectId);
+        Optional<User> userOpt = userService.getUserById(userId);
+
+        if (projectOpt.isEmpty() || userOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Project project = projectOpt.get();
+        User user = userOpt.get();
+        project.getUsers().add(user);
+
+        Project updatedProject = projectService.createProject(project);
+        return ResponseEntity.ok(updatedProject);
+    }
+
+    @DeleteMapping("/{projectId}/users/{userId}")
+    @Operation(summary = "Usuń użytkownika z projektu", description = "Usuwa użytkownika z projektu")
+    public ResponseEntity<Project> removeUserFromProject(
+            @Parameter(description = "ID projektu") @PathVariable Integer projectId,
+            @Parameter(description = "ID użytkownika") @PathVariable Integer userId) {
+
+        Optional<Project> projectOpt = projectService.getProjectById(projectId);
+        Optional<User> userOpt = userService.getUserById(userId);
+
+        if (projectOpt.isEmpty() || userOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Project project = projectOpt.get();
+        User user = userOpt.get();
+        project.getUsers().remove(user);
+
+        Project updatedProject = projectService.createProject(project);
+        return ResponseEntity.ok(updatedProject);
     }
 }
