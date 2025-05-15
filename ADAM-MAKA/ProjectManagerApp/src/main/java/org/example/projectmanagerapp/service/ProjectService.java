@@ -1,7 +1,9 @@
 package org.example.projectmanagerapp.service;
 
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -11,10 +13,12 @@ import java.util.Optional;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Project> getAllProjects() {
@@ -41,5 +45,16 @@ public class ProjectService {
 
     public void deleteProject(Integer id) {
         projectRepository.deleteById(id);
+    }
+
+    public Project assignUser(Integer projectId, Integer userId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        project.getUsers().add(user.get());
+        return projectRepository.save(project);
     }
 }
