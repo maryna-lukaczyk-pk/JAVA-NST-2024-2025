@@ -4,12 +4,15 @@ import org.example.projectmanager.entity.Project;
 import org.example.projectmanager.entity.Users;
 //import org.example.projectmanager.repository.ProjectRepository;
 import org.example.projectmanager.service.ProjectService;
+import org.example.projectmanager.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,11 +23,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 
 public class ProjectController {
     @Autowired
-    //private ProjectRepository projectRepository;
     private final ProjectService projectService;
+    private final UsersService usersService;
 
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService,UsersService usersService) {
         this.projectService = projectService;
+        this.usersService = usersService;
     }
 
     @GetMapping
@@ -59,5 +63,15 @@ public class ProjectController {
             @PathVariable Long id) {
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{projectId}/users")
+    public ResponseEntity<Void> assignUserToProject(
+            @PathVariable Long projectId,
+            @RequestBody Map<String, Long> body        // {"userId": 123}
+    ) {
+        Long userId = body.get("userId");
+        projectService.assignUserToProject(projectId, userId);
+        return ResponseEntity.ok().build();
     }
 }
