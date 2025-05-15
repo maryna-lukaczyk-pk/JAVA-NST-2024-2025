@@ -1,5 +1,7 @@
 package s.kopec.ProjectManagerApp.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,8 @@ public class User {
     private String username;
 
     @ManyToMany(mappedBy = "users")
+    @JsonIgnore
+    //@JsonBackReference
     private Set<Project> projects;
 }
 
