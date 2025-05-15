@@ -11,6 +11,7 @@ import org.example.projectmanager.entity.Project;
 import org.example.projectmanager.entity.Tasks;
 import org.example.projectmanager.entity.Users;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -129,5 +130,38 @@ public class IntegrationTest {
                         .content(objectMapper.writeValueAsString(createdUser)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("UpdatedName"));
+    }
+
+    @Test
+    public void testProjectCrud() throws Exception {
+        // 1. Create
+        Project project = new Project();
+        project.setName("CRUDProject");
+        String createJson = objectMapper.writeValueAsString(project);
+        String createResp = mockMvc.perform(post("/api/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createJson))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        Project created = objectMapper.readValue(createResp, Project.class);
+
+        // 2. Read
+        mockMvc.perform(get("/api/projects/" + created.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("CRUDProject"));
+
+        // 3. Update
+        created.setName("RenamedProject");
+        mockMvc.perform(put("/api/projects/" + created.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(created)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("RenamedProject"));
+
+        // 4. Delete
+        mockMvc.perform(delete("/api/projects/" + created.getId()))
+                .andExpect(status().isNoContent());
+        mockMvc.perform(get("/api/projects/" + created.getId()))
+                .andExpect(status().isNotFound());
     }
 }

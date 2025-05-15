@@ -6,7 +6,9 @@ import org.example.projectmanager.entity.Users;
 import org.example.projectmanager.repository.ProjectRepository;
 import org.example.projectmanager.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +18,6 @@ public class ProjectService {
     private final UsersRepository usersRepository;
 
     @Autowired
-
     public ProjectService(ProjectRepository projectRepository, UsersRepository usersRepository) {
         this.projectRepository = projectRepository;
         this.usersRepository = usersRepository;
@@ -48,6 +49,7 @@ public class ProjectService {
         return projectRepository.findById(id);
     }
 
+    @Transactional
     public void assignUserToProject(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found: " + projectId));
@@ -57,8 +59,8 @@ public class ProjectService {
         ProjectUsers pu = new ProjectUsers();
         pu.setProject(project);
         pu.setUsers(user);
-        project.getProjectusers().add(pu);
 
+        project.getProjectusers().add(pu);
         projectRepository.save(project);
     }
 }

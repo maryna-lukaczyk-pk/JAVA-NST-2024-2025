@@ -68,10 +68,22 @@ public class ProjectController {
     @PutMapping("/{projectId}/users")
     public ResponseEntity<Void> assignUserToProject(
             @PathVariable Long projectId,
-            @RequestBody Map<String, Long> body        // {"userId": 123}
+            @RequestBody Map<String,Object> body
     ) {
-        Long userId = body.get("userId");
+        Object raw = body.get("userId");
+        if (!(raw instanceof Number)) {
+            return ResponseEntity.badRequest().build();
+        }
+        Long userId = ((Number) raw).longValue();
         projectService.assignUserToProject(projectId, userId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get project by ID", description = "Returns one project")
+    public ResponseEntity<Project> getProjectById(@PathVariable Long id) {
+        return projectService.getProjectById(id)
+                .map(p -> ResponseEntity.ok(p))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
