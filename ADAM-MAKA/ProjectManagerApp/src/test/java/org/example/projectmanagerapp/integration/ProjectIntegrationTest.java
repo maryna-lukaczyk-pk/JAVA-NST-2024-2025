@@ -68,7 +68,6 @@ class ProjectIntegrationTest {
 
     @Test
     void updateProject() throws Exception {
-        // Create a project
         JsonNode created = objectMapper.readTree(
                 mockMvc.perform(post("/projects")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -78,7 +77,6 @@ class ProjectIntegrationTest {
         );
         int projectId = created.get("id").asInt();
 
-        // Update the project's name
         String newName = "Beta";
         mockMvc.perform(put("/projects/{id}", projectId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -87,7 +85,6 @@ class ProjectIntegrationTest {
                 .andExpect(jsonPath("$.id", is(projectId)))
                 .andExpect(jsonPath("$.name", is(newName)));
 
-        // Verify via GET
         mockMvc.perform(get("/projects/{id}", projectId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(newName)));
@@ -95,7 +92,6 @@ class ProjectIntegrationTest {
 
     @Test
     void deleteProject() throws Exception {
-        // Create a project
         JsonNode created = objectMapper.readTree(
                 mockMvc.perform(post("/projects")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -105,11 +101,9 @@ class ProjectIntegrationTest {
         );
         int projectId = created.get("id").asInt();
 
-        // Delete the project
         mockMvc.perform(delete("/projects/{id}", projectId))
                 .andExpect(status().isOk());
 
-        // Ensure it no longer exists
         mockMvc.perform(get("/projects/{id}", projectId))
                 .andExpect(status().isNotFound());
     }
