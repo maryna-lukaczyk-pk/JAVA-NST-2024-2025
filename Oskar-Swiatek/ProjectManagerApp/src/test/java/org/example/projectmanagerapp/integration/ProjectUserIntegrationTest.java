@@ -1,6 +1,7 @@
 package org.example.projectmanagerapp.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -43,17 +44,57 @@ public class ProjectUserIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void shouldCreateUserAndProject() throws Exception {
+    void shouldCreateUser() throws Exception {
         Map<String, String> user = Map.of("username", "oskar07");
         mockMvc.perform(post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(user)))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.username").value("oskar07"));
+    }
 
-        Map<String, String> project = Map.of("name", "Projekt A");
+    @Test
+    void shouldCreateProject() throws Exception {
+        Map<String, String> projectRequest = Map.of("name", "Projekt A");
+
         mockMvc.perform(post("/api/projects")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(project)))
-            .andExpect(status().isOk());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(projectRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("Projekt A"));
+    }
+
+    @Test
+    void shouldAssignUserToProject() throws Exception {
+        Long userId = createUser("oskar07");
+        Long projectId = createProject("Projekt A");
+
+        Map<String, Long> assignRequest = Map.of("userId", userId);
+
+        mockMvc.perform(post("/api/projects/" + projectId + "/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(assignRequest)))
+                .andExpect(status().isOk());
+
+    }
+
+    private Long createUser(String username) throws Exception {
+        Map<String, String> userRequest = Map.of("username", username);
+        String response = mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andReturn().getResponse().getContentAsString();
+        return ((Number) JsonPath.read(response, "$.id")).longValue();
+    }
+
+    private Long createProject(String name) throws Exception {
+        Map<String, String> projectRequest = Map.of("name", name);
+        String response = mockMvc.perform(post("/api/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(projectRequest)))
+                .andReturn().getResponse().getContentAsString();
+        return ((Number) JsonPath.read(response, "$.id")).longValue();
     }
 }
