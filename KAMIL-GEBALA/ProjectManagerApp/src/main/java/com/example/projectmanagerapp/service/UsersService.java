@@ -5,6 +5,7 @@ import com.example.projectmanagerapp.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -33,4 +34,7 @@ public class UsersService {
 
     public void deleteUser(long id) {usersRepository.deleteById(id); }
 
+    public Optional<Users> getUserById(Long id) {
+        return usersRepository.findById(id);
+    }
 }

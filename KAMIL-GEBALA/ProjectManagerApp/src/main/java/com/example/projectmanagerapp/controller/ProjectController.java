@@ -1,5 +1,6 @@
 package com.example.projectmanagerapp.controller;
 import com.example.projectmanagerapp.entity.Project;
+import com.example.projectmanagerapp.entity.ProjectUser;
 import com.example.projectmanagerapp.entity.Users;
 import com.example.projectmanagerapp.service.ProjectService;
 import com.example.projectmanagerapp.service.UsersService;
@@ -52,4 +53,23 @@ public class ProjectController {
         projectService.deleteProject(id);
     }
 
+    @PostMapping("/{projectId}/users/{userId}")
+    @Operation (summary = "Assign user to project", description = "Assigns a user to a project")
+    public ResponseEntity<?> assignUserToProject(
+            @Parameter (description="ID of the project",required = true) @PathVariable Long projectId,
+            @Parameter (description="ID of the user",required = true) @PathVariable Long userId) {
+        ProjectUser projectUser = projectService.assignUserToProject(projectId, userId);
+        if (projectUser != null) {
+            return new ResponseEntity<>(projectUser, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Project or user not found", HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/{projectId}/users")
+    @Operation (summary = "Get users in project", description = "Returns all users assigned to a project")
+    public ResponseEntity<?> getUsersInProject(
+            @Parameter (description="ID of the project",required = true) @PathVariable Long projectId) {
+        List<Users> users = projectService.getUsersInProject(projectId);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 }
