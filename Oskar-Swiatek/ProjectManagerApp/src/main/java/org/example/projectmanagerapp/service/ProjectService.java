@@ -2,6 +2,7 @@ package org.example.projectmanagerapp.service;
 
 
 import org.example.projectmanagerapp.entity.project.Project;
+import org.example.projectmanagerapp.entity.user.User;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,11 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final UserService userService;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserService userService) {
         this.projectRepository = projectRepository;
+        this.userService = userService;
     }
 
     public List<Project> getAllProjects() {
@@ -34,6 +37,14 @@ public class ProjectService {
                 .orElseThrow(() -> new RuntimeException("Project not found"));
         project.setName(projectDetails.getName());
         return projectRepository.save(project);
+    }
+
+    public void assignUserToProject(Long projectId, Long userId) {
+        Project project = getProjectById(projectId);
+        User user = userService.getUserById(userId);
+
+        project.getAssignedUsers().add(user);
+        projectRepository.save(project);
     }
 
     public void deleteProject(Long id) {
