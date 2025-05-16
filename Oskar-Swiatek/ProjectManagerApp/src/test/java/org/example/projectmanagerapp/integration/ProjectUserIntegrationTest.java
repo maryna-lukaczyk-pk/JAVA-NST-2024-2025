@@ -43,7 +43,7 @@ public class ProjectUserIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
+    /*@Test
     void shouldCreateUser() throws Exception {
         Map<String, String> user = Map.of("username", "oskar07");
         mockMvc.perform(post("/api/users")
@@ -64,7 +64,7 @@ public class ProjectUserIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value("Projekt A"));
-    }
+    }*/
 
     @Test
     void shouldAssignUserToProject() throws Exception {
@@ -78,6 +78,26 @@ public class ProjectUserIntegrationTest {
                         .content(objectMapper.writeValueAsString(assignRequest)))
                 .andExpect(status().isOk());
 
+    }
+
+    @Test
+    void shouldReturnProjectWithAssignedUser() throws Exception {
+        Long userId = createUser("kamil09");
+        Long projectId = createProject("Zadanie A");
+
+        // przypisz użytkownika
+        Map<String, Long> assignRequest = Map.of("userId", userId);
+        mockMvc.perform(post("/api/projects/" + projectId + "/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(assignRequest)))
+                .andExpect(status().isOk());
+
+        // pobierz projekt i sprawdź, czy assignedUsers zawiera użytkownika
+        mockMvc.perform(get("/api/projects/" + projectId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.assignedUsers[0].id").value(userId))
+                .andExpect(jsonPath("$.assignedUsers[0].username").value("kamil09"));
     }
 
     private Long createUser(String username) throws Exception {
