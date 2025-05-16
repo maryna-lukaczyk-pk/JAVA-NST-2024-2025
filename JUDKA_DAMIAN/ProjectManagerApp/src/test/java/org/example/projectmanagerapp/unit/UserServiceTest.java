@@ -1,8 +1,9 @@
-package org.example.projectmanagerapp.service;
+package org.example.projectmanagerapp.unit;
 
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.UserRepository;
 import org.example.projectmanagerapp.schemas.UserDTO;
+import org.example.projectmanagerapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
