@@ -93,6 +93,7 @@ public class PriorityIntegrationTest {
                 .andExpect(jsonPath("$.priority", is("Medium")));
     }
 
+
     @Test
     public void testLowPriorityTask() throws Exception {
         Project project = new Project();
