@@ -32,6 +32,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+
     public Optional<User> updateUser(Long id, User updatedUser) {
         return userRepository.findById(id).map(user -> {
             user.setUsername(updatedUser.getUsername());
@@ -42,4 +47,5 @@ public class UserService {
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
+
 }

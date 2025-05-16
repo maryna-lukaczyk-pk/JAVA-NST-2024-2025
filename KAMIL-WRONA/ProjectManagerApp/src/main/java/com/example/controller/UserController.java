@@ -29,7 +29,7 @@ public class UserController {
     @PostMapping
     @Operation(summary = "Create a new user", description = "Add a new user to the system")
     public User createUser(@Parameter(description = "User object to be created", required = true) @RequestBody User user) {
-        return userService.createUser(user);
+        return userService.save(user);
     }
     @GetMapping("/{id}")
     @Operation(summary = "Get user by ID", description = "Retrieve a user by their ID")

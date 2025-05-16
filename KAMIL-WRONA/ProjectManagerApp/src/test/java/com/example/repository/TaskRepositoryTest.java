@@ -30,23 +30,27 @@ public class TaskRepositoryTest {
         Project savedProject = projectRepository.save(project);
         projectRepository.flush();
 
-        User existingUser = userRepository.findByUsername("Test User");
-        if (existingUser != null) {
-            userRepository.delete(existingUser);
+        User user = userRepository.findByUsername("Test User");
+        if (user == null) {
+            user = new User();
+            user.setUsername("Test User");
+            user = userRepository.save(user);
         }
-        User user = new User();
-        user.setUsername("Test User");
-        User savedUser = userRepository.save(user);
-        userRepository.flush();
+
 
         Task task = new Task();
         task.setTitle("Test Task");
         task.setDescription("This is a test task");
         task.setProject(savedProject);
-        task.setUser(savedUser);
+        task.setUser(user);
+        task.setTaskType("TASK");
+        taskRepository.save(task);
 
         Task savedTask = taskRepository.save(task);
         assertNotNull(savedTask.getId());
         assertEquals(savedProject.getId(), savedTask.getProject().getId());
     }
+
+
+
 }

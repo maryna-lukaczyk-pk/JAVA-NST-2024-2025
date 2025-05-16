@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -29,24 +31,25 @@ public class TaskController {
     @PostMapping
     @Operation(summary = "Create a new task", description = "Add a new task to the system")
     public Task createTask( @Parameter(description = "Task object to be created", required = true) @RequestBody Task task) {
-        return taskService.createTask(task);
+        return taskService.save(task);
     }
     @GetMapping("/{id}")
     @Operation(summary = "Get task by ID", description = "Retrieve a task by its ID")
-    public Optional<Task> getTaskById(
+    public Task getTaskById(
             @Parameter(description = "ID of the task to retrieve", required = true)
-            @PathVariable Long id) {
-        return taskService.getTaskById(id);
-    }
+            @PathVariable Long id){
+        return taskService.getTaskById(id)
+            .orElseThrow(() -> new RuntimeException("Task not found with id" + id));
+   }
+
     @PutMapping("/{id}")
-    @Operation(summary = "Update a task", description = "Update an existing task by its ID")
-    public Optional<Task> updateTask(
-            @Parameter(description = "ID of the task to update", required = true)
-            @PathVariable Long id,
-            @Parameter(description = "Updated task object", required = true)
-            @RequestBody Task updatedTask) {
-        return taskService.updateTask(id, updatedTask);
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
+    return taskService.updateTask(id, task)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a task", description = "Delete a task by its ID")
     public void deleteTask(
