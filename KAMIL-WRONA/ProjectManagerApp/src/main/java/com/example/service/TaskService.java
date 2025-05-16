@@ -29,6 +29,12 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+
+    public Task save(Task task) {
+        return taskRepository.save(task);
+    }
+
+
     public Optional<Task> updateTask(Long id, Task updatedTask) {
         return taskRepository.findById(id).map(task -> {
             task.setTitle(updatedTask.getTitle());
