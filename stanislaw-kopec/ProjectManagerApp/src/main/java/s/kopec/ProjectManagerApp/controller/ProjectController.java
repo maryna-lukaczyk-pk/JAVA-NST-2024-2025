@@ -64,4 +64,14 @@ public class ProjectController {
         projectService.updateProjectName(id,newName);
     }
 
+    @PutMapping("/add-user/{projectId}/{newUserId}")
+    @Operation(summary = "Update list of Users", description = "Add User to list of Users of an existing project")
+    public void addUser(
+            @Parameter(description = "ID of the project to update", required = true)
+            @PathVariable Long projectId,
+            @Parameter(description = "New user to assign", required = true)
+            @PathVariable Long newUserId) {
+        projectService.addNewUser(projectId,newUserId);
+    }
+
 }
