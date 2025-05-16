@@ -5,35 +5,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.projectmanager.priority.PriorityLevel;
+import org.example.projectmanager.entity.TaskType;
 
 @Entity
+@Table(name = "tasks")
 @Getter
 @Setter
 @NoArgsConstructor
 public class Tasks {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private tasktype task_type;
-    private enum tasktype {
-        NEW, IN_PROGRESS, COMPLETED, FAILED;
-    }
-    private String priority;
-
-    @Transient
-    private PriorityLevel priorityLevel;
-
-    public void setPriorityLevel(PriorityLevel priorityLevel) {
-        this.priorityLevel = priorityLevel;
-        this.priority = priorityLevel.getPriorityLevel();
-    }
+    private TaskType taskType;
 
     @ManyToOne
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", nullable=false)
     private Project project;
 }

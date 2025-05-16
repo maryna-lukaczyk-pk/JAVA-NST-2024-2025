@@ -10,6 +10,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.example.projectmanager.entity.Project;
 import org.example.projectmanager.entity.Tasks;
 import org.example.projectmanager.entity.Users;
+import org.example.projectmanager.entity.TaskType;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -87,7 +89,7 @@ public class IntegrationTest {
         Tasks task = new Tasks();
         task.setTitle("Test Task");
         task.setDescription("Test Description");
-        task.setPriority("HIGH");
+        task.setTaskType(TaskType.IN_PROGRESS);
         task.setProject(projectForTask);
 
         mockMvc.perform(post("/api/tasks")
@@ -134,34 +136,78 @@ public class IntegrationTest {
 
     @Test
     public void testProjectCrud() throws Exception {
-        // 1. Create
+        // 1. Utwórz projekt
         Project project = new Project();
         project.setName("CRUDProject");
-        String createJson = objectMapper.writeValueAsString(project);
-        String createResp = mockMvc.perform(post("/api/projects")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(createJson))
-                .andExpect(status().isCreated())
-                .andReturn().getResponse().getContentAsString();
-        Project created = objectMapper.readValue(createResp, Project.class);
 
-        // 2. Read
-        mockMvc.perform(get("/api/projects/" + created.getId()))
+        MvcResult createResult = mockMvc.perform(post("/api/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(project)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        Project createdProject = objectMapper.readValue(
+                createResult.getResponse().getContentAsString(),
+                Project.class
+        );
+
+        // 2. Odczytaj projekt
+        mockMvc.perform(get("/api/projects/" + createdProject.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("CRUDProject"));
 
-        // 3. Update
-        created.setName("RenamedProject");
-        mockMvc.perform(put("/api/projects/" + created.getId())
+        // 3. Aktualizuj projekt
+        Project updatedProject = new Project();
+        updatedProject.setName("RenamedProject");
+
+        mockMvc.perform(put("/api/projects/" + createdProject.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(created)))
+                        .content(objectMapper.writeValueAsString(updatedProject)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("RenamedProject"));
 
-        // 4. Delete
-        mockMvc.perform(delete("/api/projects/" + created.getId()))
+        // 4. Usuń projekt
+        mockMvc.perform(delete("/api/projects/" + createdProject.getId()))
                 .andExpect(status().isNoContent());
-        mockMvc.perform(get("/api/projects/" + created.getId()))
+
+        mockMvc.perform(get("/api/projects/" + createdProject.getId()))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testAssignUserToProject() throws Exception {
+        // 1. Create user
+        Users user = new Users();
+        user.setUsername("UserForAssignment");
+        String userResponse = mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        Users createdUser = objectMapper.readValue(userResponse, Users.class);
+
+        // 2. Create project
+        Project project = new Project();
+        project.setName("ProjectForAssignment");
+        String projectResponse = mockMvc.perform(post("/api/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(project)))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        Project createdProject = objectMapper.readValue(projectResponse, Project.class);
+
+        // 3. Assign user to project
+        AssignUserRequest assignRequest = new AssignUserRequest(createdUser.getId());
+        mockMvc.perform(post("/api/projects/" + createdProject.getId() + "/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(assignRequest)))
+                .andExpect(status().isCreated());
+
+        // 4. Verify user is in project's member list
+        mockMvc.perform(get("/api/projects/" + createdProject.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.projectUsers[0].user.id").value(createdUser.getId()))
+                .andExpect(jsonPath("$.projectUsers[0].user.username").value("UserForAssignment"));
     }
 }

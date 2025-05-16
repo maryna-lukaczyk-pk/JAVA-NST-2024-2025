@@ -1,13 +1,13 @@
 package org.example.projectmanager.controller;
 
+import org.example.projectmanager.entity.Project;
 import org.example.projectmanager.entity.Users;
-//import org.example.projectmanager.repository.UsersRepository;
+import org.example.projectmanager.service.ProjectUsersService;
 import org.example.projectmanager.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,12 +18,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 @Tag (name = "Users",description = "Operations for managing users")
 
 public class UsersController {
-    @Autowired
-    //private UsersRepository usersRepository;
     private final UsersService usersService;
+    private final ProjectUsersService projectUsersService;
 
-    public UsersController(UsersService usersService) {
+    @Autowired
+    public UsersController(UsersService usersService, ProjectUsersService projectUsersService) {
         this.usersService = usersService;
+        this.projectUsersService = projectUsersService;
     }
 
     @GetMapping
@@ -58,5 +59,12 @@ public class UsersController {
             @PathVariable Long id) {
         usersService.deleteUsers(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{userId}/projects")
+    @Operation(summary = "Get all projects for user")
+    public ResponseEntity<List<Project>> getUsersProjects(@PathVariable Long userId) {
+        List<Project> projects = projectUsersService.getProjectsByUserId(userId);
+        return ResponseEntity.ok(projects);
     }
 }

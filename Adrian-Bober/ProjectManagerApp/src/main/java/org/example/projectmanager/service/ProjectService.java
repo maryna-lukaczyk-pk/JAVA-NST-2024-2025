@@ -33,9 +33,10 @@ public class ProjectService {
 
     public Project updateProject(Long id, Project projectDetails) {
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
-
-        project.setName(projectDetails.getName());
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        if (projectDetails.getName() != null) {
+            project.setName(projectDetails.getName());
+        }
         return projectRepository.save(project);
     }
 
@@ -58,9 +59,9 @@ public class ProjectService {
 
         ProjectUsers pu = new ProjectUsers();
         pu.setProject(project);
-        pu.setUsers(user);
+        pu.setUser(user);
 
-        project.getProjectusers().add(pu);
+        project.getProjectUsers().add(pu);
         projectRepository.save(project);
     }
 }

@@ -35,13 +35,20 @@ public class TasksService {
     }
 
     public Tasks updateTasks(Long id, Tasks tasksDetails) {
-        Tasks tasks = tasksRepository.findById(id)
+        Tasks task = tasksRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
 
-        tasks.setTitle(tasksDetails.getTitle());
-        tasks.setDescription(tasksDetails.getDescription());
-        tasks.setPriority(tasksDetails.getPriority());
-        return tasksRepository.save(tasks);
+        task.setTitle(tasksDetails.getTitle());
+        task.setDescription(tasksDetails.getDescription());
+        task.setTaskType(tasksDetails.getTaskType());
+
+        if (tasksDetails.getProject() != null) {
+            Project project = projectRepository.findById(tasksDetails.getProject().getId())
+                    .orElseThrow(() -> new RuntimeException("Project not found"));
+            task.setProject(project);
+        }
+
+        return tasksRepository.save(task);
     }
 
     public void deleteTasks(Long id) {
