@@ -8,10 +8,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import s.kopec.ProjectManagerApp.entity.Project;
+import s.kopec.ProjectManagerApp.entity.User;
 import s.kopec.ProjectManagerApp.repository.ProjectRepository;
+import s.kopec.ProjectManagerApp.repository.UserRepository;
 import s.kopec.ProjectManagerApp.service.ProjectService;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +27,16 @@ public class ProjectServiceTest {
     @Mock
     private ProjectRepository projectRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     private ProjectService projectService;
 
     @BeforeEach
     void setUp() {
         projectRepository = Mockito.mock(ProjectRepository.class);
-        projectService = new ProjectService(projectRepository);
+        userRepository = Mockito.mock(UserRepository.class);
+        projectService = new ProjectService(projectRepository, userRepository);
     }
 
     @Test
@@ -122,4 +129,66 @@ public class ProjectServiceTest {
         verify(projectRepository, never()).getReferenceById(any());
         verify(projectRepository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("Should add user to project when both exist")
+    void testAddNewUser_BothExist() {
+        Long projectId = 1L;
+        Long userId = 2L;
+
+        Project project = new Project();
+        project.setId(projectId);
+        project.setUsers(new HashSet<>());
+
+        User user = new User();
+        user.setId(userId);
+
+        when(projectRepository.existsById(projectId)).thenReturn(true);
+        when(userRepository.existsById(userId)).thenReturn(true);
+        when(projectRepository.getReferenceById(projectId)).thenReturn(project);
+        when(userRepository.getReferenceById(userId)).thenReturn(user);
+
+        projectService.addNewUser(projectId, userId);
+
+        assertTrue(project.getUsers().contains(user));
+        verify(projectRepository).existsById(projectId);
+        verify(userRepository).existsById(userId);
+        verify(projectRepository).getReferenceById(projectId);
+        verify(userRepository).getReferenceById(userId);
+    }
+
+    @Test
+    @DisplayName("Should not add user if project does not exist")
+    void testAddNewUser_ProjectDoesNotExist() {
+        Long projectId = 1L;
+        Long userId = 2L;
+
+        when(projectRepository.existsById(projectId)).thenReturn(false);
+
+        projectService.addNewUser(projectId, userId);
+
+        verify(projectRepository).existsById(projectId);
+        verify(userRepository, never()).existsById(any());
+        verify(projectRepository, never()).getReferenceById(any());
+        verify(userRepository, never()).getReferenceById(any());
+    }
+
+    @Test
+    @DisplayName("Should not add user if user does not exist")
+    void testAddNewUser_UserDoesNotExist() {
+        Long projectId = 1L;
+        Long userId = 2L;
+
+        when(projectRepository.existsById(projectId)).thenReturn(true);
+        when(userRepository.existsById(userId)).thenReturn(false);
+
+        projectService.addNewUser(projectId, userId);
+
+        verify(projectRepository).existsById(projectId);
+        verify(userRepository).existsById(userId);
+        verify(projectRepository, never()).getReferenceById(any());
+        verify(userRepository, never()).getReferenceById(any());
+    }
+
+
 }
