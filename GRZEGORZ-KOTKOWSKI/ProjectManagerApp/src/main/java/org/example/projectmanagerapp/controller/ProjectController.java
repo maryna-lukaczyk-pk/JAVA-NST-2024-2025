@@ -52,4 +52,9 @@ public class ProjectController {
             @RequestBody Project project) {
         return projectService.createProject(project);
     }
+
+    @PatchMapping("/{projectId}/users/{userId}")
+    public Project assignUserToProject(@PathVariable Long projectId, @PathVariable Long userId) {
+        return projectService.assignUserToProject(projectId, userId);
+    }
 }
