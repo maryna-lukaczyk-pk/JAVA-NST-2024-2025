@@ -1,7 +1,9 @@
 package com.example.projectmanagerapp;
 
 import com.example.projectmanagerapp.entity.User;
+import com.example.projectmanagerapp.entity.Project;
 import com.example.projectmanagerapp.repository.UserRepository;
+import com.example.projectmanagerapp.repository.ProjectRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,6 +26,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @SpringBootTest
@@ -38,6 +42,9 @@ class UserControllerIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Test
     @DisplayName("Should create a new user")
@@ -112,5 +119,35 @@ class UserControllerIntegrationTest {
 
         Optional<User> deleted = userRepository.findById(saved.getId());
         assertTrue(deleted.isEmpty());
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("Should create a new user with assigned project")
+    void testCreateUserWithProject() throws Exception {
+        Project project = new Project();
+        project.setName("Test Project");
+        Project savedProject = projectRepository.save(project);
+
+        User user = new User();
+        user.setUsername("user_with_project");
+        user.setProjects(Set.of(savedProject));
+
+        String userJson = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("user_with_project"))
+                .andExpect(jsonPath("$.projects[0].name").value("Test Project"));
+
+        User createdUser = userRepository.findAll().stream()
+                .filter(u -> "user_with_project".equals(u.getUsername()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("User not found"));
+
+        assertTrue(createdUser.getProjects().stream()
+                .anyMatch(p -> "Test Project".equals(p.getName())));
     }
 }
