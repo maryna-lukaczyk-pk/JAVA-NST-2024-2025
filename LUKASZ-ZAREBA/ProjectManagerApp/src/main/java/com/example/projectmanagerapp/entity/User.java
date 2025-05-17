@@ -29,6 +29,9 @@ public class User {
     )
     private List<Project> projects;
 
-    public User(int i, String alice) {
+    public User(int i, String username) {
+        this.id = i;
+        this.username = username;
     }
+
 }
