@@ -1,6 +1,7 @@
 package com.example.projectmanagerapp.entity;
 
 import com.example.projectmanagerapp.service.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,7 @@ public class Tasks {
     private Project project;
 
     public void generatePriority(){
-        int randomNum = (int)(Math.random() * 4);
+        int randomNum = (int)(Math.random() * 3);
         switch (randomNum) {
             case 1:
                 this.task_type = new HighPriority().getPriority();

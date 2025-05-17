@@ -1,10 +1,6 @@
 package com.example.projectmanagerapp.controller;
 
-import com.example.projectmanagerapp.entity.Project;
 import com.example.projectmanagerapp.entity.Tasks;
-import com.example.projectmanagerapp.entity.Users;
-import com.example.projectmanagerapp.repozytorium.ProjectRepository;
-import com.example.projectmanagerapp.repozytorium.TasksRepository;
 import com.example.projectmanagerapp.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.config.Task;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
