@@ -1,8 +1,10 @@
 package com.example.projectmanagerapp;
 
 import com.example.projectmanagerapp.entity.Task;
+import com.example.projectmanagerapp.entity.Project;
 import com.example.projectmanagerapp.entity.TaskType;
 import com.example.projectmanagerapp.repository.TaskRepository;
+import com.example.projectmanagerapp.repository.ProjectRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +40,9 @@ class TaskControllerIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
@@ -143,5 +148,33 @@ class TaskControllerIntegrationTest {
 
         Optional<Task> deleted = taskRepository.findById(saved.getId());
         assertTrue(deleted.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should create a new task assigned to a project")
+    void testCreateTaskWithProject() throws Exception {
+        Project project = new Project();
+        project.setName("My Project");
+        Project savedProject = projectRepository.save(project);
+
+        Task task = new Task();
+        task.setTitle("Task with Project");
+        task.setDescription("Description");
+        task.setTaskType(TaskType.HIGH_PRIORITY);
+        Project projectRef = new Project();
+        projectRef.setId(savedProject.getId());
+        task.setProject(projectRef);
+
+        mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(task)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Task with Project"))
+                .andExpect(jsonPath("$.project.id").value(savedProject.getId()));
+
+        assertTrue(taskRepository.findAll().stream()
+                .anyMatch(t -> t.getTitle().equals("Task with Project") &&
+                        t.getProject() != null &&
+                        t.getProject().getId().equals(savedProject.getId())));
     }
 }
