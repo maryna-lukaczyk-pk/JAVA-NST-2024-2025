@@ -1,6 +1,7 @@
 org\example\projectmanagerapp\PriorityLevelTest.class
 org\example\projectmanagerapp\ProjectManagerAppApplicationTests.class
-org\example\projectmanagerapp\ProjectServiceTest.class
 org\example\projectmanagerapp\TaskServiceTest.class
 org\example\projectmanagerapp\UserControllerTest.class
+org\example\projectmanagerapp\UserControllerIT.class
+org\example\projectmanagerapp\ProjectServiceTest.class
 org\example\projectmanagerapp\UserServiceTest.class
