@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import com.example.projectmanagerapp.AbstractPostgresIT;
+
 /**
  * Testy integracyjne dla endpointów /projects.
  * Sprawdzają operacje CRUD (GET, POST, PUT, DELETE) na encji Project.
@@ -29,7 +29,7 @@ import com.example.projectmanagerapp.AbstractPostgresIT;
 @Testcontainers
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 
-public class ProjectIT extends AbstractPostgresIT {
+public class ProjectIT extends BaseIT {
 
     /*@Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")

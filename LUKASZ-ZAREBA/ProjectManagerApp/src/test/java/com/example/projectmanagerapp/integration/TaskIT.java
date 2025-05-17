@@ -18,7 +18,6 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import com.example.projectmanagerapp.AbstractPostgresIT;
 
 /**
  * Testy integracyjne dla endpointów /tasks.
@@ -28,7 +27,7 @@ import com.example.projectmanagerapp.AbstractPostgresIT;
 @AutoConfigureMockMvc
 @Testcontainers
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class TaskIT extends AbstractPostgresIT {
+public class TaskIT extends BaseIT {
 
     @Autowired
     private MockMvc mockMvc;
