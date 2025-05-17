@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @Testcontainers
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class TasksControllerTest {
+public class TasksIntegrationTest {
 
     @Container
     static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:15")
@@ -49,7 +49,7 @@ public class TasksControllerTest {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    TasksControllerTest(MockMvc mockMvc, ObjectMapper objectMapper) {
+    TasksIntegrationTest(MockMvc mockMvc, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
     }
