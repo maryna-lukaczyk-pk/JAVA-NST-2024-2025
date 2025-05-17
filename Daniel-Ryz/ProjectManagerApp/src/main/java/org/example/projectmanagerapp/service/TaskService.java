@@ -8,7 +8,10 @@ import org.example.projectmanagerapp.entity.Tasks;
 import org.example.projectmanagerapp.repository.TaskRepository;
 import org.example.projectmanagerapp.service.priority.PriorityAssigner;
 import org.example.projectmanagerapp.service.priority.PriorityLevel;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
