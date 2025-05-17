@@ -1,9 +1,11 @@
-package org.example.projectmanagerapp.service;
+package org.example.projectmanagerapp.unit.service;
 
 import org.example.projectmanagerapp.dto.CreateUserRequest;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Users;
 import org.example.projectmanagerapp.repository.UserRepository;
+import org.example.projectmanagerapp.service.ProjectService;
+import org.example.projectmanagerapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -125,7 +127,7 @@ class UserServiceTests {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(projectService.getProjectById(10L)).thenReturn(project);
 
-        userService.assignProjectToUser(10L, 1L);
+        userService.assignProjectToUser(1L, 10L);
 
         assertTrue(user.getProjects().contains(project));
         verify(userRepository, times(1)).save(user);

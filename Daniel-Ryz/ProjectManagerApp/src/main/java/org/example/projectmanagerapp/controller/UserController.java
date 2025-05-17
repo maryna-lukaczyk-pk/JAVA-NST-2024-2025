@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.projectmanagerapp.dto.CreateUserRequest;
 import org.example.projectmanagerapp.entity.Users;
 import org.example.projectmanagerapp.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,12 +51,13 @@ public class UserController {
     }
 
     @Operation(summary = "Create a new User.")
-    @ApiResponse(responseCode = "200", description = "User created successfully.",
+    @ApiResponse(responseCode = "201", description = "User created successfully.",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Users.class)))
     @PostMapping
-    public Users createUser(@RequestBody CreateUserRequest request) {
-        return userService.createUser(request);
+    public ResponseEntity<Users> createUser(@RequestBody CreateUserRequest request) {
+        Users user = userService.createUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @Operation(summary = "Update a user by id.")

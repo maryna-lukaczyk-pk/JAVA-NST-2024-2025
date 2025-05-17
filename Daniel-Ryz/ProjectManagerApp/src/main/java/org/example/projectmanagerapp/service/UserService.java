@@ -46,7 +46,7 @@ public class UserService {
     }
 
     @Transactional
-    public void assignProjectToUser(Long projectId, Long userId) {
+    public void assignProjectToUser(Long userId, Long projectId) {
         Users user = getUserById(userId);
         Project project = getProjectById(projectId);
 

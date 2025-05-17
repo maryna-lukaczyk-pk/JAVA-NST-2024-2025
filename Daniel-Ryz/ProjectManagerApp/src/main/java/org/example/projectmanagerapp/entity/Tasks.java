@@ -1,11 +1,14 @@
 package org.example.projectmanagerapp.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 
-@Data
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tasks {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
