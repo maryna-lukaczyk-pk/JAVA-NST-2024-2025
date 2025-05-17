@@ -8,11 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-//import org.springframework.test.context.DynamicPropertyRegistry;
-// org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-//import org.testcontainers.containers.PostgreSQLContainer;
-//import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -20,30 +16,13 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Testy integracyjne dla endpointów /projects.
- * Sprawdzają operacje CRUD (GET, POST, PUT, DELETE) na encji Project.
- */
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 
 public class ProjectIT extends BaseIT {
-
-    /*@Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
-            .withDatabaseName("testdb")
-            .withUsername("postgres")
-            .withPassword("postgres");
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
-    }*/
 
     @Autowired
     private MockMvc mockMvc;
@@ -84,7 +63,7 @@ public class ProjectIT extends BaseIT {
                         .content(json2))
                 .andExpect(status().isOk());
 
-        // Test GET /projects - pobranie wszystkich projektów
+        // Test GET /projects
         mockMvc.perform(get("/projects"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
@@ -103,7 +82,7 @@ public class ProjectIT extends BaseIT {
                 .andReturn().getResponse().getContentAsString();
         Project created = objectMapper.readValue(response, Project.class);
 
-        // Test GET /projects/{id} - pobranie projektu po ID
+        // Test GET /projects/{id}
         mockMvc.perform(get("/projects/{id}", created.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Jeden Projekt"));
@@ -146,7 +125,7 @@ public class ProjectIT extends BaseIT {
                 .andReturn().getResponse().getContentAsString();
         Project created = objectMapper.readValue(response, Project.class);
 
-        // Test DELETE /projects/{id} - usuwanie projektu
+        // Test DELETE /projects/{id}
         mockMvc.perform(delete("/projects/{id}", created.getId()))
                 .andExpect(status().isNoContent());
     }

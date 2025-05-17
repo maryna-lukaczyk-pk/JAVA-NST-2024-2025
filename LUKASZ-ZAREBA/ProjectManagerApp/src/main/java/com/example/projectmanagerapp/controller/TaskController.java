@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import com.example.projectmanagerapp.entity.Task;
 import com.example.projectmanagerapp.service.TaskService;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Tag(name = "Task Controller", description = "Operations on tasks - retrieving, creating, updating, deleting information")
 @RestController
@@ -50,7 +51,11 @@ public class TaskController {
     @Operation(summary = "Delete task", description = "Delete an existing task by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@Parameter(description = "ID of the task to delete") @PathVariable int id) {
-        taskService.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            taskService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

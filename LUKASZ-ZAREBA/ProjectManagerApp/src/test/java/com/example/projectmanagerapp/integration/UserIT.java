@@ -12,33 +12,24 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Testy integracyjne dla endpointów /api/users.
- * Sprawdzają operacje CRUD (GET, POST, PUT, DELETE) na encji User.
- */
+
 @SpringBootTest
 @AutoConfigureMockMvc
-//@Testcontainers
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 
 public class UserIT extends BaseIT {
 
-    /*@Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
-            .withDatabaseName("testdb")
-            .withUsername("postgres")
-            .withPassword("postgres");
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
-    }*/
+    @Test
+    public void testUserConstructor() {
+        // Test konstruktora z parametrami
+        User user = new User(1, "testuser");
+        assertEquals(1, user.getId());
+        assertEquals("testuser", user.getUsername());
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,12 +37,11 @@ public class UserIT extends BaseIT {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void testUtworzenieNowegoUzytkownika() throws Exception {
+    public void testCreateNewUser() throws Exception {
         User user = new User();
         user.setUsername("testuser");
         String userJson = objectMapper.writeValueAsString(user);
 
-        // Test POST /api/users - tworzenie użytkownika
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
@@ -61,8 +51,7 @@ public class UserIT extends BaseIT {
     }
 
     @Test
-    public void testPobranieWszystkichUzytkownikow() throws Exception {
-        // Dodanie dwóch użytkowników
+    public void testGetAllUsers() throws Exception {
         User user1 = new User();
         user1.setUsername("user1");
         String userJson1 = objectMapper.writeValueAsString(user1);
@@ -79,15 +68,13 @@ public class UserIT extends BaseIT {
                         .content(userJson2))
                 .andExpect(status().isOk());
 
-        // Test GET /api/users - pobranie wszystkich użytkowników
         mockMvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
-    public void testPobranieUzytkownikaPoId() throws Exception {
-        // Utworzenie jednego użytkownika
+    public void testGetUserById() throws Exception {
         User user = new User();
         user.setUsername("singleUser");
         String userJson = objectMapper.writeValueAsString(user);
@@ -98,15 +85,13 @@ public class UserIT extends BaseIT {
                 .andReturn().getResponse().getContentAsString();
         User createdUser = objectMapper.readValue(response, User.class);
 
-        // Test GET /api/users/{id} - pobranie użytkownika po ID
         mockMvc.perform(get("/api/users/{id}", createdUser.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username", is("singleUser")));
     }
 
     @Test
-    public void testAktualizacjaUzytkownika() throws Exception {
-        // Utworzenie użytkownika
+    public void testUpdateUser() throws Exception {
         User user = new User();
         user.setUsername("oldName");
         String userJson = objectMapper.writeValueAsString(user);
@@ -117,7 +102,6 @@ public class UserIT extends BaseIT {
                 .andReturn().getResponse().getContentAsString();
         User createdUser = objectMapper.readValue(response, User.class);
 
-        // Aktualizacja użytkownika
         User updated = new User();
         updated.setUsername("newName");
         String updateJson = objectMapper.writeValueAsString(updated);
@@ -129,8 +113,7 @@ public class UserIT extends BaseIT {
     }
 
     @Test
-    public void testUsuwanieUzytkownika() throws Exception {
-        // Utworzenie użytkownika do usunięcia
+    public void testDeleteUser() throws Exception {
         User user = new User();
         user.setUsername("toDelete");
         String userJson = objectMapper.writeValueAsString(user);
@@ -141,7 +124,6 @@ public class UserIT extends BaseIT {
                 .andReturn().getResponse().getContentAsString();
         User createdUser = objectMapper.readValue(response, User.class);
 
-        // Test DELETE /api/users/{id} - usuwanie użytkownika
         mockMvc.perform(delete("/api/users/{id}", createdUser.getId()))
                 .andExpect(status().isNoContent());
     }

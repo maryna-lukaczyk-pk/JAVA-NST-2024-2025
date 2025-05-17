@@ -26,7 +26,7 @@ public class Task
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private task_type task_type;
+    private TaskType taskType;
 
     @Transient
     private PriorityLevel priorityLevel;
@@ -41,11 +41,11 @@ public class Task
 }
 
     public void setPriorityLevel() {
-        if (this.task_type == null) {
+        if (this.taskType == null) {
             priorityLevel = new MediumPriority();
             return;
         }
-        switch (task_type) {
+        switch (taskType) {
             case high -> priorityLevel = new HighPriority();
             case medium -> priorityLevel = new MediumPriority();
             case low -> priorityLevel = new LowPriority();

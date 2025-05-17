@@ -2,7 +2,7 @@ package com.example.projectmanagerapp.integration;
 
 import com.example.projectmanagerapp.entity.Project;
 import com.example.projectmanagerapp.entity.Task;
-import com.example.projectmanagerapp.entity.task_type;
+import com.example.projectmanagerapp.entity.TaskType;
 import com.example.projectmanagerapp.priority.HighPriority;
 import com.example.projectmanagerapp.priority.LowPriority;
 import com.example.projectmanagerapp.priority.MediumPriority;
@@ -19,12 +19,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 
-/**
- * Testy integracyjne dla logiki biznesowej klasy Task
- */
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
@@ -41,31 +43,34 @@ public class TaskIT extends BaseIT {
 
 
     @Test
-    public void testTaskPriorityLevels() {
-        // Test dla wysokiego priorytetu
-        Task highTask = new Task();
-        highTask.setTask_type(task_type.high);
-        highTask.setPriorityLevel();
-        assertTrue(highTask.getPriorityLevel() instanceof HighPriority);
-        assertEquals("high", highTask.getPriorityLevel().getPriority());
+    public void testPriorityLevelForAllTaskTypes() {
+        for (TaskType type : TaskType.values()) {
+            Task task = new Task();
+            task.setTaskType(type);
+            task.setPriorityLevel();
 
-        // Test dla średniego priorytetu
-        Task mediumTask = new Task();
-        mediumTask.setTask_type(task_type.medium);
-        mediumTask.setPriorityLevel();
-        assertTrue(mediumTask.getPriorityLevel() instanceof MediumPriority);
-        assertEquals("medium", mediumTask.getPriorityLevel().getPriority());
+            assertNotNull(task.getPriorityLevel());
 
-        // Test dla niskiego priorytetu
-        Task lowTask = new Task();
-        lowTask.setTask_type(task_type.low);
-        lowTask.setPriorityLevel();
-        assertTrue(lowTask.getPriorityLevel() instanceof LowPriority);
-        assertEquals("low", lowTask.getPriorityLevel().getPriority());
+            switch (type) {
+                case high:
+                    assertTrue(task.getPriorityLevel() instanceof HighPriority);
+                    assertEquals("high", task.getPriorityLevel().getPriority());
+                    break;
+                case medium:
+                    assertTrue(task.getPriorityLevel() instanceof MediumPriority);
+                    assertEquals("medium", task.getPriorityLevel().getPriority());
+                    break;
+                case low:
+                    assertTrue(task.getPriorityLevel() instanceof LowPriority);
+                    assertEquals("low", task.getPriorityLevel().getPriority());
+                    break;
+                default:
+                    fail("Nieoczekiwany typ zadania: " + type);
+            }
+        }
 
-        // Test dla null priorytetu (domyślny)
         Task nullTask = new Task();
-        nullTask.setTask_type(null);
+        nullTask.setTaskType(null);
         nullTask.setPriorityLevel();
         assertTrue(nullTask.getPriorityLevel() instanceof MediumPriority);
         assertEquals("medium", nullTask.getPriorityLevel().getPriority());
@@ -73,7 +78,6 @@ public class TaskIT extends BaseIT {
 
     @Test
     public void testTaskConstructor() {
-        // Prosty test konstruktora
         Task task = new Task(0, "Test Task");
         assertEquals(0, task.getId());
         assertEquals("Test Task", task.getTitle());
@@ -81,8 +85,7 @@ public class TaskIT extends BaseIT {
 
 
     @Test
-    public void testUtworzenieNowegoZadania() throws Exception {
-        // Utworzenie projektu jako zależności
+    public void testCreateNewTask() throws Exception {
         Project project = new Project();
         project.setName("Projekt dla zadania");
         String projectJson = objectMapper.writeValueAsString(project);
@@ -97,7 +100,7 @@ public class TaskIT extends BaseIT {
         Task task = new Task();
         task.setTitle("Nowe zadanie");
         task.setDescription("Opis zadania");
-        task.setTask_type(task_type.low);
+        task.setTaskType(TaskType.low);
 
         task.setPriorityLevel();
         task.setPriorityLevel(null);
@@ -115,8 +118,7 @@ public class TaskIT extends BaseIT {
     }
 
     @Test
-    public void testAktualizacjaZadania() throws Exception {
-        // Utworzenie projektu
+    public void testUpdateTask() throws Exception {
         Project project = new Project();
         project.setName("ProjektZadania3");
         String projectJson = objectMapper.writeValueAsString(project);
@@ -127,11 +129,10 @@ public class TaskIT extends BaseIT {
                 .andReturn().getResponse().getContentAsString();
         Project createdProject = objectMapper.readValue(projectResponse, Project.class);
 
-        // Utworzenie zadania
         Task task = new Task();
         task.setTitle("ZadanieStare");
         task.setDescription("OpisStary");
-        task.setTask_type(task_type.low);
+        task.setTaskType(TaskType.low);
         Project ref = new Project();
         ref.setId(createdProject.getId());
         task.setProject(ref);
@@ -143,11 +144,10 @@ public class TaskIT extends BaseIT {
                 .andReturn().getResponse().getContentAsString();
         Task createdTask = objectMapper.readValue(response, Task.class);
 
-        // Aktualizacja zadania
         Task updated = new Task();
         updated.setTitle("ZadanieNowe");
         updated.setDescription("OpisNowy");
-        updated.setTask_type(task_type.medium);
+        updated.setTaskType(TaskType.medium);
         Project refUpdated = new Project();
         refUpdated.setId(createdProject.getId());
         updated.setProject(refUpdated);
@@ -165,13 +165,12 @@ public class TaskIT extends BaseIT {
         task.setId(42);
         task.setTitle("Testowy tytuł");
         task.setDescription("Testowy opis");
-        task.setTask_type(task_type.medium);
+        task.setTaskType(TaskType.medium);
         
-
         assertEquals(42, task.getId());
         assertEquals("Testowy tytuł", task.getTitle());
         assertEquals("Testowy opis", task.getDescription());
-        assertEquals(task_type.medium, task.getTask_type());
+        assertEquals(TaskType.medium, task.getTaskType());
         
 
         task.setPriorityLevel();
@@ -185,13 +184,77 @@ public class TaskIT extends BaseIT {
         Task task = new Task();
         
 
-        task.setTask_type(task_type.low);
-        assertEquals(task_type.low, task.getTask_type());
+        task.setTaskType(TaskType.low);
+        assertEquals(TaskType.low, task.getTaskType());
         
-        task.setTask_type(task_type.medium);
-        assertEquals(task_type.medium, task.getTask_type());
+        task.setTaskType(TaskType.medium);
+        assertEquals(TaskType.medium, task.getTaskType());
         
-        task.setTask_type(task_type.high);
-        assertEquals(task_type.high, task.getTask_type());
+        task.setTaskType(TaskType.high);
+        assertEquals(TaskType.high, task.getTaskType());
+    }
+
+    @Test
+    public void testGetAllTasksEndpoint() throws Exception {
+        Task task1 = new Task();
+        task1.setTitle("Task 1 for GET All");
+        task1.setDescription("Description 1");
+        task1.setTaskType(TaskType.high);
+        task1 = taskRepository.save(task1);
+
+        Task task2 = new Task();
+        task2.setTitle("Task 2 for GET All");
+        task2.setDescription("Description 2");
+        task2.setTaskType(TaskType.medium);
+        task2 = taskRepository.save(task2);
+
+        mockMvc.perform(get("/tasks")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))))
+                .andExpect(jsonPath("$[*].title", hasItems("Task 1 for GET All", "Task 2 for GET All")));
+    }
+
+    @Test
+    public void testGetTaskByIdEndpoint() throws Exception {
+        Task task = new Task();
+        task.setTitle("Task for GET by ID");
+        task.setDescription("Description for GET test");
+        task.setTaskType(TaskType.low);
+        task = taskRepository.save(task);
+
+        mockMvc.perform(get("/tasks/{id}", task.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(task.getId()))
+                .andExpect(jsonPath("$.title").value("Task for GET by ID"))
+                .andExpect(jsonPath("$.description").value("Description for GET test"));
+    }
+
+    @Test
+    public void testDeleteTaskEndpoint() throws Exception {
+        Task task = new Task();
+        task.setTitle("Task to be deleted");
+        task.setDescription("This task will be deleted via REST");
+        task.setTaskType(TaskType.medium);
+        task = taskRepository.save(task);
+
+        assertTrue(taskRepository.existsById(task.getId()));
+
+        mockMvc.perform(delete("/tasks/{id}", task.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        assertFalse(taskRepository.existsById(task.getId()));
+    }
+
+    @Test
+    public void testDeleteTaskEndpointNotFound() throws Exception {
+        int nonExistingId = 9999;
+        assertFalse(taskRepository.existsById(nonExistingId));
+
+        mockMvc.perform(delete("/tasks/{id}", nonExistingId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
