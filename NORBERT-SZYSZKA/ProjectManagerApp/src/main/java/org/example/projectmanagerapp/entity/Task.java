@@ -3,11 +3,13 @@ package org.example.projectmanagerapp.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import lombok.EqualsAndHashCode;
 import org.example.projectmanagerapp.priority.PriorityLevel;
 
 @Entity
 @Data
 @Table(name = "task")
+@EqualsAndHashCode(of = "id")
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

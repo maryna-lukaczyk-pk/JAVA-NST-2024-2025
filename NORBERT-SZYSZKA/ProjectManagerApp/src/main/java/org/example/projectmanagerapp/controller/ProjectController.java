@@ -2,6 +2,7 @@ package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.service.ProjectService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 
 @RestController
-@RequestMapping("/projects")
+@RequestMapping({"/projects", "/api/projects"})
 @Tag(name = "Project", description = "Project management")
 public class ProjectController {
 
@@ -26,9 +27,15 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/all")
+    @GetMapping
     @Operation(summary = "Get all projects", description = "Returns list of all projects")
     public List<Project> getAllProjects() {
+        return projectService.findAll();
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "Get all projects alias", description = "Return list of all projects")
+    public List<Project> getAllProjectsAlias() {
         return projectService.findAll();
     }
 
@@ -43,9 +50,19 @@ public class ProjectController {
                              .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @Operation(summary = "Create a new project", description = "Creates a new project")
+    @ResponseStatus(HttpStatus.CREATED)
     public Project createProject(
+            @Parameter(description = "Project to be created" ,required = true)
+            @RequestBody Project project
+    ) {
+        return projectService.create(project);
+    }
+
+    @PostMapping("/create")
+    @Operation(summary = "Create a new project alias", description = "Creates a new project")
+    public Project createProjectAlias(
             @Parameter(description = "Project to be created" ,required = true)
             @RequestBody Project project
     ) {
