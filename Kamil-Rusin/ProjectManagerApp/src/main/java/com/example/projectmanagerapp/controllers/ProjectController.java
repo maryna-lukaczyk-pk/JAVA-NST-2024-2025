@@ -1,7 +1,6 @@
 package com.example.projectmanagerapp.controllers;
 
 import com.example.projectmanagerapp.entity.Project;
-import com.example.projectmanagerapp.repository.ProjectRepository;
 import com.example.projectmanagerapp.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
