@@ -13,6 +13,7 @@ import org.example.projectmanagerapp.dto.CreateProjectRequest;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Tasks;
 import org.example.projectmanagerapp.service.ProjectService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,8 +56,9 @@ public class ProjectController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Project.class)))
     @PostMapping
-    public Project createProject(@RequestBody CreateProjectRequest request) {
-        return projectService.createProject(request);
+    public ResponseEntity<Project> createProject(@RequestBody CreateProjectRequest request) {
+        Project project = projectService.createProject(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(project);
     }
 
     @Operation(summary = "Update a project by id.")

@@ -1,4 +1,4 @@
-package org.example.projectmanagerapp.service;
+package org.example.projectmanagerapp.unit.service;
 
 import org.example.projectmanagerapp.service.priority.*;
 import org.junit.jupiter.api.BeforeEach;
