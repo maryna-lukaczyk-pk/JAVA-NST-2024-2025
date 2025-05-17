@@ -127,7 +127,7 @@ class UserServiceTests {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(projectService.getProjectById(10L)).thenReturn(project);
 
-        userService.assignProjectToUser(10L, 1L);
+        userService.assignProjectToUser(1L, 10L);
 
         assertTrue(user.getProjects().contains(project));
         verify(userRepository, times(1)).save(user);
