@@ -36,7 +36,9 @@ public class Task
     private Project project;
 
     public Task(int i, String s) {
-    }
+    this.id = i;
+    this.title = s;
+}
 
     public void setPriorityLevel() {
         if (this.task_type == null) {

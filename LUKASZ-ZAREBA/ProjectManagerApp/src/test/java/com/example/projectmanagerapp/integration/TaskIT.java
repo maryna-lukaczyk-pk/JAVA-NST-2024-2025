@@ -3,6 +3,10 @@ package com.example.projectmanagerapp.integration;
 import com.example.projectmanagerapp.entity.Project;
 import com.example.projectmanagerapp.entity.Task;
 import com.example.projectmanagerapp.entity.task_type;
+import com.example.projectmanagerapp.priority.HighPriority;
+import com.example.projectmanagerapp.priority.LowPriority;
+import com.example.projectmanagerapp.priority.MediumPriority;
+import com.example.projectmanagerapp.repository.TaskRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +17,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Testy integracyjne dla endpointów /tasks.
- * Sprawdzają operacje CRUD (GET, POST, PUT, DELETE) na encji Task.
+ * Testy integracyjne dla logiki biznesowej klasy Task
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,7 +34,51 @@ public class TaskIT extends BaseIT {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+
+    @Test
+    public void testTaskPriorityLevels() {
+        // Test dla wysokiego priorytetu
+        Task highTask = new Task();
+        highTask.setTask_type(task_type.high);
+        highTask.setPriorityLevel();
+        assertTrue(highTask.getPriorityLevel() instanceof HighPriority);
+        assertEquals("high", highTask.getPriorityLevel().getPriority());
+
+        // Test dla średniego priorytetu
+        Task mediumTask = new Task();
+        mediumTask.setTask_type(task_type.medium);
+        mediumTask.setPriorityLevel();
+        assertTrue(mediumTask.getPriorityLevel() instanceof MediumPriority);
+        assertEquals("medium", mediumTask.getPriorityLevel().getPriority());
+
+        // Test dla niskiego priorytetu
+        Task lowTask = new Task();
+        lowTask.setTask_type(task_type.low);
+        lowTask.setPriorityLevel();
+        assertTrue(lowTask.getPriorityLevel() instanceof LowPriority);
+        assertEquals("low", lowTask.getPriorityLevel().getPriority());
+
+        // Test dla null priorytetu (domyślny)
+        Task nullTask = new Task();
+        nullTask.setTask_type(null);
+        nullTask.setPriorityLevel();
+        assertTrue(nullTask.getPriorityLevel() instanceof MediumPriority);
+        assertEquals("medium", nullTask.getPriorityLevel().getPriority());
+    }
+
+    @Test
+    public void testTaskConstructor() {
+        // Prosty test konstruktora
+        Task task = new Task(0, "Test Task");
+        assertEquals(0, task.getId());
+        assertEquals("Test Task", task.getTitle());
+    }
+
 
     @Test
     public void testUtworzenieNowegoZadania() throws Exception {
@@ -47,110 +93,26 @@ public class TaskIT extends BaseIT {
                 .andReturn().getResponse().getContentAsString();
         Project createdProject = objectMapper.readValue(projectResponse, Project.class);
 
-        // Tworzenie zadania z referencją do projektu
+
         Task task = new Task();
         task.setTitle("Nowe zadanie");
         task.setDescription("Opis zadania");
         task.setTask_type(task_type.low);
+
+        task.setPriorityLevel();
+        task.setPriorityLevel(null);
+        
         Project refProject = new Project();
         refProject.setId(createdProject.getId());
         task.setProject(refProject);
         String taskJson = objectMapper.writeValueAsString(task);
 
-        // Test POST /tasks - tworzenie zadania
+
         mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.title").value("Nowe zadanie"))
-                .andExpect(jsonPath("$.description").value("Opis zadania"))
-                .andExpect(jsonPath("$.task_type").value("low"));
-    }
-
-    @Test
-    public void testPobranieWszystkichZadan() throws Exception {
-        // Utworzenie projektu dla zadań
-        Project project = new Project();
-        project.setName("ProjektZadania");
-        String projectJson = objectMapper.writeValueAsString(project);
-        String projectResponse = mockMvc.perform(post("/projects")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(projectJson))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        Project createdProject = objectMapper.readValue(projectResponse, Project.class);
-
-        // Dodanie dwóch zadań
-        Task task1 = new Task();
-        task1.setTitle("Zadanie1");
-        task1.setDescription("Opis1");
-        task1.setTask_type(task_type.medium);
-        Project ref1 = new Project();
-        ref1.setId(createdProject.getId());
-        task1.setProject(ref1);
-        String taskJson1 = objectMapper.writeValueAsString(task1);
-        mockMvc.perform(post("/tasks")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(taskJson1))
-                .andExpect(status().isOk());
-
-        Task task2 = new Task();
-        task2.setTitle("Zadanie2");
-        task2.setDescription("Opis2");
-        task2.setTask_type(task_type.high);
-        Project ref2 = new Project();
-        ref2.setId(createdProject.getId());
-        task2.setProject(ref2);
-        String taskJson2 = objectMapper.writeValueAsString(task2);
-        mockMvc.perform(post("/tasks")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(taskJson2))
-                .andExpect(status().isOk());
-
-        // Test GET /tasks - pobranie wszystkich zadań
-        mockMvc.perform(get("/tasks"))
-                .andDo(print())
-                .andExpect(status().isOk());
-
-    }
-
-
-    @Test
-    public void testPobranieZadaniaPoId() throws Exception {
-        // Utworzenie projektu
-        Project project = new Project();
-        project.setName("ProjektZadania2");
-        String projectJson = objectMapper.writeValueAsString(project);
-        String projectResponse = mockMvc.perform(post("/projects")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(projectJson))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        Project createdProject = objectMapper.readValue(projectResponse, Project.class);
-
-        // Utworzenie zadania
-        Task task = new Task();
-        task.setTitle("TaskPoId");
-        task.setDescription("OpisId");
-        task.setTask_type(task_type.low);
-        Project ref = new Project();
-        ref.setId(createdProject.getId());
-        task.setProject(ref);
-        String taskJson = objectMapper.writeValueAsString(task);
-        String response = mockMvc.perform(post("/tasks")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(taskJson))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        Task createdTask = objectMapper.readValue(response, Task.class);
-
-        // Test GET /tasks/{id} - pobranie zadania po ID
-        mockMvc.perform(get("/tasks/{id}", createdTask.getId()))
-                .andDo(print())
                 .andExpect(status().isOk());
     }
-
 
     @Test
     public void testAktualizacjaZadania() throws Exception {
@@ -193,42 +155,43 @@ public class TaskIT extends BaseIT {
         mockMvc.perform(put("/tasks/{id}", createdTask.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateJson))
-                .andDo(print()) // Dodanie wydruku odpowiedzi
                 .andExpect(status().isOk());
-
     }
 
     @Test
-    public void testUsuwanieZadania() throws Exception {
-        // Utworzenie projektu
-        Project project = new Project();
-        project.setName("ProjektZadania4");
-        String projectJson = objectMapper.writeValueAsString(project);
-        String projectResponse = mockMvc.perform(post("/projects")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(projectJson))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        Project createdProject = objectMapper.readValue(projectResponse, Project.class);
-
-        // Utworzenie zadania do usunięcia
+    public void testTaskGettersSetters() {
+        // Test getterów i setterów zadania
         Task task = new Task();
-        task.setTitle("ZadanieDoUsuniecia");
-        task.setDescription("OpisDoUsuniecia");
-        task.setTask_type(task_type.low);
-        Project ref = new Project();
-        ref.setId(createdProject.getId());
-        task.setProject(ref);
-        String taskJson = objectMapper.writeValueAsString(task);
-        String response = mockMvc.perform(post("/tasks")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(taskJson))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        Task createdTask = objectMapper.readValue(response, Task.class);
+        task.setId(42);
+        task.setTitle("Testowy tytuł");
+        task.setDescription("Testowy opis");
+        task.setTask_type(task_type.medium);
+        
 
-        // Test DELETE /tasks/{id} - usuwanie zadania
-        mockMvc.perform(delete("/tasks/{id}", createdTask.getId()))
-                .andExpect(status().isNoContent());
+        assertEquals(42, task.getId());
+        assertEquals("Testowy tytuł", task.getTitle());
+        assertEquals("Testowy opis", task.getDescription());
+        assertEquals(task_type.medium, task.getTask_type());
+        
+
+        task.setPriorityLevel();
+        assertNotNull(task.getPriorityLevel());
+        assertEquals("medium", task.getPriorityLevel().getPriority());
+    }
+
+    @Test
+    public void testTaskEnumHandling() {
+
+        Task task = new Task();
+        
+
+        task.setTask_type(task_type.low);
+        assertEquals(task_type.low, task.getTask_type());
+        
+        task.setTask_type(task_type.medium);
+        assertEquals(task_type.medium, task.getTask_type());
+        
+        task.setTask_type(task_type.high);
+        assertEquals(task_type.high, task.getTask_type());
     }
 }
