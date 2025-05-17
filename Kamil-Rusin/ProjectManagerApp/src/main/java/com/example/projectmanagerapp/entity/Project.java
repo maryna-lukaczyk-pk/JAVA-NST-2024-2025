@@ -39,5 +39,5 @@ public class Project {
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "projectId")
-    private Set<Task> tasks;
+    private Set<Task> tasks = new HashSet<>();
 }
