@@ -1,5 +1,6 @@
 package com.example.projectmanagerapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class Project {
     )
     Set<Users> projectUsers;
     @OneToMany(mappedBy = "project")
+    @JsonIgnore
     Set<Tasks> projectTasks;
 
     public Long getId() {
