@@ -4,7 +4,9 @@ import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Users;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.example.projectmanagerapp.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,7 +22,9 @@ public class ProjectService {
 
     public Project getProjectById(Long id) {
         return projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project with ID " + id + " not found."));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Project with ID " + id + " not found.")
+                );
     }
 
     public Project updateProject(Long id, Project newProjectData) {

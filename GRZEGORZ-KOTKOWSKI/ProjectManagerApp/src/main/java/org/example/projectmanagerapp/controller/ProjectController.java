@@ -27,6 +27,11 @@ public class ProjectController {
         return projectService.getProjectById(id);
     }
 
+    @GetMapping
+    public List<Project> getAllProjects() {
+        return projectService.getAllProjects();
+    }
+
     @PutMapping("/{id}")
     @Operation(summary = "Update existing project", description = "Updates an existing project by its ID")
     public Project updateProject(
