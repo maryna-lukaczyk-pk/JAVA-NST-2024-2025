@@ -1,11 +1,14 @@
 package com.example.projectmanagerapp.entity;
 
-import java.util.Set;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "projects")
@@ -16,35 +19,35 @@ public class Projects {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @ManyToMany(mappedBy = "projects")
-    private Set<User> users;
+    @JsonIgnoreProperties("projects")
+    private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "project")
-    private Set<Task> tasks;
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @OneToMany(
+            mappedBy = "project",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonIgnoreProperties("project")
+    private Set<Task> tasks = new HashSet<>();
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public Set<Task> getTasks() {
-        return tasks;
+    public void addUser(User user) {
+        this.users.add(user);
+        user.getProjects().add(this);
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void addTask(Task task) {
+        this.tasks.add(task);
+        task.setProject(this);
     }
 }

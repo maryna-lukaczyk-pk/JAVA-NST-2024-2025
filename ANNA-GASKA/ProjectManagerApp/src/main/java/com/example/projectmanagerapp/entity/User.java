@@ -2,6 +2,7 @@ package com.example.projectmanagerapp.entity;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "project_id")
     )
+    @JsonIgnoreProperties("users")
     private Set<Projects> projects;
 
     public Long getId() {
