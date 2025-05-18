@@ -1,5 +1,6 @@
 package com.example.projectmanagerapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +32,6 @@ public class Project {
 
 
     @OneToMany(mappedBy="project")
+    @JsonIgnore
     private List<Task> tasks = new ArrayList<>();
 }
