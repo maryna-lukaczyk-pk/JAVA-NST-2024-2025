@@ -1,5 +1,6 @@
 package org.example.projectmanagerapp.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ public class Projects {
     private List<Users> users;
 
     @OneToMany(mappedBy = "project")
-    @JsonIgnore
+    @JsonManagedReference
     private List<Tasks> tasks;
 
 }

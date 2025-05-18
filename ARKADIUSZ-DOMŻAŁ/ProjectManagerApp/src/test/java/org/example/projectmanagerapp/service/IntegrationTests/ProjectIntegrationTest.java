@@ -76,7 +76,7 @@ public class ProjectIntegrationTest {
 
         mockMvc.perform(get("/api/projects/" + project.getId()))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Project found: Projekt_test_3"));
+                .andExpect(jsonPath("$.name").value("Projekt_test_3"));
     }
 
     //nastepnie test metody tworzącej nowy projekt
