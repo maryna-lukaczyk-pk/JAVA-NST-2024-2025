@@ -38,4 +38,9 @@ public class ProjectController {
     public void deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
     }
+
+    @PostMapping("/{id}/users")
+    public Project assignUsers(@PathVariable("id") Long projectId, @RequestBody List<Long> userIds) {
+        return projectService.assignUsers(projectId, userIds);
+    }
 }
