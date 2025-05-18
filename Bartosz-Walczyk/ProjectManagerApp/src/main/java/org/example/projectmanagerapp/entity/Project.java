@@ -1,5 +1,7 @@
 package org.example.projectmanagerapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,7 @@ public class Project {
 
     @OneToMany
     @JoinColumn(name = "project_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     private Collection<Task> tasks;
 
     @JoinTable(
@@ -28,5 +31,6 @@ public class Project {
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     @ManyToMany
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     private Collection<User> users;
 }
