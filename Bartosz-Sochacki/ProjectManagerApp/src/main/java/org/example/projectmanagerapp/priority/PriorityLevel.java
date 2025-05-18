@@ -1,4 +1,5 @@
 package org.example.projectmanagerapp.priority;
 
-public class PriorityLevel {
+public interface PriorityLevel {
+    String getPriority();
 }
