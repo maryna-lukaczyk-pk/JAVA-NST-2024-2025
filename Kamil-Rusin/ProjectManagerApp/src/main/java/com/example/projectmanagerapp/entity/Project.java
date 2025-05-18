@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -35,8 +36,8 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
 
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "projectId")
-    private Set<Task> tasks;
+    private Set<Task> tasks = new HashSet<>();
 }

@@ -1,28 +1,37 @@
 package com.example.projectmanagerapp;
 
 import com.example.projectmanagerapp.entity.Project;
+import com.example.projectmanagerapp.entity.Task;
+import com.example.projectmanagerapp.entity.User;
 import com.example.projectmanagerapp.repository.ProjectRepository;
+import com.example.projectmanagerapp.repository.TaskRepository;
+import com.example.projectmanagerapp.repository.UserRepository;
 import com.example.projectmanagerapp.services.ProjectService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ProjectServiceTest {
     private ProjectRepository projectRepository;
+    private UserRepository userRepository;
     private ProjectService projectService;
+    private TaskRepository taskRepository;
 
     @BeforeEach
     void setUp() {
         projectRepository = mock(ProjectRepository.class);
-        projectService = new ProjectService(projectRepository);
+        userRepository = mock(UserRepository.class);
+        taskRepository = mock(TaskRepository.class);
+        projectService = new ProjectService(projectRepository, userRepository, taskRepository);
     }
 
     @Test
@@ -111,5 +120,115 @@ public class ProjectServiceTest {
     void testDeleteProject() {
         projectService.deleteProject(2L);
         verify(projectRepository).deleteById(2L);
+    }
+
+    @Test
+    @DisplayName("Should assign user to project")
+    void testAssignUserToProject() {
+        Long userId = 2L;
+        Long projectId = 1L;
+
+        Project project = new Project();
+        project.setId(projectId);
+
+        User user = new User();
+        user.setId(userId);
+
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        projectService.assignUserToProject(userId, projectId);
+
+        assertTrue(project.getUsers().contains(user));
+        assertTrue(user.getProjects().contains(project));
+        verify(projectRepository).save(project);
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    @DisplayName("Should assign task to project")
+    void testAssignTaskToProject() {
+        Long taskId = 3L;
+        Long projectId = 1L;
+
+        Project project = new Project();
+        project.setId(projectId);
+
+        Task task = new Task();
+        task.setId(taskId);
+
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
+
+        projectService.assignTaskToProject(taskId, projectId);
+
+        assertTrue(project.getTasks().contains(task));
+        assertEquals(project, task.getProjectId());
+        verify(projectRepository).save(project);
+        verify(taskRepository).save(task);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when project not found while assigning user")
+    void testAssignUserToProject_ProjectNotFound() {
+        Long userId = 2L;
+        Long projectId = 1L;
+
+        when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+                projectService.assignUserToProject(userId, projectId));
+
+        assertEquals("Project with id 1 not found", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when user not found while assigning to project")
+    void testAssignUserToProject_UserNotFound() {
+        Long userId = 2L;
+        Long projectId = 1L;
+
+        Project project = new Project();
+        project.setId(projectId);
+
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+                projectService.assignUserToProject(userId, projectId));
+
+        assertEquals("User with id 2 not found", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when project not found while assigning task")
+    void testAssignTaskToProject_ProjectNotFound() {
+        Long taskId = 2L;
+        Long projectId = 1L;
+
+        when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+                projectService.assignTaskToProject(taskId, projectId));
+
+        assertEquals("Project with id 1 not found", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when task not found while assigning to project")
+    void testAssignTaskToProject_TaskNotFound() {
+        Long taskId = 2L;
+        Long projectId = 1L;
+
+        Project project = new Project();
+        project.setId(projectId);
+
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        when(taskRepository.findById(taskId)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+                projectService.assignTaskToProject(taskId, projectId));
+
+        assertEquals("Task with id 2 not found", exception.getMessage());
     }
 }
