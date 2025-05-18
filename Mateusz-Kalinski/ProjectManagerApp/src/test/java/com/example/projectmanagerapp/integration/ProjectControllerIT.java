@@ -1,6 +1,7 @@
 package com.example.projectmanagerapp.integration;
 
 import com.example.projectmanagerapp.entity.Project;
+import com.example.projectmanagerapp.entity.Users;
 import com.example.projectmanagerapp.repository.ProjectRepository; // Dodaj ten import
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -223,5 +225,60 @@ public class ProjectControllerIT {
                 .andExpect(status().isNotFound()); // Oczekujemy 404 Not Found
         // (zgodnie z Twoją implementacją ProjectController/Service,
         //  która rzuca wyjątek, a Spring Boot mapuje go na 404)
+    }
+
+    @Test
+    void shouldAssignUserToProject() throws Exception {
+        // (a) Utwórz użytkownika i projekt za pomocą API.
+
+        // Tworzenie użytkownika
+        Users userToAssign = new Users();
+        userToAssign.setUsername("userDoPrzypisania");
+        MvcResult userCreateResult = mockMvc.perform(post("/api/users/create") // Używamy endpointu z UserController
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userToAssign)))
+                .andExpect(status().isOk()) // Zakładając, że createUser zwraca 200 OK
+                .andReturn();
+        Users createdUser = objectMapper.readValue(userCreateResult.getResponse().getContentAsString(), Users.class);
+        Long userId = createdUser.getId();
+
+        // Tworzenie projektu
+        Project projectForAssignment = new Project();
+        projectForAssignment.setName("Projekt Do Przypisania Użytkownika");
+        MvcResult projectCreateResult = mockMvc.perform(post("/api/projects/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(projectForAssignment)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        Project createdProject = objectMapper.readValue(projectCreateResult.getResponse().getContentAsString(), Project.class);
+        Long projectId = createdProject.getId();
+
+        // (b) Przypisz użytkownika do projektu przez endpoint /api/projects/{projectId}/users/{userId}
+        MvcResult assignmentResult = mockMvc.perform(post("/api/projects/" + projectId + "/users/" + userId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                // (c) Sprawdź status odpowiedzi (200 OK).
+                .andExpect(status().isOk())
+                // (d) Zweryfikuj obecność użytkownika w liście członków projektu.
+                // Sprawdzamy, czy zwrócony projekt w odpowiedzi zawiera przypisanego użytkownika
+                .andExpect(jsonPath("$.id", is(projectId.intValue())))
+                .andExpect(jsonPath("$.name", is("Projekt Do Przypisania Użytkownika")))
+                .andExpect(jsonPath("$.users", hasSize(1))) // Oczekujemy jednego użytkownika w liście
+                .andExpect(jsonPath("$.users[0].id", is(userId.intValue()))) // Sprawdzamy ID użytkownika
+                .andExpect(jsonPath("$.users[0].username", is("userDoPrzypisania"))) // Sprawdzamy username
+                .andReturn();
+
+        // Dodatkowa, bardziej szczegółowa weryfikacja (opcjonalna)
+        Project projectAfterAssignment = objectMapper.readValue(assignmentResult.getResponse().getContentAsString(), Project.class);
+        assertNotNull(projectAfterAssignment.getUsers());
+        assertEquals(1, projectAfterAssignment.getUsers().size());
+        assertTrue(projectAfterAssignment.getUsers().stream().anyMatch(u -> u.getId().equals(userId) && u.getUsername().equals("userDoPrzypisania")));
+
+        // Można też pobrać projekt ponownie przez GET i sprawdzić listę użytkowników,
+        // aby mieć 100% pewności, że zmiana jest trwała i odczytywalna.
+        mockMvc.perform(get("/api/projects/" + projectId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.users", hasSize(1)))
+                .andExpect(jsonPath("$.users[0].id", is(userId.intValue())));
     }
 }
