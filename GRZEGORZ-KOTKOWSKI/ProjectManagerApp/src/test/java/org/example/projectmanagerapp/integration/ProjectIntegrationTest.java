@@ -3,7 +3,6 @@ package org.example.projectmanagerapp.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Users;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,13 +17,14 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Testcontainers
-public class ProjectIntegrationTest {
+class ProjectIntegrationTest {
     @Container
     private static final PostgreSQLContainer<?> postgreSQLContainer =
             new PostgreSQLContainer<>("postgres:15.2")
@@ -40,26 +40,26 @@ public class ProjectIntegrationTest {
     }
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Test
     void contextLoads() throws Exception {
-        // Przykładowy test sprawdzający, czy kontekst się uruchamia
-        mockMvc.perform(
-                get("/api/projects")
-        ).andExpect(
-                status().isOk()
-        );
+        // Prost y test sprawdzający, czy /api/projects w ogóle działa
+        mockMvc.perform(get("/api/projects"))
+                .andExpect(status().isOk());
     }
 
     @Test
     void shouldCreateReadUpdateAndDeleteProject() throws Exception {
         // 1) CREATE
         String projectJson = """
-                {
-                "name": "Test Project"
-                }
-                """;
+            {
+              "name": "Test Project"
+            }
+            """;
 
         MvcResult createResult = mockMvc.perform(post("/api/projects")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -67,9 +67,9 @@ public class ProjectIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // Wyciąganie zwróconego JSON-a i jego mapowanie
+        // Odczyt odpowiedzi JSON i mapowanie na Project
         String createResponse = createResult.getResponse().getContentAsString();
-        Project createdProject = new ObjectMapper().readValue(createResponse, Project.class);
+        Project createdProject = objectMapper.readValue(createResponse, Project.class);
 
         // 2) READ
         mockMvc.perform(get("/api/projects/{id}", createdProject.getId()))
@@ -78,10 +78,10 @@ public class ProjectIntegrationTest {
 
         // 3) UPDATE
         String updatedProjectJson = """
-                {
-                    "name": "Updated Project Name"
-                }
-                """;
+            {
+              "name": "Updated Project Name"
+            }
+            """;
 
         mockMvc.perform(put("/api/projects/{id}", createdProject.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -93,60 +93,64 @@ public class ProjectIntegrationTest {
         mockMvc.perform(delete("/api/projects/{id}", createdProject.getId()))
                 .andExpect(status().isOk());
 
-        // Opcjonalnie można spróbować pobrać po usunięciu by sprawdzić, czy faktycznie nie istnieje
+        // Upewnij się, że projekt został usunięty (np. 404)
         mockMvc.perform(get("/api/projects/{id}", createdProject.getId()))
-                .andExpect(status().is4xxClientError()); // np. 404 lub 500 w zależności od implementacji
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
     void shouldAssignUserToProject() throws Exception {
-        // 1) Tworzymy użytkownika
+        // 1) Tworzymy User
         String userJson = """
-                {
-                "username": "john_doe"
-                }
-                """;
+            {
+              "username": "john_doe"
+            }
+            """;
         MvcResult createUserResult = mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // Deserializujemy JSON do obiektu Users
-        String createUserResponse = createUserResult.getResponse().getContentAsString();
-        Users createdUser = new ObjectMapper().readValue(createUserResponse, Users.class);
+        // Deserializacja do obiektu Users
+        Users createdUser = objectMapper.readValue(
+                createUserResult.getResponse().getContentAsString(),
+                Users.class
+        );
 
         // 2) Tworzymy projekt
         String projectJson = """
-                {
-                    "name": "Test Project 2"
-                }
-                """;
-
+            {
+              "name": "Test Project 2"
+            }
+            """;
         MvcResult createProjectResult = mockMvc.perform(post("/api/projects")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(projectJson))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String createProjectResponse = createProjectResult.getResponse().getContentAsString();
-        Project createdProject = new ObjectMapper().readValue(createProjectResponse, Project.class);
+        Project createdProject = objectMapper.readValue(
+                createProjectResult.getResponse().getContentAsString(),
+                Project.class
+        );
 
-        // 3) Przypisujemy usera do projektu przez nasz nowy endpoint
-        mockMvc.perform(patch("/api/projects/{projectId}/users/{userId}",
+        // 3) Przypisujemy usera do projektu przez PATCH/POST (zależnie od Twojej implementacji)
+        mockMvc.perform(patch("/api/projects/{pId}/users/{uId}",
                         createdProject.getId(), createdUser.getId()))
                 .andExpect(status().isOk());
 
-        // 4) Odczytujemy projekt z bazy
+        // 4) Pobieramy projekt z bazy
         MvcResult getProjectResult = mockMvc.perform(get("/api/projects/{id}", createdProject.getId()))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String getProjectResponse = getProjectResult.getResponse().getContentAsString();
-        Project updatedProject = new ObjectMapper().readValue(getProjectResponse, Project.class);
+        Project updatedProject = objectMapper.readValue(
+                getProjectResult.getResponse().getContentAsString(),
+                Project.class
+        );
 
-        // 5) Walidujemy, czy user jest w zbiorze project.getUsers()
-        //    Możesz sprawdzić liczbę użytkowników lub konkretną nazwę:
+        // 5) Weryfikacja, czy dany user jest w liście
         assertThat(updatedProject.getUsers())
                 .extracting("username")
                 .contains("john_doe");
