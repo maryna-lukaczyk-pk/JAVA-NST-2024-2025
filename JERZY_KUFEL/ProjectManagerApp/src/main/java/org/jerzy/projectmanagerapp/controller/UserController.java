@@ -3,7 +3,6 @@ package org.jerzy.projectmanagerapp.controller;
 import java.util.List;
 
 import org.jerzy.projectmanagerapp.entity.User;
-import org.jerzy.projectmanagerapp.repository.UserRepository;
 import org.jerzy.projectmanagerapp.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,8 +26,8 @@ public class UserController {
 
   private final UserService service;
 
-  public UserController(UserRepository repository) {
-    this.service = new UserService(repository);
+  public UserController(UserService userService) {
+    this.service = userService;
   }
 
   @Operation(summary = "List all users")

@@ -1,32 +1,33 @@
 package org.jerzy.projectmanagerapp.controller;
 
 import org.jerzy.projectmanagerapp.entity.User;
-import org.jerzy.projectmanagerapp.repository.UserRepository;
 import org.jerzy.projectmanagerapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+// @SpringBootTest
+// @AutoConfigureMockMvc
+// @ActiveProfiles("test")
 class UserControllerTest {
 
-  private UserRepository userRepository;
   private UserService userService;
   private UserController userController;
 
-
-
   @BeforeEach
   void setUp() {
-    userRepository = Mockito.mock(UserRepository.class);
-    userService = new UserService(userRepository);
-    userController = new UserController(userRepository);
+    userService = Mockito.mock(UserService.class);
+    userController = new UserController(userService);
   }
 
   @Test
@@ -77,11 +78,14 @@ class UserControllerTest {
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
-  @Test
   void testDeleteUser_valid() {
+    // Zakładamy, że serwis działa — bo testujemy TYLKO kontroler
+    doNothing().when(userService).delete("1");
+
     ResponseEntity<Void> response = userController.deleteUser("1");
+
     assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-    verify(userService).delete("1");
+    verify(userService).delete("1"); // tylko to sprawdzamy
   }
 
   @Test

@@ -1,30 +1,32 @@
 package org.jerzy.projectmanagerapp.controller;
 
 import org.jerzy.projectmanagerapp.entity.Project;
-import org.jerzy.projectmanagerapp.repository.ProjectRepository;
 import org.jerzy.projectmanagerapp.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+// @SpringBootTest
+// @AutoConfigureMockMvc
+// @ActiveProfiles("test")
 class ProjectControllerTest {
-
-  private ProjectRepository projectRepository;
   private ProjectService projectService;
   private ProjectController projectController;
 
   @BeforeEach
   void setUp() {
-    projectRepository = Mockito.mock(ProjectRepository.class);
-    projectService = new ProjectService(projectRepository);
-    projectController = new ProjectController(projectRepository);
+    projectService = Mockito.mock(ProjectService.class);
+    projectController = new ProjectController(projectService);
   }
 
   @Test

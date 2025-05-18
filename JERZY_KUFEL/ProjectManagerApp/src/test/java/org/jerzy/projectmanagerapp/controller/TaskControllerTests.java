@@ -1,30 +1,35 @@
 package org.jerzy.projectmanagerapp.controller;
 
 import org.jerzy.projectmanagerapp.entity.Task;
-import org.jerzy.projectmanagerapp.repository.TaskRepository;
 import org.jerzy.projectmanagerapp.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+// @SpringBootTest
+// @AutoConfigureMockMvc
+// @ActiveProfiles("test")
 class TaskControllerTest {
 
-  private TaskRepository taskRepository;
   private TaskService taskService;
   private TaskController taskController;
 
   @BeforeEach
   void setUp() {
-    taskRepository = Mockito.mock(TaskRepository.class);
-    taskService = new TaskService(taskRepository);
-    taskController = new TaskController(taskRepository);
+    taskService = Mockito.mock(TaskService.class);
+    taskController = new TaskController(taskService);
   }
 
   @Test

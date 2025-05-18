@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.jerzy.projectmanagerapp.entity.User;
 import org.jerzy.projectmanagerapp.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
   private final UserRepository userRepository;
 
@@ -23,7 +25,7 @@ public class UserService {
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException("Invalid id: " + e);
     }
-    return this.userRepository.findById(userId).get();
+    return this.userRepository.findById((long) userId).get();
   }
 
   public User create(User user) {
@@ -38,7 +40,7 @@ public class UserService {
       throw new IllegalArgumentException("Invalid user ID: " + e);
     }
 
-    return this.userRepository.findById(userId).map(existingUser -> {
+    return this.userRepository.findById((long) userId).map(existingUser -> {
       existingUser.setUsername(user.getUsername());
       existingUser.setProjects(user.getProjects());
       return this.userRepository.save(existingUser);
@@ -53,10 +55,10 @@ public class UserService {
       throw new IllegalArgumentException("Invalid user ID: " + id);
     }
 
-    if (!this.userRepository.existsById(userId)) {
+    if (!this.userRepository.existsById((long) userId)) {
       throw new IllegalArgumentException("User not found with ID: " + id);
     }
 
-    this.userRepository.deleteById(userId);
+    this.userRepository.deleteById((long) userId);
   }
 }

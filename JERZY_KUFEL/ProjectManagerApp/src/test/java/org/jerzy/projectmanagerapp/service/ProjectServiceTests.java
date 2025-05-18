@@ -2,6 +2,7 @@ package org.jerzy.projectmanagerapp.service;
 
 import org.jerzy.projectmanagerapp.entity.Project;
 import org.jerzy.projectmanagerapp.repository.ProjectRepository;
+import org.jerzy.projectmanagerapp.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -15,12 +16,14 @@ import static org.mockito.Mockito.*;
 class ProjectServiceTest {
 
   private ProjectRepository projectRepository;
+  private UserRepository userRepository;
   private ProjectService projectService;
 
   @BeforeEach
   void setUp() {
     projectRepository = Mockito.mock(ProjectRepository.class);
-    projectService = new ProjectService(projectRepository);
+    userRepository = Mockito.mock(UserRepository.class);
+    projectService = new ProjectService(projectRepository, userRepository);
   }
 
   @Test
@@ -37,7 +40,7 @@ class ProjectServiceTest {
   void testGetById_validId() {
     Project project = new Project();
     project.setId(1L);
-    when(projectRepository.findById(1)).thenReturn(Optional.of(project));
+    when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
 
     Project result = projectService.getById("1");
     assertEquals(1L, result.getId());
@@ -66,7 +69,7 @@ class ProjectServiceTest {
     Project updated = new Project();
     updated.setName("New Name");
 
-    when(projectRepository.findById(1)).thenReturn(Optional.of(existing));
+    when(projectRepository.findById(1L)).thenReturn(Optional.of(existing));
     when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     Project result = projectService.update("1", updated);
@@ -80,16 +83,16 @@ class ProjectServiceTest {
 
   @Test
   void testDelete_validId() {
-    when(projectRepository.existsById(1)).thenReturn(true);
+    when(projectRepository.existsById(1L)).thenReturn(true);
 
     projectService.delete("1");
 
-    verify(projectRepository).deleteById(1);
+    verify(projectRepository).deleteById(1L);
   }
 
   @Test
   void testDelete_nonExistingId() {
-    when(projectRepository.existsById(99)).thenReturn(false);
+    when(projectRepository.existsById(99L)).thenReturn(false);
 
     assertThrows(IllegalArgumentException.class, () -> projectService.delete("99"));
   }

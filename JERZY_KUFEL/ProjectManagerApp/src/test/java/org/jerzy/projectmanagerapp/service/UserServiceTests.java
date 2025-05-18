@@ -37,7 +37,7 @@ class UserServiceTest {
   void testGetById_validId() {
     User user = new User();
     user.setId(1L);
-    when(userRepository.findById(1)).thenReturn(Optional.of(user));
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
     User result = userService.getById("1");
     assertEquals(1L, result.getId());
@@ -66,7 +66,7 @@ class UserServiceTest {
     User updated = new User();
     updated.setUsername("new");
 
-    when(userRepository.findById(1)).thenReturn(Optional.of(existing));
+    when(userRepository.findById(1L)).thenReturn(Optional.of(existing));
     when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     User result = userService.update("1", updated);
@@ -80,16 +80,16 @@ class UserServiceTest {
 
   @Test
   void testDelete_validId() {
-    when(userRepository.existsById(1)).thenReturn(true);
+    when(userRepository.existsById(1L)).thenReturn(true);
 
     userService.delete("1");
 
-    verify(userRepository).deleteById(1);
+    verify(userRepository).deleteById(1L);
   }
 
   @Test
   void testDelete_nonExistingId() {
-    when(userRepository.existsById(5)).thenReturn(false);
+    when(userRepository.existsById(5L)).thenReturn(false);
 
     assertThrows(IllegalArgumentException.class, () -> userService.delete("5"));
   }
