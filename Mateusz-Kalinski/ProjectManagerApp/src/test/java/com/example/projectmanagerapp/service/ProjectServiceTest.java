@@ -134,12 +134,19 @@ class ProjectServiceTest {
     }
 
     @Test
-    @DisplayName("Powinien usunąć projekt po ID")
+    @DisplayName("Powinien usunąć projekt po ID, gdy projekt istnieje") // Zmieniłem trochę nazwę dla jasności
     void testDeleteProject_whenProjectExists() {
+        // 1. Zaaranżuj (Arrange): Mockujemy zachowanie repozytorium
+        when(projectRepository.existsById(1L)).thenReturn(true); // <-- DODAJ TEN MOCK
         doNothing().when(projectRepository).deleteById(1L);
 
-        projectService.deleteProject(1L);
+        // 2. Działaj (Act): Wywołaj testowaną metodę
+        // Użyj assertDoesNotThrow, aby upewnić się, że wyjątek nie jest rzucany,
+        // gdy projekt istnieje
+        assertDoesNotThrow(() -> projectService.deleteProject(1L));
 
+        // 3. Asercje (Assert): Zweryfikuj, czy odpowiednie metody repozytorium zostały wywołane
+        verify(projectRepository, times(1)).existsById(1L); // Dobrze jest też to zweryfikować
         verify(projectRepository, times(1)).deleteById(1L);
     }
 }
