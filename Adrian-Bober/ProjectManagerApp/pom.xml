@@ -129,26 +129,29 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
                 <configuration>
-                    <argLine>@{argLine} -Xmx1024m</argLine>
+                    <argLine>-Xmx2048m</argLine>
+                    <forkCount>1</forkCount>
                 </configuration>
             </plugin>
             <!-- Jacoco Plugin -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.11</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>generate-report</id>
-                        <phase>test</phase>
+                        <id>integration-test-coverage</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <dataFile>target/jacoco-it.exec</dataFile>
+                            <outputDirectory>target/jacoco-it</outputDirectory>
+                            <includes>
+                                <include>**/integrationtest/**</include>
+                            </includes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
