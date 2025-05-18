@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 
 public class TasksController {
     @Autowired
-    //private TasksRepository tasksRepository;
     private TasksService tasksService;
 
     public TasksController(TasksService tasksService) {
@@ -61,5 +60,13 @@ public class TasksController {
             @PathVariable Long id) {
         tasksService.deleteTasks(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get task by ID", description = "Returns one task")
+    public ResponseEntity<Tasks> getTaskById(@PathVariable Long id) {
+        return tasksService.getTasksById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

@@ -2,6 +2,7 @@ package org.example.projectmanager.service;
 
 import org.example.projectmanager.entity.Project;
 import org.example.projectmanager.repository.ProjectRepository;
+import org.example.projectmanager.repository.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,12 +17,14 @@ import static org.mockito.Mockito.*;
 public class ProjectServiceTest {
 
     private ProjectRepository projectRepository;
+    private UsersRepository usersRepository;
     private ProjectService projectService;
 
     @BeforeEach
     public void setUp() {
         projectRepository = mock(ProjectRepository.class);
-        projectService = new ProjectService(projectRepository);
+        usersRepository   = mock(UsersRepository.class);
+        projectService    = new ProjectService(projectRepository, usersRepository);
     }
 
     @Test

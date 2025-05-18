@@ -36,7 +36,7 @@ public class UsersService {
         usersRepository.delete(users);
     }
 
-    public Optional<Users> getUsersById(Long id) {
-        return usersRepository.findById(id);
+    public Optional<Users> getUserById(Long userId) {
+        return usersRepository.findById(userId);
     }
 }
