@@ -2,6 +2,7 @@ package org.example.projectmanagerapp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.example.projectmanagerapp.entity.Projects;
+import org.example.projectmanagerapp.entity.Users;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,8 @@ import org.example.projectmanagerapp.service.ProjectService;
 
 
 import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("api/projects")
 @Tag(name = "Projects")
@@ -19,6 +22,24 @@ public class ProjectsController {
 
     public ProjectsController(ProjectService projectService) {
         this.projectService = projectService;
+    }
+
+    public static class AssignUserRequest {
+        private Long userId;
+
+        public AssignUserRequest() {}
+
+        public AssignUserRequest(Long userId) {
+            this.userId = userId;
+        }
+
+        public Long getUserId() {
+            return userId;
+        }
+
+        public void setUserId(Long userId) {
+            this.userId = userId;
+        }
     }
 
     @Operation(summary = "Retrieve all Projects", description = "Returns a list of Projects")
@@ -69,14 +90,39 @@ public class ProjectsController {
     //metoda wyszukania projektu po jego ID
     @Operation(summary = "Get a Project by ID", description = "Returns a single Project by its ID")
     @GetMapping("/{id}")
-    public ResponseEntity<String> getProjectById(
-            @Parameter(description = "The ID of the Project to retrieve", required = true)
-            @PathVariable Long id) {
-
-        return projectService.getProjectById(id)  // Zmieniamy na odpowiednią metodę w serwisie
-                .map(project -> ResponseEntity.ok("Project found: " + project.getName()))  // Zwracamy nazwę projektu
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Project with id: " + id + " not found"));
+    public ResponseEntity<?> getProjectById(@PathVariable Long id) {
+        Optional<Projects> projectOpt = projectService.getProjectById(id);
+        if (projectOpt.isPresent()) {
+            return ResponseEntity.ok(projectOpt.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Project with id: " + id + " not found");
+        }
     }
+
+    //dodanie uzytkownika do projektu
+    @PostMapping("/{projectId}/users")
+    public ResponseEntity<Void> assignUserToProject(
+            @PathVariable Long projectId,
+            @RequestBody AssignUserRequest assignUserRequest) {
+
+        boolean assigned = projectService.assignUserToProject(projectId, assignUserRequest.getUserId());
+        if (assigned) {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/{projectId}/users")
+    public ResponseEntity<List<Users>> getUsersOfProject(@PathVariable Long projectId) {
+        List<Users> users = projectService.getUsersOfProject(projectId);
+        if (users != null) {
+            return ResponseEntity.ok(users);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }

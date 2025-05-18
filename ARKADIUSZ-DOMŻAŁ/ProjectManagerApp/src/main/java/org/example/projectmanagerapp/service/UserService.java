@@ -1,8 +1,10 @@
 package org.example.projectmanagerapp.service;
+import org.example.projectmanagerapp.entity.Projects;
 import org.example.projectmanagerapp.entity.Users;
 import org.springframework.stereotype.Service;
 import org.example.projectmanagerapp.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,4 +42,11 @@ public class UserService {
     public Optional<Users> getUserById(Long id) {
         return userRepository.findById(id);
     }
+
+    public List<Projects> getProjectsForUser(Long userId) {
+        return userRepository.findById(userId)
+                .map(user -> new ArrayList<>(user.getProjects()))
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    }
+
 }
