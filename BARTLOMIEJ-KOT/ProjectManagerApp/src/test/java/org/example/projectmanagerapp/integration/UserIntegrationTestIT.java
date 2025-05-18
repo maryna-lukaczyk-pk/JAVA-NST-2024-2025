@@ -1,7 +1,6 @@
 package org.example.projectmanagerapp.integration;
 
-import org.example.projectmanagerapp.entity.Project;
-import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,29 +12,30 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class ProjectIntegrationTest {
+public class UserIntegrationTestIT {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private ProjectRepository projectRepository;
+    private UserRepository userRepository;
 
     @Test
-    public void testCreateAndFetchProject() throws Exception {
-        String json = "{\"name\":\"Projekt integracyjny 1\"}";
+    public void testCreateAndFetchUser() throws Exception {
+        String json = "{\"username\":\"testintegracyjny1\",\"email\":\"ti1@ti.com\"}";
 
-        mockMvc.perform(post("/projects")
+        mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Projekt integracyjny 1"));
+                .andExpect(jsonPath("$.username").value("testintegracyjny1"));
 
-        mockMvc.perform(get("/projects"))
+        mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[?(@.name == 'Projekt integracyjny 1')]").exists());
+                .andExpect(jsonPath("$[?(@.username == 'testintegracyjny1')]").exists());
     }
 }

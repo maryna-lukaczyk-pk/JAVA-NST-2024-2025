@@ -1,6 +1,5 @@
 package org.example.projectmanagerapp.integration;
 
-import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.repository.TaskRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class TaskIntegrationTest {
+public class TaskIntegrationTestIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,6 +63,51 @@ public class TaskIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.name == 'Task1')]").exists());
     }
+
+    @Test
+    public void testUpdateTask() throws Exception {
+        // 1. Tworzymy projekt, bo zadanie musi mieć przypisany projekt
+        String projectJson = "{\"name\":\"Projekt Testowy\"}";
+        String projectResponse = mockMvc.perform(post("/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(projectJson))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Long projectId = new com.fasterxml.jackson.databind.ObjectMapper()
+                .readTree(projectResponse).get("id").asLong();
+
+        // 2. Tworzymy zadanie
+        String createTaskJson = String.format(
+                "{\"name\":\"Zadanie X\", \"priorityLevel\": {\"type\": \"MEDIUM\"}, \"project\":{\"id\":%d}}",
+                projectId
+        );
+
+        String taskResponse = mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createTaskJson))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Long taskId = new com.fasterxml.jackson.databind.ObjectMapper()
+                .readTree(taskResponse).get("id").asLong();
+
+        // 3. Aktualizacja zadania
+        String updateTaskJson = String.format(
+                "{\"id\":%d, \"name\":\"Zadanie Zaktualizowane\", \"priorityLevel\": {\"type\": \"MEDIUM\"}, \"project\":{\"id\":%d}}",
+                taskId, projectId
+        );
+
+        mockMvc.perform(put("/tasks/" + taskId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateTaskJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Zadanie Zaktualizowane"))
+                .andExpect(jsonPath("$.priorityLevel.type").value("MEDIUM"));
+    }
+
 
 }
 
