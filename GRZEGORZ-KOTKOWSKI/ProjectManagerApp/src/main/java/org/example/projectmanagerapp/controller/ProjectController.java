@@ -27,6 +27,11 @@ public class ProjectController {
         return projectService.getProjectById(id);
     }
 
+    @GetMapping
+    public List<Project> getAllProjects() {
+        return projectService.getAllProjects();
+    }
+
     @PutMapping("/{id}")
     @Operation(summary = "Update existing project", description = "Updates an existing project by its ID")
     public Project updateProject(
@@ -51,5 +56,10 @@ public class ProjectController {
             @Parameter(description = "Project to be created", required = true)
             @RequestBody Project project) {
         return projectService.createProject(project);
+    }
+
+    @PatchMapping("/{projectId}/users/{userId}")
+    public Project assignUserToProject(@PathVariable Long projectId, @PathVariable Long userId) {
+        return projectService.assignUserToProject(projectId, userId);
     }
 }

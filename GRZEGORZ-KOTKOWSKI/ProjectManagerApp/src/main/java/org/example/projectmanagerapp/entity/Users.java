@@ -1,5 +1,6 @@
 package org.example.projectmanagerapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -21,6 +23,7 @@ public class Users {
     private Long id;
     private String username;
 
-    @ManyToMany
-    private Set<Project> projects;
+    @ManyToMany(mappedBy = "users")
+    @JsonIgnore
+    private Set<Project> projects = new HashSet<>();
 }
