@@ -3,7 +3,6 @@ import com.example.projectmanagerapp.entity.User;
 import com.example.projectmanagerapp.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

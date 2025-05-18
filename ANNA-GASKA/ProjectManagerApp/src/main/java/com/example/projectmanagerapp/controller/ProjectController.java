@@ -85,4 +85,18 @@ public class ProjectController {
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{projectId}/users")
+    @Operation(
+            summary = "Assign a user to a project",
+            description = "Assign a user to a project by their IDs"
+    )
+    public ResponseEntity<Void> assignUserToProject(
+            @Parameter(name = "projectId", description = "ID of the project", required = true)
+            @PathVariable Long projectId,
+            @Parameter(name = "userId", description = "ID of the user to assign", required = true)
+            @RequestParam Long userId) {
+        projectService.assignUserToProject(projectId, userId);
+        return ResponseEntity.ok().build();
+    }
 }
