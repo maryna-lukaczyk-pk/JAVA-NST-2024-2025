@@ -294,4 +294,76 @@ public class TaskCrudIntegrationTest extends BaseIntegrationTest {
         assertThat(retrievedTask.getProject().getId()).isEqualTo(testProject.getId());
         assertThat(retrievedTask.getProject().getName()).isEqualTo(testProject.getName());
     }
+
+    @Test
+    @Transactional
+    void shouldUpdateTask() throws Exception {
+        Task task = new Task();
+        task.setTitle("Original Title");
+        task.setDescription("Original Description");
+        task.setTaskType("BUG");
+        task.setProject(testProject);
+        Task savedTask = taskRepository.save(task);
+
+        Task updateData = new Task();
+        updateData.setTitle("Updated Title");
+        updateData.setDescription("Updated Description");
+        updateData.setTaskType("FEATURE");
+
+        MvcResult result = mockMvc.perform(put("/api/v1/task/{id}", savedTask.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateData)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Task updatedTask = objectMapper.readValue(
+                result.getResponse().getContentAsString(), Task.class);
+
+        assertThat(updatedTask.getId()).isEqualTo(savedTask.getId());
+        assertThat(updatedTask.getTitle()).isEqualTo("Updated Title");
+        assertThat(updatedTask.getDescription()).isEqualTo("Updated Description");
+        assertThat(updatedTask.getTaskType()).isEqualTo("FEATURE");
+        assertThat(updatedTask.getProject().getId()).isEqualTo(testProject.getId());
+
+        Task dbTask = taskRepository.findById(savedTask.getId()).orElse(null);
+        assertThat(dbTask).isNotNull();
+        assertThat(dbTask.getTitle()).isEqualTo("Updated Title");
+        assertThat(dbTask.getDescription()).isEqualTo("Updated Description");
+        assertThat(dbTask.getTaskType()).isEqualTo("FEATURE");
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenUpdatingNonExistentTask() throws Exception {
+        Task updateData = new Task();
+        updateData.setTitle("Updated Title");
+
+        mockMvc.perform(put("/api/v1/task/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateData)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Transactional
+    void shouldDeleteTask() throws Exception {
+        Task task = new Task();
+        task.setTitle("Task to Delete");
+        task.setDescription("This task will be deleted");
+        task.setTaskType("BUG");
+        task.setProject(testProject);
+        Task savedTask = taskRepository.save(task);
+
+        assertThat(taskRepository.findById(savedTask.getId())).isPresent();
+
+        mockMvc.perform(delete("/api/v1/task/{id}", savedTask.getId()))
+                .andExpect(status().isNoContent());
+
+        assertThat(taskRepository.findById(savedTask.getId())).isEmpty();
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenDeletingNonExistentTask() throws Exception {
+        mockMvc.perform(delete("/api/v1/task/999"))
+                .andExpect(status().isNotFound());
+    }
 }

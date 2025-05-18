@@ -59,9 +59,15 @@ public class TaskService {
 
         task.setDescription(taskDetails.getDescription());
         task.setTitle(taskDetails.getTitle());
-        task.setTaskType(task.getTaskType());
-        task.setPriorityLevel(task.getPriorityLevel());
-        task.setProject(task.getProject());
+        task.setTaskType(taskDetails.getTaskType());
+        task.setPriorityLevel(taskDetails.getPriorityLevel());
+
+        if (taskDetails.getProject() != null && taskDetails.getProject().getId() != null) {
+            Project project = projectRepository.findById(taskDetails.getProject().getId())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Projekt o ID " + taskDetails.getProject().getId() + " nie został znaleziony"));
+            task.setProject(project);
+        }
 
         return taskRepository.save(task);
     }
