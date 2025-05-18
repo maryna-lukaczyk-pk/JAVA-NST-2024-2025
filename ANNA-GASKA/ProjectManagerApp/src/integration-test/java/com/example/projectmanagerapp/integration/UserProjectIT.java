@@ -12,38 +12,35 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class UserProjectIT extends BaseIT {
-
-    @Autowired MockMvc mvc;
-    @Autowired ObjectMapper om;
+    @Autowired private MockMvc mvc;
+    @Autowired private ObjectMapper om;
 
     @Test
     void assignUserToProjectFlow() throws Exception {
-        // a) CREATE USER
-        String userJson = "{\"username\":\"Anna\"}";
+        // CREATE USER
         var userResult = mvc.perform(post("/api/user")
                         .contentType(APPLICATION_JSON)
-                        .content(userJson))
+                        .content("{\"username\":\"Anna\"}"))
                 .andExpect(status().isCreated())
                 .andReturn();
-        User u = om.readValue(userResult.getResponse().getContentAsString(), User.class);
+        User user = om.readValue(userResult.getResponse().getContentAsString(), User.class);
 
-        // b) CREATE PROJECT
-        String projJson = "{\"name\":\"ProjX\"}";
+        // CREATE PROJECT
         var projResult = mvc.perform(post("/api/project")
                         .contentType(APPLICATION_JSON)
-                        .content(projJson))
+                        .content("{\"name\":\"ProjX\"}"))
                 .andExpect(status().isCreated())
                 .andReturn();
-        Projects p = om.readValue(projResult.getResponse().getContentAsString(), Projects.class);
+        Projects project = om.readValue(projResult.getResponse().getContentAsString(), Projects.class);
 
-        // c) ASSIGN user to project
-        mvc.perform(post("/api/project/" + p.getId() + "/users")
-                        .param("userId", u.getId().toString()))
+        // ASSIGN
+        mvc.perform(post("/api/project/" + project.getId() + "/users")
+                        .param("userId", user.getId().toString()))
                 .andExpect(status().isOk());
 
-        // d) VERIFY relation
-        mvc.perform(get("/api/project/" + p.getId()))
+        // VERIFY RELATION
+        mvc.perform(get("/api/project/{id}", project.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.users[0].id").value(u.getId()));
+                .andExpect(jsonPath("$.users[0].id").value(user.getId()));
     }
 }

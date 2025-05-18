@@ -1,4 +1,5 @@
 package com.example.projectmanagerapp.service;
+
 import com.example.projectmanagerapp.entity.Task;
 import com.example.projectmanagerapp.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,7 +28,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task updateTask(Long id, Task newData){
+    public Task updateTask(Long id, Task newData) {
         return taskRepository.findById(id)
                 .map(task -> {
                     task.setTitle(newData.getTitle());
@@ -43,5 +44,4 @@ public class TaskService {
         }
         taskRepository.deleteById(id);
     }
-
 }
