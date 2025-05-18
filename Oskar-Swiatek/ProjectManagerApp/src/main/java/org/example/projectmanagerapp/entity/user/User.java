@@ -1,5 +1,6 @@
 package org.example.projectmanagerapp.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,6 @@ public class User {
     private String username;
 
     @ManyToMany(mappedBy = "assignedUsers")
+    @JsonIgnoreProperties("assignedUsers")
     private Set<Project> projects = new HashSet<>();
 }

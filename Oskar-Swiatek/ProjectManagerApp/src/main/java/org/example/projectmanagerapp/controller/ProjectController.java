@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Projects", description = "Operations related to projects")
 @RestController
@@ -45,6 +46,16 @@ public class ProjectController {
     @Parameter(description = "ID of the project to update")
     public Project updateProject(@PathVariable Long id, @RequestBody Project projectDetails) {
         return projectService.updateProject(id, projectDetails);
+    }
+
+    @Operation(summary = "Assign a user to a project")
+    @PostMapping("/{projectId}/users")
+    public void assignUserToProject(
+            @PathVariable Long projectId,
+            @RequestBody Map<String, Long> requestBody
+    ) {
+        Long userId = requestBody.get("userId");
+        projectService.assignUserToProject(projectId, userId);
     }
 
     @Operation(summary = "Delete a project by ID")

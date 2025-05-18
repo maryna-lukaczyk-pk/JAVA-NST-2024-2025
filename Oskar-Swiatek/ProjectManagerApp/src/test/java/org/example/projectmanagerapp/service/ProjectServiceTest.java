@@ -5,6 +5,7 @@ import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,13 +16,18 @@ import static org.mockito.Mockito.*;
 
 class ProjectServiceTest {
 
+    @Mock
+    private UserService userService;
+
+    @Mock
     private ProjectRepository projectRepository;
+
     private ProjectService projectService;
 
     @BeforeEach
     void setUp() {
         projectRepository = mock(ProjectRepository.class);
-        projectService = new ProjectService(projectRepository);
+        projectService = new ProjectService(projectRepository, userService);
     }
 
     @Test
