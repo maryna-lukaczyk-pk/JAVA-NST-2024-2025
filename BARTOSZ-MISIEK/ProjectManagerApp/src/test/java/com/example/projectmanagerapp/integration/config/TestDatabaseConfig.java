@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 
 @TestConfiguration
 public class TestDatabaseConfig {
-    @Bean(destroyMethod = "stop") // Ensure the container is stopped after the test context
+    @Bean(destroyMethod = "stop")
     public JdbcDatabaseContainer<?> postgresContainer() {
         PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:latest")
                 .withDatabaseName("testdb")
