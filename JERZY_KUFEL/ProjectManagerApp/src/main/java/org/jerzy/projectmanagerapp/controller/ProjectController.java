@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import org.jerzy.projectmanagerapp.entity.Project;
-import org.jerzy.projectmanagerapp.repository.ProjectRepository;
 import org.jerzy.projectmanagerapp.service.ProjectService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,15 +20,14 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
 @Tag(name = "Project", description = "Project managment methods")
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
   private final ProjectService service;
 
-  public ProjectController(ProjectRepository repository) {
-    this.service = new ProjectService(repository);
+  public ProjectController(ProjectService projectService) {
+    this.service = projectService;
   }
 
   @Operation(summary = "List all projects")
@@ -40,9 +39,9 @@ public class ProjectController {
   @Operation(summary = "Get a specific project by id")
   @GetMapping("/{id}")
   public Project getProjectById(@Parameter(description = "Project id") String id) {
-      return this.service.getById(id);
+    return this.service.getById(id);
   }
-  
+
   @Operation(summary = "Create new project")
   @PostMapping("/create")
   public ResponseEntity<Project> post(@Parameter(description = "Project id") Project project) {
@@ -51,7 +50,8 @@ public class ProjectController {
 
   @Operation(summary = "Update existing project")
   @PutMapping("/{id}")
-  public ResponseEntity<Project> updateProject(@Parameter(description = "Project id") String id, @RequestBody Project project) {
+  public ResponseEntity<Project> updateProject(@Parameter(description = "Project id") String id,
+      @RequestBody Project project) {
     try {
       Project updatedProject = this.service.update(id, project);
       return ResponseEntity.ok(updatedProject);
@@ -70,4 +70,18 @@ public class ProjectController {
       return ResponseEntity.notFound().build();
     }
   }
+
+  @Operation(summary = "Assign user to project")
+  @PostMapping("/{projectId}/user/{userId}")
+  public ResponseEntity<Void> assignUserToProject(
+      @PathVariable Long projectId,
+      @PathVariable Long userId) {
+    try {
+      service.assignUserToProject(projectId, userId);
+      return ResponseEntity.ok().build();
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
 }
