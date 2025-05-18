@@ -66,7 +66,7 @@ public class TaskIntegrationTestIT {
 
     @Test
     public void testUpdateTask() throws Exception {
-        // 1. Tworzymy projekt, bo zadanie musi mieć przypisany projekt
+        // nowy projekt
         String projectJson = "{\"name\":\"Projekt Testowy\"}";
         String projectResponse = mockMvc.perform(post("/projects")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -78,7 +78,7 @@ public class TaskIntegrationTestIT {
         Long projectId = new com.fasterxml.jackson.databind.ObjectMapper()
                 .readTree(projectResponse).get("id").asLong();
 
-        // 2. Tworzymy zadanie
+        // nowy task
         String createTaskJson = String.format(
                 "{\"name\":\"Zadanie X\", \"priorityLevel\": {\"type\": \"MEDIUM\"}, \"project\":{\"id\":%d}}",
                 projectId
@@ -94,7 +94,7 @@ public class TaskIntegrationTestIT {
         Long taskId = new com.fasterxml.jackson.databind.ObjectMapper()
                 .readTree(taskResponse).get("id").asLong();
 
-        // 3. Aktualizacja zadania
+        // aktualizacja taska
         String updateTaskJson = String.format(
                 "{\"id\":%d, \"name\":\"Zadanie Zaktualizowane\", \"priorityLevel\": {\"type\": \"MEDIUM\"}, \"project\":{\"id\":%d}}",
                 taskId, projectId
