@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanager.dto.project.ProjectCreateDto;
 import org.example.projectmanager.dto.project.ProjectDto;
 import org.example.projectmanager.dto.project.ProjectEditDto;
+import org.example.projectmanager.dto.task.TaskDto;
 import org.example.projectmanager.exception.EntityNotFoundException;
 import org.example.projectmanager.service.IProjectService;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,14 @@ public class ProjectController {
 
     public ProjectController(IProjectService projectService) {
         this.service = projectService;
+    }
+
+    @GetMapping
+    @Operation(summary = "Fetch all entities", responses = {
+            @ApiResponse(responseCode = "200", description = "Entities found"),
+    })
+    public Iterable<ProjectDto> getAll() {
+        return this.service.findAll();
     }
 
     @GetMapping("/{id}")

@@ -23,6 +23,14 @@ public class UserController {
         this.service = service;
     }
 
+    @GetMapping
+    @Operation(summary = "Fetch all entities", responses = {
+            @ApiResponse(responseCode = "200", description = "Entities found"),
+    })
+    public Iterable<UserDto> getAll() {
+        return this.service.findAll();
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Fetch an entity", responses = {
             @ApiResponse(responseCode = "200", description = "Entity found"),
