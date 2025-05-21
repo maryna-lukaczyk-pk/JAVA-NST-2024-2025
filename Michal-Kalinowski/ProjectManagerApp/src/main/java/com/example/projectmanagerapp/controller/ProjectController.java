@@ -1,5 +1,6 @@
 package com.example.projectmanagerapp.controller;
 
+import com.example.projectmanagerapp.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,4 +66,17 @@ public class ProjectController {
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{projectId}/users")
+    public ResponseEntity<Void> assignUserToProject(@PathVariable Long projectId, @RequestParam Long userId) {
+        projectService.assignUserToProject(projectId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{projectId}/users")
+    public ResponseEntity<List<User>> getUsersAssignedToProject(@PathVariable Long projectId) {
+        List<User> users = projectService.getUsersAssignedToProject(projectId);
+        return ResponseEntity.ok(users);
+    }
+
 }
