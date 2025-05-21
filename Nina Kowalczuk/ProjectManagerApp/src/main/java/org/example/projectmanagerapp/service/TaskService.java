@@ -28,6 +28,9 @@ public class TaskService {
         Optional<Task> task = taskRepository.findById(id);
         return task.orElse(null);  // Można tu dodać wyjątek, jeśli nie znaleziono
     }
+    public void deleteAllTasks() {
+        taskRepository.deleteAll();
+    }
 
     public Task updateTask(Long id, Task taskDetails) {
         Optional<Task> existingTask = taskRepository.findById(id);
@@ -36,11 +39,12 @@ public class TaskService {
             updatedTask.setTitle(taskDetails.getTitle());
             updatedTask.setDescription(taskDetails.getDescription());
             updatedTask.setTaskType(taskDetails.getTaskType());
-            updatedTask.setPriorityLevel(taskDetails.getPriorityLevel());
+            updatedTask.setPriority(taskDetails.getPriority());
             updatedTask.setProject(taskDetails.getProject());
+            // Zaktualizuj inne pola, jeśli to konieczne
             return taskRepository.save(updatedTask);
         }
-        return null;
+        return null;  // Można tu rzucić wyjątek
     }
 
     public void deleteTask(Long id) {
