@@ -1,7 +1,11 @@
 package org.example.projectmanagerapp.service;
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,17 +45,26 @@ public class ProjectService {
                 .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
 
         // Sprawdzamy czy projekt nie ma przypisanych zadań
-        if (!project.getTasks().isEmpty()) {
+        if (project.getTasks() != null && !project.getTasks().isEmpty()) {
             throw new IllegalStateException("Cannot delete project with assigned tasks");
         }
 
         // Usuwamy powiązania z użytkownikami
-        project.getUsers().forEach(user -> user.getProjects().remove(project));
+        if (project.getUsers() != null) {
+            new HashSet<>(project.getUsers()).forEach(user -> {
+                user.getProjects().remove(project);
+                project.getUsers().remove(user);
+            });
+        }
 
         projectRepository.delete(project);
     }
 
     public Optional<Project> getProjectById(Long id) {
-        return projectRepository.findById(id);
+        try {
+            return projectRepository.findById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Error retrieving project with id: " + id, e);
+        }
     }
 }

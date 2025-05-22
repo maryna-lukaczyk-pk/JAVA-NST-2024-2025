@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -35,10 +36,10 @@ public class TaskController {
 
     // POST: Dodaj nowe zadanie
     @PostMapping
-    @Operation(summary = "Create new task", description = "Adds a new task to the database")
-    public ResponseEntity<Task> addTask(@RequestBody Task task) {
-        Task createdTask = taskService.createTask(task);
-        return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+        Task created = taskService.createTask(task);
+        URI location = URI.create("/api/tasks/" + created.getId());
+        return ResponseEntity.created(location).body(created);
     }
 
     @Operation(summary = "Update existing task")

@@ -24,7 +24,7 @@ public class UserService {
 
     public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setUsername(userDetails.getUsername());
         return userRepository.save(user);
@@ -32,7 +32,11 @@ public class UserService {
 
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Usuń powiązania przed usunięciem użytkownika
+        user.getProjects().clear();
+        userRepository.save(user);
 
         userRepository.delete(user);
     }

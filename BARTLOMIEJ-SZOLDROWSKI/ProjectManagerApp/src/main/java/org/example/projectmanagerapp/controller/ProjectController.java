@@ -8,7 +8,9 @@ import org.example.projectmanagerapp.service.ProjectService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -32,10 +34,10 @@ public class ProjectController {
 
     // POST: Dodaj nowy projekt
     @PostMapping
-    @Operation(summary = "Create a new project", description = "Adds a new project to the database")
     public ResponseEntity<Project> createProject(@RequestBody Project project) {
-        Project createdProject = projectService.createProject(project);
-        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
+        Project created = projectService.createProject(project);
+        URI location = URI.create("/api/projects/" + created.getId());
+        return ResponseEntity.created(location).body(created);
     }
 
     @Operation(summary = "Update existing project")
@@ -57,10 +59,14 @@ public class ProjectController {
 
     @Operation(summary = "Get project by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProjectById(
+    public ResponseEntity<Project> getProjectById(
             @Parameter(description = "ID of project to retrieve") @PathVariable Long id) {
-        return projectService.getProjectById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            Project project = projectService.getProjectById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+            return ResponseEntity.ok(project);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error retrieving project", e);
+        }
     }
 }

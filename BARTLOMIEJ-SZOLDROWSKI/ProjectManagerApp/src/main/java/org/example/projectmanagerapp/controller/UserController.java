@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -23,42 +24,33 @@ public class UserController {
         this.userService = userService;
     }
 
-    // GET: Pobierz wszystkich użytkowników
     @GetMapping("/all")
-    @Operation(summary = "Retrieve all users", description = "Returns a list of all registered users")
-    public List<User> getUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // POST: add new user
     @PostMapping("/create")
-    @Operation(summary = "Create a new user", description = "Saves a new user in the system")
     public ResponseEntity<User> addUser(@RequestBody User user) {
-        User createdUser = userService.createUser(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        User created = userService.createUser(user);
+        URI location = URI.create("/api/users/" + created.getId());
+        return ResponseEntity.created(location).body(created);
     }
 
-    //PUT: update user
+    // Najważniejsza poprawka - usunięcie rekurencji
     @PutMapping
-    @Operation(summary = "Update existing user")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
-        updateUser(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        User updated = userService.updateUser(user.getId(), user);
+        return ResponseEntity.ok(updated);
     }
 
-    //DELETE: remove user
-    @Operation(summary = "Delete user by ID")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteUser(
-            @Parameter(description = "ID of user to delete") @PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Get user by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(
-            @Parameter(description = "ID of user to retrieve") @PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
