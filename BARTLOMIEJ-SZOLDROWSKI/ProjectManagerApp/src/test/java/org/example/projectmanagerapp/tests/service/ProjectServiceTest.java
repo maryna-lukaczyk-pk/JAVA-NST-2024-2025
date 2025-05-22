@@ -1,4 +1,4 @@
-package org.example.projectmanagerapp.tests;
+package org.example.projectmanagerapp.tests.service;
 
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Task;
@@ -149,11 +149,16 @@ class ProjectServiceTest {
         project.setTasks(Collections.emptyList());
 
         User user = new User();
-        user.getProjects().add(project);
+        user.setId(1L);
         project.getUsers().add(user);
+        user.getProjects().add(project);
 
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        doNothing().when(projectRepository).delete(project);
+        doAnswer(invocation -> {
+            // Symulujemy usunięcie powiązań
+            project.getUsers().forEach(u -> u.getProjects().remove(project));
+            return null;
+        }).when(projectRepository).delete(project);
 
         // When
         projectService.deleteProject(1L);

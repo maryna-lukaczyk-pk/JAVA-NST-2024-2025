@@ -1,4 +1,4 @@
-package org.example.projectmanagerapp.tests;
+package org.example.projectmanagerapp.tests.service;
 
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.repository.TaskRepository;
