@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EntityScan("org.example.projectmanagerapp.entity")  // 📌 Wskazujemy katalog z encjami
-@EnableJpaRepositories("org.example.projectmanagerapp.repository")  // 📌 Wskazujemy katalog repozytoriów JPA
+@EntityScan("org.example.projectmanagerapp.entity")
+@EnableJpaRepositories("org.example.projectmanagerapp.repository")
 public class ProjectManagerAppApplication {
 
     public static void main(String[] args) {
