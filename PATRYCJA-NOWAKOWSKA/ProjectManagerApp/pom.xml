@@ -76,6 +76,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version> <!-- najlepiej podać wersję -->
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
@@ -83,6 +84,11 @@
                             <artifactId>lombok</artifactId>
                         </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -99,5 +105,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
