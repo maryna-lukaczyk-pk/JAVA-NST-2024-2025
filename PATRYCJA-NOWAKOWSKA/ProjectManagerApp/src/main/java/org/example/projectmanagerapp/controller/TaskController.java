@@ -3,10 +3,6 @@ package org.example.projectmanagerapp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Parameter;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +28,13 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Pobierz zadanie po ID")
+    public Task getTaskById(
+            @Parameter(description = "ID zadania") @PathVariable Long id) {
+        return taskService.getTaskById(id);
+    }
+
     @PostMapping
     @Operation(summary = "Dodaj nowe zadanie", description = "Tworzy nowe zadanie")
     public Task createTask(@RequestBody Task task) {
@@ -39,23 +42,18 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Aktualizuj zadanie",
-            description = "Aktualizuje istniejące zadanie po ID",
-            parameters = {
-                    @Parameter(name = "id", description = "ID zadania do aktualizacji", required = true)
-            })
-    public Task updateTask(@PathVariable("id") Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    @Operation(summary = "Zaktualizuj zadanie po ID")
+    public Task updateTask(
+            @Parameter(description = "ID zadania do aktualizacji") @PathVariable Long id,
+            @RequestBody Task updatedTask) {
+        return taskService.updateTask(id, updatedTask);
     }
 
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Usuń zadanie",
-               description = "Usuwa zadanie na podstawie ID",
-               parameters = {
-               @Parameter(name = "id", description = "ID zadania do usunięcia")
-               })
-    public void deleteTask(@PathVariable("id") Long id) {
+    @Operation(summary = "Usuń zadanie po ID")
+    public void deleteTask(
+            @Parameter(description = "ID zadania do usunięcia") @PathVariable Long id) {
         taskService.deleteTask(id);
     }
 }

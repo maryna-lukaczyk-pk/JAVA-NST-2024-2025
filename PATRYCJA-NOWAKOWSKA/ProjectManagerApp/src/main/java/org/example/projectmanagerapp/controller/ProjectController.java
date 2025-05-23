@@ -28,6 +28,14 @@ public class ProjectController {
         return projectService.getAllProjects();
     }
 
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Pobierz projekt po ID")
+    public Project getProjectById(
+            @Parameter(description = "ID projektu") @PathVariable Long id) {
+        return projectService.getProjectById(id);
+    }
+
     @PostMapping
     @Operation (summary = "Utwórz nowy projekt", description = "Dodaje nowy projekt")
     public Project createProject(@RequestBody Project project) {
@@ -35,21 +43,17 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Aktualizuj projekt", description = "Aktualizuje dane projektu na podstawie ID")
+    @Operation(summary = "Zaktualizuj projekt po ID")
     public Project updateProject(
-            @Parameter(description = "ID projektu do aktualizacji", required = true)
-            @PathVariable Long id,
-            @RequestBody Project project
-    ) {
-        return projectService.updateProject(id, project);
+            @Parameter(description = "ID projektu do aktualizacji") @PathVariable Long id,
+            @RequestBody Project projectDetails) {
+        return projectService.updateProject(id, projectDetails);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Usuń projekt", description = "Usuwa projekt na podstawie ID")
+    @Operation(summary = "Usuń projekt po ID")
     public void deleteProject(
-            @Parameter(description = "ID projektu do usunięcia", required = true)
-            @PathVariable Long id
-    ) {
+            @Parameter(description = "ID projektu do usunięcia") @PathVariable Long id) {
         projectService.deleteProject(id);
     }
 }
