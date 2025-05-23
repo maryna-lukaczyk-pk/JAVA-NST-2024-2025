@@ -12,11 +12,7 @@ public class Task {
     private String title;
     private String description;
     private String task_type;
-/*
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User assignee;
-  */
+
     @ManyToOne
     @JoinColumn(name = "project_id")  // Pole 'project' w encji Task
     private Project project;
@@ -34,5 +30,46 @@ public class Task {
 
     public String getPriority() {
         return priorityLevel != null ? priorityLevel.getPriority() : "UNDEFINED";
+    }
+
+    // Gettery i settery
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTask_type() {
+        return task_type;
+    }
+
+    public void setTask_type(String task_type) {
+        this.task_type = task_type;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }
