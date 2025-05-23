@@ -19,7 +19,26 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
+    public Project getProjectById(Long id) {
+        return projectRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Projekt o ID" + id + "nie został znaleziony"));
+    }
+
     public Project createProject(Project project) {
         return projectRepository.save(project);
+    }
+
+    public Project updateProject(Long id, Project projectDetails) {
+        Project project = getProjectById(id);
+        project.setName(projectDetails.getName());
+        project.setUsers(projectDetails.getUsers());
+        return projectRepository.save(project);
+    }
+
+    public void deleteProject(Long id) {
+        if (!projectRepository.existsById(id)) {
+            throw new RuntimeException("Projekt o ID " + id + " nie został znaleziony.");
+        }
+        projectRepository.deleteById(id);
     }
 }
