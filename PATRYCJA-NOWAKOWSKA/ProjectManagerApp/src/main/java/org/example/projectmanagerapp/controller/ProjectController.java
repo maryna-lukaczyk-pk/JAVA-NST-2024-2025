@@ -2,7 +2,6 @@ package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Project;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
