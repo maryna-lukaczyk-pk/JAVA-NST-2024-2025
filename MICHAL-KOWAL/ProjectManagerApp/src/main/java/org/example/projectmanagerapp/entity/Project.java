@@ -20,7 +20,7 @@ public class Project {
     @Column(columnDefinition="VARCHAR(255)")
     private String name;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "project_user",
             joinColumns = { @JoinColumn(name = "project_id") },

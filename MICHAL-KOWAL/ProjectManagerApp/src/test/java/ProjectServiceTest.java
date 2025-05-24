@@ -1,11 +1,14 @@
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.repository.UserRepository;
 import org.example.projectmanagerapp.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +18,14 @@ import static org.mockito.Mockito.*;
 
 public class ProjectServiceTest {
     private ProjectRepository projectRepository;
+    private UserRepository userRepository;
     private ProjectService projectService;
 
     @BeforeEach
     void setUp() {
         projectRepository = Mockito.mock(ProjectRepository.class);
-        projectService = new ProjectService(projectRepository);
+        userRepository = Mockito.mock(UserRepository.class);
+        projectService = new ProjectService(projectRepository, userRepository);
     }
 
     @Test
@@ -120,5 +125,56 @@ public class ProjectServiceTest {
 
         verify(projectRepository, times(2)).existsById(1L);
         verify(projectRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    @DisplayName("Should add user to a chosen project")
+    void testAddUserToProject() {
+        Project project1 = new Project();
+        project1.setId(1L);
+        project1.setName("Project 1");
+        project1.setUsers(new ArrayList<>());
+
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setUsername("Darek");
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project1));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        when(projectRepository.save(project1)).thenReturn(project1);
+
+        var updatedProject = projectService.addUserToProject(1L, 1L);
+
+        assertEquals(1, updatedProject.getUsers().size());
+        verify(projectRepository, times(1)).findById(1L);
+        verify(projectRepository, times(1)).save(project1);
+        verify(userRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    @DisplayName("Should remove a user from a chosen project")
+    void testRemoveUserFromProject() {
+        Project project1 = new Project();
+        project1.setId(1L);
+        project1.setName("Project 1");
+
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setUsername("Darek");
+
+        List<User> users = new ArrayList<>();
+        users.add(user1);
+        project1.setUsers(users);
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project1));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        when(projectRepository.save(project1)).thenReturn(project1);
+
+        var updatedProject = projectService.removeUserFromProject(1L, 1L);
+
+        assertEquals(0, updatedProject.getUsers().size());
+        verify(projectRepository, times(1)).findById(1L);
+        verify(projectRepository, times(1)).save(project1);
+        verify(userRepository, times(1)).findById(1L);
     }
 }

@@ -1,6 +1,7 @@
 package org.example.projectmanagerapp.service;
 
 import org.example.projectmanagerapp.entity.User;
+import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +10,11 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ProjectRepository projectRepository) {
         this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
 
     public List<User> getAllUsers() {
@@ -39,6 +42,15 @@ public class UserService {
     public Boolean deleteUserById(Long id) {
         if (!userRepository.existsById(id)) {
             return false;
+        }
+
+        var user = userRepository.findById(id)
+                                 .orElseThrow(() -> new RuntimeException("User with id " + id + " does not exist"));
+
+        var projects = projectRepository.findByUsers_Id(id);
+        for (var project : projects) {
+            project.getUsers().remove(user);
+            projectRepository.save(project);
         }
 
         userRepository.deleteById(id);

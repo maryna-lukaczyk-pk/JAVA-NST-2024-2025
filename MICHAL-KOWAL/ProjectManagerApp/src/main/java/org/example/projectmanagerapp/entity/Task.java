@@ -5,12 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-enum TaskType {
-    BUGFIX,
-    FEATURE,
-    RELEASE
-}
-
 @Entity
 @Table(name = "tasks")
 @Getter
