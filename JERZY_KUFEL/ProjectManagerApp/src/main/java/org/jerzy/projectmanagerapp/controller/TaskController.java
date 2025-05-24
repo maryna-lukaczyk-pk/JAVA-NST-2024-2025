@@ -3,7 +3,6 @@ package org.jerzy.projectmanagerapp.controller;
 import java.util.List;
 
 import org.jerzy.projectmanagerapp.entity.Task;
-import org.jerzy.projectmanagerapp.repository.TaskRepository;
 import org.jerzy.projectmanagerapp.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +24,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class TaskController {
   private final TaskService service;
 
-  public TaskController(TaskRepository repository) {
-    this.service = new TaskService(repository);
+  public TaskController(TaskService taskService) {
+    this.service = taskService;
   }
 
   @Operation(summary = "List all tasks")
