@@ -19,6 +19,11 @@ public class User {
     @Getter
     private String username;
 
+    @Setter
+    @Getter
+    @Column(nullable = false)
+    private String email;
+
     @ManyToMany(mappedBy = "users")
     private Set<Project> projects;
 }

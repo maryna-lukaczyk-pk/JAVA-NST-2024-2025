@@ -4,6 +4,7 @@ package org.example.projectmanagerapp.controller;
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,11 +40,13 @@ public class TaskController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create new task", description = "Add a new task to the system")
     public Task createTask(
             @Parameter(description = "Task data to create a new task", required = true)
             @RequestBody Task task) {
-        return taskService.createTask(task);
+        Task createdTask = taskService.createTask(task);
+        return new ResponseEntity<>(createdTask, HttpStatus.CREATED).getBody();
     }
 
     @PutMapping("/{id}")
