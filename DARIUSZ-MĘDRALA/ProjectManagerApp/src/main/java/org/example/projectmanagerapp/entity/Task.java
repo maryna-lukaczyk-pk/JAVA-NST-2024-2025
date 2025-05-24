@@ -1,4 +1,5 @@
 package org.example.projectmanagerapp.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,16 +25,9 @@ public class Task {
     private TaskType taskType;
 
     @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id")
+    @JsonBackReference
     private Project project;
-}
-
-enum TaskType {
-    BUGFIX,
-    FEATURE,
-    RELEASE,
-    DOCUMENTATION,
-    TEST
 }
 
 
