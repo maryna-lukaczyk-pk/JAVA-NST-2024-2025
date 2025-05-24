@@ -6,19 +6,23 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @Tag(name = "Tasks", description = "Operations related to tasks")
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping({"/api/tasks", "/tasks"})
 public class TaskController {
     private final TaskService svc;
     public TaskController(TaskService svc) { this.svc = svc; }
 
     @Operation(summary = "Get all tasks")
     @GetMapping
-    public List<Task> getAllTasks() { return svc.getAllTasks(); }
+    public List<Task> getAllTasks() {
+        return svc.getAllTasks();
+    }
 
     @Operation(summary = "Get task by ID")
     @GetMapping("/{id}")
@@ -30,11 +34,19 @@ public class TaskController {
 
     @Operation(summary = "Create a new task")
     @PostMapping
-    public Task createTask(@RequestBody Task t) { return svc.createTask(t); }
+    public ResponseEntity<Task> createTask(@RequestBody Task t) {
+        Task created = svc.createTask(t);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(created.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(created);
+    }
 
     @Operation(summary = "Update task by ID")
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task d) {
+    public ResponseEntity<Task> updateTask(@PathVariable Long id,
+                                           @RequestBody Task d) {
         return svc.updateTask(id, d)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -44,7 +56,7 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         return svc.deleteTask(id)
-                ? ResponseEntity.ok().build()
+                ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
 }

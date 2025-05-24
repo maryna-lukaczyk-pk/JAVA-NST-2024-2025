@@ -21,11 +21,11 @@
         <java.version>17</java.version>
         <jacoco.version>0.8.10</jacoco.version>
         <surefire.version>3.0.0-M7</surefire.version>
-        <jacoco.agent.argLine>-javaagent:"${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar"=destfile="${project.build.directory}/jacoco.exec",output=file</jacoco.agent.argLine>
+        <testcontainers.version>1.20.5</testcontainers.version>
     </properties>
 
     <dependencies>
-        <!-- zależności aplikacyjne -->
+        <!-- Spring Boot Web + JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -50,7 +50,7 @@
             <version>2.1.0</version>
         </dependency>
 
-        <!-- Testy -->
+        <!-- Testy jednostkowe -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -62,53 +62,83 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- (opcjonalnie) Testcontainers -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+
+
     </dependencies>
 
     <build>
+        <!-- wymuś swój katalog budowania -->
+        <directory>${project.basedir}/target</directory>
+
         <plugins>
-            <!-- Konfiguracja Jacoco-agent  -->
+            <!-- JaCoCo: zbierz coverage i wygeneruj raport w fazie verify -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.10</version>
+                <configuration>
+                    <!-- dzięki temu destFile pootwiera się dokładnie w tym <directory> -->
+                    <destFile>${project.build.directory}/jacoco.exec</destFile>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <destFile>${project.basedir}/target/jacoco.exec</destFile>
-                            <propertyName>surefireArgLine</propertyName>
-                        </configuration>
+                        <goals><goal>prepare-agent</goal></goals>
                     </execution>
                     <execution>
                         <id>report</id>
                         <phase>verify</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
+                        <goals><goal>report</goal></goals>
                     </execution>
                 </executions>
             </plugin>
 
-
-            <!-- Surefire z JAWNĄ ścieżką do agenta -->
+            <!-- Surefire: uruchom testy z JaCoCo -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
-                    <argLine>${jacoco.agent.argLine} -Djacoco.debug=true -Djacoco.dumponexit=true</argLine>
+                    <!-- to argLine ustawił nam Jacoco -->
+                    <!--suppress UnresolvedMavenProperty -->
+                    <argLine>${argLine}</argLine>
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot -->
+            <!-- Spring Boot: budowanie aplikacji -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
-
 </project>
