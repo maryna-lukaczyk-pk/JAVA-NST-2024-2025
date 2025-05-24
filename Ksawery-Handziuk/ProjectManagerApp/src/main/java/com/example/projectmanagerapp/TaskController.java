@@ -1,14 +1,13 @@
+// src/main/java/com/example/projectmanagerapp/TaskController.java
 package com.example.projectmanagerapp;
 
 import com.example.projectmanagerapp.entity.Task;
 import com.example.projectmanagerapp.service.TaskService; // Import serwisu
 import com.example.projectmanagerapp.exception.ResourceNotFoundException;
 
-// ... (inne importy Swaggera)
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
+// usunięto nieużywane importy Swaggera: Content, Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/tasks")
-@Tag(name = "Task Management", description = "APIs for managing tasks and their priorities")
+@Tag(name = "Zarządzanie Zadaniami", description = "API do zarządzania zadaniami i ich priorytetami") // Przetłumaczono
 public class TaskController {
 
     private final TaskService taskService; // Wstrzykiwanie serwisu
@@ -34,23 +33,26 @@ public class TaskController {
     }
 
     @PostMapping("/{id}/priority/{level}")
-    @Operation(summary = "Set task priority") // Adnotacje Swaggera bez zmian
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201"),
-            @ApiResponse(responseCode = "400"),
-            @ApiResponse(responseCode = "409")
+    @Operation(summary = "Ustaw priorytet zadania") // Adnotacje Swaggera - przetłumaczono
+    @ApiResponses(value = { // Przykładowe kody odpowiedzi
+            @ApiResponse(responseCode = "200", description = "Priorytet zadania pomyślnie ustawiony"), // Zmieniono z 201 na 200 dla aktualizacji
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowy poziom priorytetu lub ID zadania"),
+            @ApiResponse(responseCode = "404", description = "Zadanie nie znalezione")
+            // Usunięto 409, bo nie jest jasne, jaki konflikt miałby tu wystąpić
     })
-    public ResponseEntity<?> setTaskPriority( // Zmieniono na ResponseEntity<?> dla obsługi błędów
-                                              @Parameter(description = "ID of the task to update", required = true, example = "1")
-                                              @PathVariable Long id,
-                                              @Parameter(description = "Priority level to set. Allowed values: HIGH, MEDIUM, LOW", required = true, example = "HIGH")
-                                              @PathVariable String level) {
+    public ResponseEntity<?> setTaskPriority(
+            @Parameter(description = "ID zadania do aktualizacji", required = true, example = "1") // Przetłumaczono
+            @PathVariable Long id,
+            @Parameter(description = "Poziom priorytetu do ustawienia. Dozwolone wartości: HIGH, MEDIUM, LOW", required = true, example = "HIGH") // Przetłumaczono
+            @PathVariable String level) {
         try {
+            // Założenie: TaskService tworzy zadanie, jeśli nie istnieje, lub aktualizuje istniejące.
+            // Dla uproszczenia, jeśli zadanie nie istnieje, rzuci ResourceNotFoundException.
             Task updatedTask = taskService.setTaskPriority(id, level);
-            return ResponseEntity.ok(updatedTask);
+            return ResponseEntity.ok(updatedTask); // Zwraca zaktualizowane zadanie i status 200 OK
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalArgumentException e) { // Jeśli TaskService rzuca taki wyjątek
+        } catch (IllegalArgumentException e) { // Jeśli TaskService rzuca taki wyjątek dla niepoprawnego 'level'
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

@@ -1,3 +1,4 @@
+// src/test/java/com/example/projectmanagerapp/service/UserServiceTest.java
 package com.example.projectmanagerapp.service;
 
 import com.example.projectmanagerapp.entity.User;
@@ -11,11 +12,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.ArgumentMatchers.any; // Dodano brakujący import
+
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.HashSet; // Dla inicjalizacji Set<Project>
 
 import static org.junit.jupiter.api.Assertions.*; // Standardowe asercje JUnit
 import static org.assertj.core.api.Assertions.assertThat; // Asercje AssertJ (bardziej czytelne)
@@ -37,14 +41,16 @@ class UserServiceTest {
     void setUp() {
         // Inicjalizacja danych testowych
         user1 = new User("testUser1");
-        user1.setId(1L); // Ustawiamy ID dla celów testowych
+        user1.setId(1L);
+        user1.setProjects(new HashSet<>()); // Inicjalizacja kolekcji, aby uniknąć NullPointerException
 
         user2 = new User("testUser2");
         user2.setId(2L);
+        user2.setProjects(new HashSet<>()); // Inicjalizacja kolekcji
     }
 
     @Test
-    @DisplayName("Should return all users when users exist")
+    @DisplayName("Powinien zwrócić wszystkich użytkowników, gdy użytkownicy istnieją") // Przetłumaczono
     void getAllUsers_shouldReturnListOfUsers() {
         // Arrange (Przygotuj)
         when(userRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
@@ -60,7 +66,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should return empty list when no users exist")
+    @DisplayName("Powinien zwrócić pustą listę, gdy nie ma użytkowników") // Przetłumaczono
     void getAllUsers_shouldReturnEmptyListWhenNoUsers() {
         // Arrange
         when(userRepository.findAll()).thenReturn(Collections.emptyList());
@@ -75,7 +81,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should return user when user with given ID exists")
+    @DisplayName("Powinien zwrócić użytkownika, gdy użytkownik o podanym ID istnieje") // Przetłumaczono
     void getUserById_shouldReturnUser_whenUserExists() {
         // Arrange
         Long userId = 1L;
@@ -92,7 +98,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException when user with given ID does not exist")
+    @DisplayName("Powinien rzucić ResourceNotFoundException, gdy użytkownik o podanym ID nie istnieje") // Przetłumaczono
     void getUserById_shouldThrowResourceNotFoundException_whenUserDoesNotExist() {
         // Arrange
         Long userId = 99L;
@@ -102,12 +108,12 @@ class UserServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
             userService.getUserById(userId);
         });
-        assertThat(exception.getMessage()).isEqualTo("User not found with id: " + userId);
+        assertThat(exception.getMessage()).isEqualTo("Nie znaleziono użytkownika o ID: " + userId); // Zaktualizowano komunikat
         verify(userRepository, times(1)).findById(userId);
     }
 
     @Test
-    @DisplayName("Should create and return user when username is valid and not taken")
+    @DisplayName("Powinien utworzyć i zwrócić użytkownika, gdy nazwa użytkownika jest poprawna i nie zajęta") // Przetłumaczono
     void createUser_shouldCreateAndReturnUser_whenUsernameIsValid() {
         // Arrange
         String newUsername = "newUser";
@@ -116,7 +122,10 @@ class UserServiceTest {
         savedUser.setId(3L);
 
         when(userRepository.existsByUsername(newUsername)).thenReturn(false);
-        when(userRepository.save(any(User.class))).thenReturn(savedUser); // any(User.class) bo newUser nie ma ID, a savedUser ma
+        // any(User.class) jest używane, ponieważ obiekt przekazywany do save
+        // (instancja User tworzona w createUser) może nie być dokładnie tym samym obiektem,
+        // który mockujemy jako userToSave, ale powinien być typu User.
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         // Act
         User createdUser = userService.createUser(newUsername);
@@ -130,7 +139,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw IllegalArgumentException when creating user with empty username")
+    @DisplayName("Powinien rzucić IllegalArgumentException podczas tworzenia użytkownika z pustą nazwą użytkownika") // Przetłumaczono
     void createUser_shouldThrowIllegalArgumentException_whenUsernameIsEmpty() {
         // Arrange
         String emptyUsername = "";
@@ -139,13 +148,13 @@ class UserServiceTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             userService.createUser(emptyUsername);
         });
-        assertThat(exception.getMessage()).isEqualTo("Username cannot be empty.");
+        assertThat(exception.getMessage()).isEqualTo("Nazwa użytkownika nie może być pusta."); // Zaktualizowano komunikat
         verify(userRepository, never()).existsByUsername(anyString()); // existsByUsername nie powinno być wywołane
         verify(userRepository, never()).save(any(User.class)); // save nie powinno być wywołane
     }
 
     @Test
-    @DisplayName("Should throw DuplicateResourceException when creating user with existing username")
+    @DisplayName("Powinien rzucić DuplicateResourceException podczas tworzenia użytkownika z istniejącą nazwą użytkownika") // Przetłumaczono
     void createUser_shouldThrowDuplicateResourceException_whenUsernameExists() {
         // Arrange
         String existingUsername = "testUser1";
@@ -155,14 +164,14 @@ class UserServiceTest {
         DuplicateResourceException exception = assertThrows(DuplicateResourceException.class, () -> {
             userService.createUser(existingUsername);
         });
-        assertThat(exception.getMessage()).isEqualTo("Username '" + existingUsername + "' already exists.");
+        assertThat(exception.getMessage()).isEqualTo("Nazwa użytkownika '" + existingUsername + "' już istnieje."); // Zaktualizowano komunikat
         verify(userRepository, times(1)).existsByUsername(existingUsername);
         verify(userRepository, never()).save(any(User.class));
     }
 
 
     @Test
-    @DisplayName("Should update and return user when ID exists and new username is valid")
+    @DisplayName("Powinien zaktualizować i zwrócić użytkownika, gdy ID istnieje, a nowa nazwa użytkownika jest poprawna") // Przetłumaczono
     void updateUser_shouldUpdateUser_whenValid() {
         // Arrange
         Long userId = 1L;
@@ -185,12 +194,12 @@ class UserServiceTest {
         assertThat(result.getId()).isEqualTo(userId);
         assertThat(result.getUsername()).isEqualTo(newUsername);
         verify(userRepository, times(1)).findById(userId);
-        verify(userRepository, times(1)).existsByUsername(newUsername);
+        verify(userRepository, times(1)).existsByUsername(newUsername); // Sprawdzamy, czy nowa nazwa jest unikalna
         verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException when updating non-existing user")
+    @DisplayName("Powinien rzucić ResourceNotFoundException podczas aktualizacji nieistniejącego użytkownika") // Przetłumaczono
     void updateUser_shouldThrowResourceNotFoundException_whenUserDoesNotExist() {
         // Arrange
         Long userId = 99L;
@@ -201,13 +210,13 @@ class UserServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
             userService.updateUser(userId, newUsername);
         });
-        assertThat(exception.getMessage()).isEqualTo("User not found with id: " + userId + " for update.");
+        assertThat(exception.getMessage()).isEqualTo("Nie znaleziono użytkownika o ID: " + userId + " do aktualizacji."); // Zaktualizowano komunikat
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
-    @DisplayName("Should throw IllegalArgumentException when updating user with empty username")
+    @DisplayName("Powinien rzucić IllegalArgumentException podczas aktualizacji użytkownika z pustą nazwą użytkownika") // Przetłumaczono
     void updateUser_shouldThrowIllegalArgumentException_whenNewUsernameIsEmpty() {
         // Arrange
         Long userId = 1L;
@@ -215,42 +224,44 @@ class UserServiceTest {
         User existingUser = new User("testUser1");
         existingUser.setId(userId);
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser)); // Potrzebne, bo findById jest wołane przed walidacją username
+        // Potrzebne, bo findById jest wołane przed walidacją username
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             userService.updateUser(userId, emptyUsername);
         });
-        assertThat(exception.getMessage()).isEqualTo("New username cannot be empty.");
+        assertThat(exception.getMessage()).isEqualTo("Nowa nazwa użytkownika nie może być pusta."); // Zaktualizowano komunikat
         verify(userRepository, times(1)).findById(userId); // findById jest wołane
         verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
-    @DisplayName("Should throw DuplicateResourceException when new username is taken by another user")
+    @DisplayName("Powinien rzucić DuplicateResourceException, gdy nowa nazwa użytkownika jest zajęta przez innego użytkownika") // Przetłumaczono
     void updateUser_shouldThrowDuplicateResourceException_whenNewUsernameIsTaken() {
         // Arrange
         Long userId = 1L; // Użytkownik, którego aktualizujemy
         User existingUserToUpdate = new User("testUser1");
         existingUserToUpdate.setId(userId);
 
-        String newUsername = "testUser2"; // Ten username jest już zajęty przez user2
+        String newUsername = "testUser2"; // Ten username jest już zajęty przez innego użytkownika (user2)
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUserToUpdate));
+        // Założenie: "testUser2" istnieje w bazie i nie jest to "testUser1"
         when(userRepository.existsByUsername(newUsername)).thenReturn(true);
 
         // Act & Assert
         DuplicateResourceException exception = assertThrows(DuplicateResourceException.class, () -> {
             userService.updateUser(userId, newUsername);
         });
-        assertThat(exception.getMessage()).isEqualTo("Username '" + newUsername + "' is already taken by another user.");
+        assertThat(exception.getMessage()).isEqualTo("Nazwa użytkownika '" + newUsername + "' jest już zajęta przez innego użytkownika."); // Zaktualizowano komunikat
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, times(1)).existsByUsername(newUsername);
         verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
-    @DisplayName("Should allow updating user with their own existing username")
+    @DisplayName("Powinien pozwolić na aktualizację użytkownika jego własną, istniejącą nazwą użytkownika") // Przetłumaczono
     void updateUser_shouldAllowUpdateWithOwnExistingUsername() {
         // Arrange
         Long userId = 1L;
@@ -259,7 +270,10 @@ class UserServiceTest {
         existingUser.setId(userId);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
-        // `existsByUsername` nie powinno być wołane, jeśli username się nie zmienia
+        // `existsByUsername` nie powinno być wołane, jeśli username się nie zmienia,
+        // lub jeśli jest wołane, to warunek `!userToUpdate.getUsername().equals(newUsername)`
+        // w serwisie zapobiegnie rzuceniu wyjątku.
+        // when(userRepository.existsByUsername(currentUsername)).thenReturn(true); // To jest prawda
         when(userRepository.save(any(User.class))).thenReturn(existingUser); // Zwraca tego samego użytkownika
 
         // Act
@@ -269,17 +283,21 @@ class UserServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getUsername()).isEqualTo(currentUsername);
         verify(userRepository, times(1)).findById(userId);
-        verify(userRepository, never()).existsByUsername(currentUsername); // Kluczowe: nie sprawdzamy duplikatu dla własnego username
+        // Kluczowe: sprawdzanie duplikatu dla własnego username nie powinno blokować operacji.
+        // W obecnej implementacji serwisu, `existsByUsername` nie jest wołane, jeśli nazwa się nie zmienia.
+        verify(userRepository, never()).existsByUsername(currentUsername);
         verify(userRepository, times(1)).save(existingUser);
     }
 
     @Test
-    @DisplayName("Should delete user when user exists")
+    @DisplayName("Powinien usunąć użytkownika, gdy użytkownik istnieje") // Przetłumaczono
     void deleteUser_shouldDeleteUser_whenUserExists() {
         // Arrange
         Long userId = 1L;
-        when(userRepository.existsById(userId)).thenReturn(true);
-        doNothing().when(userRepository).deleteById(userId); // Mockowanie metody void
+        // Symulacja istnienia użytkownika i jego pobrania
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user1));
+        // Mockowanie metody void delete(User)
+        doNothing().when(userRepository).delete(user1);
 
         // Act
         assertDoesNotThrow(() -> { // Sprawdzamy, czy nie rzuca wyjątku
@@ -287,23 +305,24 @@ class UserServiceTest {
         });
 
         // Assert
-        verify(userRepository, times(1)).existsById(userId);
-        verify(userRepository, times(1)).deleteById(userId);
+        verify(userRepository, times(1)).findById(userId); // Sprawdza, czy użytkownik został pobrany
+        verify(userRepository, times(1)).delete(user1);   // Sprawdza, czy metoda delete została wywołana na obiekcie
     }
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException when deleting non-existing user")
+    @DisplayName("Powinien rzucić ResourceNotFoundException podczas usuwania nieistniejącego użytkownika") // Przetłumaczono
     void deleteUser_shouldThrowResourceNotFoundException_whenUserDoesNotExist() {
         // Arrange
         Long userId = 99L;
-        when(userRepository.existsById(userId)).thenReturn(false);
+        when(userRepository.findById(userId)).thenReturn(Optional.empty()); // Użytkownik nie istnieje
 
         // Act & Assert
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
             userService.deleteUser(userId);
         });
-        assertThat(exception.getMessage()).isEqualTo("User not found with id: " + userId + " for deletion.");
-        verify(userRepository, times(1)).existsById(userId);
-        verify(userRepository, never()).deleteById(userId);
+        assertThat(exception.getMessage()).isEqualTo("Nie znaleziono użytkownika o ID: " + userId + " do usunięcia."); // Zaktualizowano komunikat
+        verify(userRepository, times(1)).findById(userId); // findById jest wołane
+        verify(userRepository, never()).deleteById(anyLong()); // deleteById nie powinno być wywołane
+        verify(userRepository, never()).delete(any(User.class)); // delete(User) nie powinno być wywołane
     }
 }

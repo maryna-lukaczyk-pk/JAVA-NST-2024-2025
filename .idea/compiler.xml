@@ -7,8 +7,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ProjectManagerApp (12)" />
-        <module name="ProjectManagerApp (11)" />
       </profile>
       <profile name="Annotation profile for ProjectManagerApp" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -17,31 +15,33 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="ProjectManagerApp (17)" />
-        <module name="ProjectManagerApp (16)" />
-        <module name="ProjectManagerApp (19)" />
-        <module name="ProjectManagerApp (18)" />
-        <module name="demo" />
-        <module name="ProjectManagerApp (7)" />
-        <module name="ProjectManagerApp (8)" />
-        <module name="ProjectManagerApp (9)" />
-        <module name="ProjectManagerApp (1)" />
-        <module name="ProjectManagerApp (2)" />
-        <module name="ProjectManagerApp (10)" />
-        <module name="ProjectManagerApp (3)" />
-        <module name="ProjectManagerApp (13)" />
-        <module name="ProjectManagerApp (4)" />
-        <module name="ProjectManagerApp (5)" />
-        <module name="ProjectManagerApp (15)" />
-        <module name="ProjectManagerApp (14)" />
-        <module name="ProjectManagerApp (6)" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="demo" target="21" />
       <module name="demo (1)" target="20" />
       <module name="demo (2)" target="20" />
       <module name="ProjectManagerApp" target="1.5" />
+      <module name="ProjectManagerApp (1)" target="17" />
+      <module name="ProjectManagerApp (10)" target="17" />
+      <module name="ProjectManagerApp (11)" target="21" />
+      <module name="ProjectManagerApp (12)" target="21" />
+      <module name="ProjectManagerApp (13)" target="20" />
+      <module name="ProjectManagerApp (14)" target="17" />
+      <module name="ProjectManagerApp (15)" target="17" />
+      <module name="ProjectManagerApp (16)" target="21" />
+      <module name="ProjectManagerApp (17)" target="20" />
+      <module name="ProjectManagerApp (18)" target="20" />
+      <module name="ProjectManagerApp (19)" target="21" />
+      <module name="ProjectManagerApp (2)" target="20" />
+      <module name="ProjectManagerApp (3)" target="21" />
+      <module name="ProjectManagerApp (4)" target="17" />
+      <module name="ProjectManagerApp (5)" target="20" />
       <module name="ProjectManagerApp (5) (com.example)" target="1.5" />
+      <module name="ProjectManagerApp (6)" target="20" />
+      <module name="ProjectManagerApp (7)" target="17" />
+      <module name="ProjectManagerApp (8)" target="21" />
+      <module name="ProjectManagerApp (9)" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
