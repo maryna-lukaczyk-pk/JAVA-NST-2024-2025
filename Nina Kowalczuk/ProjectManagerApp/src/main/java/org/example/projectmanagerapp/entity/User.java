@@ -1,17 +1,18 @@
 package org.example.projectmanagerapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "users")
 public class User {
 
     @Id
@@ -21,6 +22,7 @@ public class User {
     @Column(nullable = false, length = 255, unique = true)
     private String username;
 
-    @ManyToMany(mappedBy = "users")
-    private List<Project> projects = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProjectUser> projectUsers = new HashSet<>();
 }
