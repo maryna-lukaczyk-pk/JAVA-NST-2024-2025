@@ -2,6 +2,7 @@ package org.example.projectmanagerapp.service;
 
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.repository.ProjectRepository;
+import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,9 +10,11 @@ import java.util.List;
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Project> getAllProjects() {
@@ -43,5 +46,31 @@ public class ProjectService {
 
         projectRepository.deleteById(id);
         return true;
+    }
+
+    public Project addUserToProject(Long projectId, Long userId) {
+        Project project = projectRepository.findById(projectId)
+                                           .orElseThrow(() -> new RuntimeException("Project does not exist"));
+
+        var user = userRepository.findById(userId)
+                                 .orElseThrow(() -> new RuntimeException("User does not exist"));
+
+        var users = project.getUsers();
+        users.add(user);
+
+        return projectRepository.save(project);
+    }
+
+    public Project removeUserFromProject(Long projectId, Long userId) {
+        Project project = projectRepository.findById(projectId)
+                                           .orElseThrow(() -> new RuntimeException("Project does not exist"));
+
+        var user = userRepository.findById(userId)
+                                 .orElseThrow(() -> new RuntimeException("User does not exist"));
+
+        var users = project.getUsers();
+        users.remove(user);
+
+        return projectRepository.save(project);
     }
 }
