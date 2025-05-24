@@ -1,9 +1,10 @@
-// Language: java
 package org.example.projectmanagerapp.controller;
 
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.service.ProjectService;
+import org.example.projectmanagerapp.dto.AssignUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,11 +40,13 @@ public class ProjectController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create new project", description = "Add a new project to the system")
     public Project createProject(
             @Parameter(description = "Project data to create a new project", required = true)
             @RequestBody Project project) {
-        return projectService.createProject(project);
+        Project createdProject = projectService.createProject(project);
+        return new ResponseEntity<>(createdProject, HttpStatus.CREATED).getBody();
     }
 
     @PutMapping("/{id}")
@@ -62,5 +65,13 @@ public class ProjectController {
             @Parameter(description = "ID of the project to delete", required = true)
             @PathVariable Integer id) {
         projectService.deleteProject(id);
+    }
+
+    @PostMapping("/{id}/users")
+    public ResponseEntity<Project> assignUserToProject(
+            @PathVariable Integer id,
+            @RequestBody AssignUserRequest request) {
+        Project updated = projectService.assignUser(id, request.getUserId());
+        return ResponseEntity.ok(updated);
     }
 }

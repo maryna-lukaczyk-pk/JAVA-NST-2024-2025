@@ -4,6 +4,7 @@ package org.example.projectmanagerapp.controller;
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,11 +40,13 @@ public class UserController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create new user", description = "Add a new user to the system")
     public User createUser(
             @Parameter(description = "User data to create a new user", required = true)
             @RequestBody User user) {
-        return userService.createUser(user);
+        User createdUser = userService.createUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED).getBody();
     }
 
     @PutMapping("/{id}")
