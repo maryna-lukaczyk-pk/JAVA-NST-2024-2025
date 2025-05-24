@@ -73,4 +73,36 @@ public class ProjectController {
 
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
+
+    @GetMapping("/addUser/{id}")
+    @Operation(summary = "Add user to a project", description = "Adds a user to project by id")
+    @Parameter(name = "id", description  = "id of the project", required = true)
+    @Parameter(name = "userId", description  = "id of the user", required = true)
+    public ResponseEntity<Project> addUserToProject(@PathVariable Long id, @RequestParam Long userId) {
+        Project project;
+        try {
+            project = projectService.addUserToProject(id, userId);
+        }
+        catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(project, HttpStatus.OK);
+    }
+
+    @GetMapping("/removeUser/{id}")
+    @Operation(summary = "Remove user from a project", description = "Removes a user from a project by id")
+    @Parameter(name = "id", description  = "id of the project", required = true)
+    @Parameter(name = "userId", description  = "id of the user", required = true)
+    public ResponseEntity<Project> removeUserFromProject(@PathVariable Long id, @RequestParam Long userId) {
+        Project project;
+        try {
+            project = projectService.removeUserFromProject(id, userId);
+        }
+        catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(project, HttpStatus.OK);
+    }
 }

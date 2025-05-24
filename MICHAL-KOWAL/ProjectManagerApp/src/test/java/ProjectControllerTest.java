@@ -1,5 +1,6 @@
 import org.example.projectmanagerapp.controller.ProjectController;
 import org.example.projectmanagerapp.entity.Project;
+import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -121,5 +123,53 @@ public class ProjectControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, projectRetrieveResult.getStatusCode());
 
         verify(projectService, times(1)).getProjectById(1L);
+    }
+
+    @Test
+    @DisplayName("Should add a user to a chosen project")
+    void testAddUserToProject() {
+        Project project = new Project();
+        project.setId(1L);
+        project.setName("Project 1");
+        project.setUsers(new ArrayList<>());
+
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setUsername("Darek");
+        project.getUsers().add(user1);
+
+        when(projectService.addUserToProject(1L, 1L)).thenReturn(project);
+
+        var projectUpdateResult = projectController.addUserToProject(1L, 1L);
+
+        assertEquals(HttpStatus.OK, projectUpdateResult.getStatusCode());
+        assertEquals(project, projectUpdateResult.getBody());
+
+        verify(projectService, times(1)).addUserToProject(1L, 1L);
+    }
+
+    @Test
+    @DisplayName("Should remove a user from a chosen project")
+    void testRemoveUserFromProject() {
+        Project project1 = new Project();
+        project1.setId(1L);
+        project1.setName("Project 1");
+
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setUsername("Darek");
+
+        List<User> users = new ArrayList<>();
+        users.add(user1);
+        project1.setUsers(users);
+
+        when(projectService.removeUserFromProject(1L, 1L)).thenReturn(project1);
+
+        var projectUpdateResult = projectController.removeUserFromProject(1L, 1L);
+
+        assertEquals(HttpStatus.OK, projectUpdateResult.getStatusCode());
+        assertEquals(project1, projectUpdateResult.getBody());
+
+        verify(projectService, times(1)).removeUserFromProject(1L, 1L);
     }
 }
