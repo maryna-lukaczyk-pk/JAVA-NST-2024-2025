@@ -1,3 +1,4 @@
+// src/main/java/com/example/projectmanagerapp/UserController.java
 package com.example.projectmanagerapp;
 
 import com.example.projectmanagerapp.entity.User;
@@ -18,13 +19,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*; // Dodano @PutMapping, @DeleteMapping, @PathVariable
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "User Management", description = "APIs for managing users")
+@Tag(name = "Zarządzanie Użytkownikami", description = "API do zarządzania użytkownikami") // Przetłumaczono
 public class UserController {
 
     private final UserService userService;
@@ -35,9 +36,9 @@ public class UserController {
     }
 
     // --- DTO dla żądań modyfikujących User (Create/Update) ---
-    @Schema(name = "UserPayload", description = "Payload for creating or updating a user.")
+    @Schema(name = "UserPayload", description = "Dane wejściowe do tworzenia lub aktualizacji użytkownika.") // Przetłumaczono
     private static class UserPayload {
-        @Schema(description = "The username. Must be unique.", example = "updateduser", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Nazwa użytkownika. Musi być unikalna.", example = "nowyUzytkownik123", requiredMode = Schema.RequiredMode.REQUIRED) // Przetłumaczono
         private String username;
         public String getUsername() { return username; }
         public void setUsername(String username) { this.username = username; }
@@ -45,19 +46,22 @@ public class UserController {
 
     // --- POST /api/users (Create) ---
     @PostMapping
-    @Operation(summary = "Create a new user", description = "Registers a new user in the system.")
+    @Operation(summary = "Tworzenie nowego użytkownika", description = "Rejestruje nowego użytkownika w systemie.") // Przetłumaczono
     @RequestBody(
-            description = "User object with username to create.",
+            description = "Obiekt użytkownika z nazwą użytkownika do utworzenia.", // Przetłumaczono
             required = true,
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserPayload.class))
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input (e.g., username empty)", content = @Content()),
-            @ApiResponse(responseCode = "409", description = "Username already exists", content = @Content())
+            @ApiResponse(responseCode = "201", description = "Użytkownik utworzony pomyślnie", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))), // Przetłumaczono
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe (np. pusta nazwa użytkownika)", content = @Content()), // Przetłumaczono
+            @ApiResponse(responseCode = "409", description = "Nazwa użytkownika już istnieje", content = @Content()) // Przetłumaczono
     })
     public ResponseEntity<?> createUser(@org.springframework.web.bind.annotation.RequestBody UserPayload payload) {
         try {
+            if (payload.getUsername() == null || payload.getUsername().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Nazwa użytkownika nie może być pusta.");
+            }
             User createdUser = userService.createUser(payload.getUsername());
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         } catch (IllegalArgumentException e) {
@@ -69,10 +73,10 @@ public class UserController {
 
     // --- GET /api/users (Get All) ---
     @GetMapping
-    @Operation(summary = "Retrieve all users", description = "Fetches a list of all registered users.")
+    @Operation(summary = "Pobieranie wszystkich użytkowników", description = "Pobiera listę wszystkich zarejestrowanych użytkowników.") // Przetłumaczono
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of users", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content())
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano listę użytkowników", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))), // Przetłumaczono
+            @ApiResponse(responseCode = "500", description = "Wewnętrzny błąd serwera", content = @Content()) // Przetłumaczono
     })
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
@@ -81,11 +85,11 @@ public class UserController {
 
     // --- GET /api/users/{id} (Get by ID) ---
     @GetMapping("/{id}")
-    @Operation(summary = "Get user by ID", description = "Retrieves a specific user by their ID.")
-    @Parameter(name = "id", description = "ID of the user to retrieve", required = true, example = "1")
+    @Operation(summary = "Pobieranie użytkownika po ID", description = "Pobiera określonego użytkownika na podstawie jego ID.") // Przetłumaczono
+    @Parameter(name = "id", description = "ID użytkownika do pobrania", required = true, example = "1") // Przetłumaczono
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved user", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content())
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano użytkownika", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))), // Przetłumaczono
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono użytkownika", content = @Content()) // Przetłumaczono
     })
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
@@ -98,23 +102,26 @@ public class UserController {
 
     // --- PUT /api/users/{id} (Update) ---
     @PutMapping("/{id}")
-    @Operation(summary = "Update an existing user", description = "Updates the username of an existing user identified by their ID.")
-    @Parameter(name = "id", description = "ID of the user to update", required = true, example = "1")
+    @Operation(summary = "Aktualizacja istniejącego użytkownika", description = "Aktualizuje nazwę użytkownika istniejącego użytkownika identyfikowanego przez jego ID.") // Przetłumaczono
+    @Parameter(name = "id", description = "ID użytkownika do zaktualizowania", required = true, example = "1") // Przetłumaczono
     @RequestBody(
-            description = "User object with the new username.",
+            description = "Obiekt użytkownika z nową nazwą użytkownika.", // Przetłumaczono
             required = true,
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserPayload.class))
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input (e.g., new username empty)", content = @Content()),
-            @ApiResponse(responseCode = "404", description = "User not found for update", content = @Content()),
-            @ApiResponse(responseCode = "409", description = "New username is already taken by another user", content = @Content())
+            @ApiResponse(responseCode = "200", description = "Użytkownik zaktualizowany pomyślnie", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))), // Przetłumaczono
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe (np. pusta nowa nazwa użytkownika)", content = @Content()), // Przetłumaczono
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono użytkownika do aktualizacji", content = @Content()), // Przetłumaczono
+            @ApiResponse(responseCode = "409", description = "Nowa nazwa użytkownika jest już zajęta przez innego użytkownika", content = @Content()) // Przetłumaczono
     })
     public ResponseEntity<?> updateUser(
             @PathVariable Long id,
             @org.springframework.web.bind.annotation.RequestBody UserPayload payload) {
         try {
+            if (payload.getUsername() == null || payload.getUsername().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Nowa nazwa użytkownika nie może być pusta.");
+            }
             User updatedUser = userService.updateUser(id, payload.getUsername());
             return ResponseEntity.ok(updatedUser);
         } catch (ResourceNotFoundException e) {
@@ -128,18 +135,20 @@ public class UserController {
 
     // --- DELETE /api/users/{id} (Delete) ---
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a user", description = "Deletes a user from the system by their ID.")
-    @Parameter(name = "id", description = "ID of the user to delete", required = true, example = "1")
+    @Operation(summary = "Usuwanie użytkownika", description = "Usuwa użytkownika z systemu na podstawie jego ID.") // Przetłumaczono
+    @Parameter(name = "id", description = "ID użytkownika do usunięcia", required = true, example = "1") // Przetłumaczono
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "User deleted successfully (No Content)"), // 204 jest typowe dla DELETE
-            @ApiResponse(responseCode = "404", description = "User not found for deletion", content = @Content())
+            @ApiResponse(responseCode = "204", description = "Użytkownik usunięty pomyślnie (Brak zawartości)"), // Przetłumaczono, 204 jest typowe dla DELETE
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono użytkownika do usunięcia", content = @Content()) // Przetłumaczono
     })
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) { // ResponseEntity<Void> dla No Content
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) { // ResponseEntity<Void> dla braku zawartości
         try {
             userService.deleteUser(id);
-            return ResponseEntity.noContent().build(); // Zwraca status 204 No Content
+            return ResponseEntity.noContent().build(); // Zwraca status 204 Brak zawartości
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Można też zwrócić .body(e.getMessage())
+            // Można również zwrócić .body(e.getMessage()) jeśli chcemy przekazać treść błędu,
+            // ale dla 404 często wystarczy sam status.
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

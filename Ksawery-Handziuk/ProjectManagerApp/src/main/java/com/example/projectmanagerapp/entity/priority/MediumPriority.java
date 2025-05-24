@@ -1,10 +1,10 @@
+// src/main/java/com/example/projectmanagerapp/entity/priority/MediumPriority.java
 package com.example.projectmanagerapp.entity.priority;
 
-import com.example.projectmanagerapp.PriorityLevel;
-
+// Implementacja interfejsu PriorityLevel dla średniego priorytetu.
 public class MediumPriority implements PriorityLevel {
     @Override
     public String getPriority() {
-        return "MEDIUM";
+        return "MEDIUM"; // Zwraca "MEDIUM" jako reprezentację średniego priorytetu.
     }
 }

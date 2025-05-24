@@ -5,7 +5,6 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <!--   POPRAWKA: Użycie istniejącej, stabilnej wersji   -->
         <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
@@ -15,13 +14,14 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>ProjectManagerApp</name>
     <description>ProjectManagerApp</description>
-    <!-- Puste sekcje url, licenses, developers, scm można usunąć, jeśli nie są wypełniane -->
 
     <properties>
         <java.version>21</java.version>
-        <!-- Warto wersję springdoc też umieścić w properties -->
         <springdoc.version>2.5.0</springdoc.version>
-        <jacoco.version>0.8.11</jacoco.version> <!-- Wersja JaCoCo -->
+        <jacoco.version>0.8.11</jacoco.version>
+        <testcontainers.version>1.19.7</testcontainers.version> <!-- Wersja TestContainers w properties -->
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
     </properties>
 
     <dependencies>
@@ -55,45 +55,77 @@
             <optional>true</optional>
         </dependency>
 
-        <!--
-          POPRAWKA: Tylko JEDNA definicja spring-boot-starter-test
-        -->
+        <!-- Podstawowa zależność do testów, zawiera JUnit5, Mockito, AssertJ, Spring Test itp. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <!-- Można wykluczyć JUnit4, jeśli jest niepotrzebnie dołączany -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
+        <!-- TestContainers -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            PONIŻSZE ZALEŻNOŚCI (junit-jupiter-api, mockito-*, assertj-core, spring-boot-test)
+            SĄ JUŻ CZĘŚCIĄ spring-boot-starter-test I NIE POWINNY BYĆ DEKLAROWANE OSOBNO
+            Z WŁASNYMI WERSJAMI I SCOPE COMPILE. ZOSTAŁY USUNIĘTE.
+        -->
+        <!--
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.11.4</version>
-            <scope>compile</scope>
+            <scope>compile</scope>  <- Błędny scope dla zależności testowej
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>5.14.2</version>
-            <scope>compile</scope>
+            <scope>compile</scope> <- Błędny scope
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>5.14.2</version>
-            <scope>compile</scope>
+            <scope>compile</scope> <- Błędny scope
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>3.26.3</version>
-            <scope>compile</scope>
+            <scope>compile</scope> <- Błędny scope
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
-            <version>3.4.5</version>
-            <scope>compile</scope>
+            <version>3.4.5</version> <- Niezgodna wersja z parentem
+            <scope>compile</scope> <- Błędny scope
         </dependency>
-
+        -->
     </dependencies>
 
     <build>
@@ -111,40 +143,106 @@
                 </configuration>
             </plugin>
 
-            <!--
-             POPRAWKA: Usunięto zbędną konfigurację dla lombok z maven-compiler-plugin.
-             Jeśli kompilacja zawiedzie, można go przywrócić, ale generalnie
-             sama zależność powinna wystarczyć dla IDE i Mavena
-            -->
+            <!-- Plugin do uruchamiania testów jednostkowych -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <!--  Konfiguracja <configuration> dla lombok usunięta - zazwyczaj niepotrzebna -->
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <argLine>@{surefireArgLine}</argLine> <!-- KLUCZOWE -->
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                        <exclude>**/UserProjectIntegrationTest.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
-            <!-- DODANO: Plugin JaCoCo do raportowania pokrycia kodu testami -->
+            <!-- Plugin do uruchamiania testów integracyjnych -->
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
+                <configuration>
+                    <includes>
+                        <!-- Włączamy testy integracyjne -->
+                        <include>**/UserProjectIntegrationTest.java</include>
+                        <include>**/*IT.java</include> <!-- Standardowy wzorzec -->
+                    </includes>
+                    <!-- Przekazanie argumentu agenta JaCoCo do Failsafe -->
+                    <argLine>@{failsafeArgLine}</argLine>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <!--  Wiąże generowanie raportu z fazą test  -->
-                    <execution>
-                        <id>report</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- Domyślna konfiguracja z parenta jest zazwyczaj wystarczająca -->
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <!-- Przygotowanie agenta dla testów jednostkowych (Surefire) -->
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-ut.exec</destFile>
+                            <!-- Używamy innej nazwy właściwości dla Surefire, jeśli Failsafe też jej potrzebuje -->
+                            <!-- lub Surefire używa domyślnej 'argLine' jeśli nie jest skonfliktowana -->
+                            <propertyName>surefireArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <!-- Raport dla testów jednostkowych -->
+                    <execution>
+                        <id>report-ut</id>
+                        <phase>test</phase> <!-- Po wykonaniu testów jednostkowych -->
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco-ut.exec</dataFile>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <!-- Przygotowanie agenta dla testów integracyjnych (Failsafe) -->
+                    <execution>
+                        <id>prepare-agent-integration</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-it.exec</destFile>
+                            <propertyName>failsafeArgLine</propertyName> <!-- Ta właściwość będzie użyta przez Failsafe -->
+                        </configuration>
+                    </execution>
+                    <!-- Raport TYLKO dla testów integracyjnych -->
+                    <execution>
+                        <id>report-integration</id>
+                        <phase>post-integration-test</phase> <!-- Po wykonaniu testów integracyjnych -->
+                        <goals>
+                            <goal>report</goal> <!-- Używamy 'report' dla Failsafe, 'report-integration' jest dla agregacji -->
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco-it.exec</dataFile>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>

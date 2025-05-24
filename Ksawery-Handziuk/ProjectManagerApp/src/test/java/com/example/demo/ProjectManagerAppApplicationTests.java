@@ -1,13 +1,15 @@
+// src/test/java/com/example/projectmanagerapp/ProjectManagerAppApplicationTests.java
 package com.example.demo;
-
-import com.example.ProjectManagerApp.ProjectManagerAppAppilication;
+ // Zmieniono pakiet
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import com.example.projectmanagerapp.ProjectManagerAppApplication;
+// Testy dla głównej klasy aplikacji Spring Boot
+@SpringBootTest(classes = ProjectManagerAppApplication.class) // Zmieniono klasę na poprawną nazwę
+class ProjectManagerAppApplicationTests { // Zmieniono nazwę klasy testowej
 
-@SpringBootTest(classes = ProjectManagerAppAppilication.class)
-class DemoApplicationTests {
-
+    // Podstawowy test sprawdzający, czy kontekst Springa ładuje się poprawnie
     @Test
     void contextLoads() {
     }
