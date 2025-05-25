@@ -1,0 +1,4 @@
+*.log
+.mvn/
+.git
+.gitignore

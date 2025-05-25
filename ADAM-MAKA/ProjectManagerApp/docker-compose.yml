@@ -1,0 +1,26 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/task_manager
+      SPRING_DATASOURCE_USERNAME: adam
+      SPRING_DATASOURCE_PASSWORD: admin
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: task_manager
+      POSTGRES_USER: adam
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U adam -d task_manager"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
