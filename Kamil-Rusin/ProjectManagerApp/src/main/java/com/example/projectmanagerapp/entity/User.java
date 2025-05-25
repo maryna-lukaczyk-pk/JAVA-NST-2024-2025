@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -29,5 +30,5 @@ public class User {
     private String userName;
 
     @ManyToMany(mappedBy = "users")
-    private Set<Project> projects;
+    private Set<Project> projects = new HashSet<>();
 }
