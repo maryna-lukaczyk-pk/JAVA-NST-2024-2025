@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: task_manager
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - app-network
+    healthcheck: # Dodaj healthcheck
+      test: ["CMD-SHELL", "pg_isready -U myuser -d task_manager"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/task_manager
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+    ports:
+      - "8080:8080"
+    depends_on: # Dodaj warunek zdrowia
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
