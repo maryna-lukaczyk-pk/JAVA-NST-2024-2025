@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: my-postgres
+    environment:
+      POSTGRES_DB: task_manager
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    container_name: my-spring-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/task_manager
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+    depends_on:
+      - db
