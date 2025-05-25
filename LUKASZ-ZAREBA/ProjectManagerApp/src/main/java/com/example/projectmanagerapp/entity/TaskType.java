@@ -1,5 +1,5 @@
 package com.example.projectmanagerapp.entity;
 
-public enum task_type {
+public enum TaskType {
     low, medium, high
 }

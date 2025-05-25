@@ -14,7 +14,7 @@ class TaskTest {
     void setPriorityLevel_whenTaskTypeIsNull_setsMediumPriority() {
 
         Task task = new Task();
-        task.setTask_type(null);
+        task.setTaskType(null);
 
         task.setPriorityLevel();
 
@@ -26,7 +26,7 @@ class TaskTest {
     void setPriorityLevel_whenTaskTypeIsHigh_setsHighPriority() {
 
         Task task = new Task();
-        task.setTask_type(task_type.high);
+        task.setTaskType(TaskType.high);
 
         task.setPriorityLevel();
 
@@ -38,7 +38,7 @@ class TaskTest {
     void setPriorityLevel_whenTaskTypeIsMedium_setsMediumPriority() {
 
         Task task = new Task();
-        task.setTask_type(task_type.medium);
+        task.setTaskType(TaskType.medium);
 
         task.setPriorityLevel();
 
@@ -50,7 +50,7 @@ class TaskTest {
     void setPriorityLevel_whenTaskTypeIsLow_setsLowPriority() {
         // given
         Task task = new Task();
-        task.setTask_type(task_type.low);
+        task.setTaskType(TaskType.low);
 
 
         task.setPriorityLevel();
