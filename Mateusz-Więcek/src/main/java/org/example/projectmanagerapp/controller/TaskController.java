@@ -1,41 +1,50 @@
 package org.example.projectmanagerapp.controller;
 
-import org.example.projectmanagerapp.repository.TaskRepository;
+import org.example.projectmanagerapp.entity.Task;
+import org.example.projectmanagerapp.service.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.example.projectmanagerapp.entity.Task;
-
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.http.ResponseEntity;
-
+@Tag(name = "Tasks", description = "Operations related to tasks")
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
-    private final TaskRepository taskRepository;
+    private final TaskService svc;
+    public TaskController(TaskService svc) { this.svc = svc; }
 
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
-
-
+    @Operation(summary = "Get all tasks")
     @GetMapping
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public List<Task> getAllTasks() { return svc.getAllTasks(); }
+
+    @Operation(summary = "Get task by ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+        return svc.getTaskById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Create a new task")
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        task.setPriority(task.getTaskType());
-        return taskRepository.save(task);
+    public Task createTask(@RequestBody Task t) { return svc.createTask(t); }
+
+    @Operation(summary = "Update task by ID")
+    @PutMapping("/{id}")
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task d) {
+        return svc.updateTask(id, d)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Delete task by ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        return svc.deleteTask(id)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
+    }
 }
