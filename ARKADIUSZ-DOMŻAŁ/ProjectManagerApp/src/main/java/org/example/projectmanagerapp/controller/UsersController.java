@@ -1,6 +1,7 @@
 package org.example.projectmanagerapp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import org.example.projectmanagerapp.entity.Projects;
 import org.example.projectmanagerapp.entity.Users;
 import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -75,4 +76,16 @@ public class UsersController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("User with id: " + id + " not found"));
     }
+
+    @Operation(
+            summary = "Get projects assigned to a user",
+            description = "Returns a list of all projects to which the user with the specified ID is assigned."
+    )
+    @GetMapping("/{userId}/projects")
+    public ResponseEntity<List<Projects>> getProjectsForUser(@PathVariable Long userId) {
+        List<Projects> projects = userService.getProjectsForUser(userId);
+        return ResponseEntity.ok(projects);
+    }
+
+
 }
