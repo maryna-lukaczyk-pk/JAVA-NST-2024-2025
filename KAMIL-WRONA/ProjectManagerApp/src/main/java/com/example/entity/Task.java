@@ -1,10 +1,12 @@
 package com.example.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
-@Table(name = "project_user")
+@Table(name = "tasks")
 public class Task {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -13,14 +15,18 @@ public class Task {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id")
     private Project project;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    // Gettery i settery
+    @Column(name = "task_type", nullable = false)
+    private String taskType;
+
+
+    // Jawne gettery i settery
     public Long getId() {
         return id;
     }
@@ -60,4 +66,6 @@ public class Task {
     public void setUser(User user) {
         this.user = user;
     }
+    public String getTaskType() { return taskType; }
+    public void setTaskType(String taskType) { this.taskType = taskType; }
 }
