@@ -8,6 +8,12 @@ services:
     container_name: springboot-app
     depends_on:
       - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/task_manager
+      SPRING_DATASOURCE_USERNAME: nomis
+      SPRING_DATASOURCE_PASSWORD: aa
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
 
   db:
     image: postgres:16
@@ -17,7 +23,7 @@ services:
       POSTGRES_USER: nomis
       POSTGRES_PASSWORD: aa
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
