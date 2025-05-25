@@ -90,6 +90,7 @@
     </dependencies>
 
     <build>
+        <finalName>project-manager-app</finalName>
         <plugins>
 
             <plugin>
