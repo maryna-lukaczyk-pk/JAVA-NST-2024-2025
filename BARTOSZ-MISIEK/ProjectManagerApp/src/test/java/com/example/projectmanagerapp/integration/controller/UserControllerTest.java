@@ -24,8 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Import(TestDatabaseConfig.class)
 @Transactional
 public class UserControllerTest {
     @Autowired
