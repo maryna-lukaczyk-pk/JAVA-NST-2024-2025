@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/api/user")
 @RestController
 @Tag(name = "Users", description = "Operations for managing project")
 public class UserController {
@@ -37,16 +38,19 @@ public class UserController {
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
+
     @PutMapping("/{id}")
     @Operation(summary = "Update a User", description = "Update a user by id from DB")
     public void updateUser(@RequestBody User user, @PathVariable Long id) {
          userService.updateUser(id, user);
     }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a User", description = "Deleting a user by id from DB")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
+
     @DeleteMapping()
     @Operation(summary = "Delete all Users", description = "Deleting all users  from DB")
     public void deleteAllUsers() {

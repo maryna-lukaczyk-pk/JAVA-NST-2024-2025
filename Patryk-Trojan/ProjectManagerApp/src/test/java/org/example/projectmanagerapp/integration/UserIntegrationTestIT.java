@@ -1,7 +1,8 @@
-package org.example.projectmanagerapp;
+package org.example.projectmanagerapp.integration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.projectmanagerapp.ITTestConfiguration;
 import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {ITTestConfiguration.class})
 @AutoConfigureMockMvc
-public class UserIntegrationTest {
+public class UserIntegrationTestIT {
 
     @Autowired
     private MockMvc mockMvc;

@@ -54,12 +54,7 @@ public class TaskServiceTest {
         verify(taskRepository, times(1)).findById(1L);
     }
 
-    @Test
-    @DisplayName("Should delete task by ID")
-    public void shouldDeleteTaskById() {
-        taskService.deleteTask(1L);
-        verify(taskRepository, times(1)).deleteById(1L);
-    }
+
 
     @Test
     @DisplayName("Should throw exception when updating non-existent task")

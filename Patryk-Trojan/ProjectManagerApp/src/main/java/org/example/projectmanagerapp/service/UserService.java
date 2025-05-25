@@ -4,8 +4,8 @@ import org.example.projectmanagerapp.entity.User;
 import org.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -13,13 +13,16 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     public List<User> getAllUsers() {
         return this.userRepository.findAll();
     }
+
     public User findUserById(Long id) {
         return this.userRepository.findById(id).orElse(null);
     }
-    public User createUser( User user) {
+
+    public User createUser(User user) {
         System.out.println("Saving user: " + user.getUsername());
         User saved = userRepository.save(user);
         System.out.println("Saved user with id: " + saved.getId());
@@ -30,9 +33,11 @@ public class UserService {
         this.userRepository.deleteById(id);
 
     }
+
     public void deleteAllUsers() {
         this.userRepository.deleteAll();
     }
+
     public void updateUser(Long id, User user) {
         User userToUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));

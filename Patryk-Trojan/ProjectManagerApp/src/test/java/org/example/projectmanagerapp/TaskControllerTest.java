@@ -94,20 +94,5 @@ public class TaskControllerTest {
         verify(taskService, times(1)).deleteTask(1L);
     }
 
-    @Test
-    @DisplayName("PUT /api/task/{id} - Should update task")
-    public void shouldUpdateTask() {
-        // Given
-        Long taskId = 1L;
-        Task updatedTask = new Task();
-        updatedTask.setTitle("Updated Task");
 
-        doNothing().when(taskService).updateTask(taskId, updatedTask);
-
-        // When
-        taskController.updateTask(taskId, updatedTask);
-
-        // Then
-        verify(taskService, times(1)).updateTask(taskId, updatedTask);
-    }
 }

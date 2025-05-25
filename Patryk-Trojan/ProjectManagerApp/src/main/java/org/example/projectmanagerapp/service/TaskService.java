@@ -34,10 +34,13 @@ public class TaskService {
     }
 
     public void updateTask(Long id, Task task) {
-        Task taskToUpdate = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
-        taskToUpdate.setDescription(task.getDescription());
+        Task taskToUpdate = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
+
         taskToUpdate.setTitle(task.getTitle());
         taskToUpdate.setDescription(task.getDescription());
+        taskToUpdate.setTasktype(task.getTasktype());
+
 
         this.taskRepository.save(taskToUpdate);
 
