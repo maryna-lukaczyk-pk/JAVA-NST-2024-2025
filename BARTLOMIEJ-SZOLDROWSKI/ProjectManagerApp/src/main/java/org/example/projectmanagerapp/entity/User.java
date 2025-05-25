@@ -13,6 +13,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String username;
 
     @ManyToMany
@@ -29,4 +31,10 @@ public class User {
     public void setUsername(String username) { this.username = username; }
     public Set<Project> getProjects() { return projects; }
     public void setProjects(Set<Project> projects) { this.projects = projects; }
+
+    public User() {}
+
+    public User(String username) {
+        this.username = username;
+    }
 }
