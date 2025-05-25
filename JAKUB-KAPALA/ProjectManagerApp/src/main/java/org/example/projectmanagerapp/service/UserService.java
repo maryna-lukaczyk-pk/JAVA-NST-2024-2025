@@ -45,6 +45,11 @@ public class UserService {
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        // Remove user from all projects before deleting
+        if (user.getProjects() != null) {
+            user.getProjects().forEach(project -> project.getUsers().remove(user));
+            user.getProjects().clear();
+        }
         userRepository.delete(user);
     }
 
