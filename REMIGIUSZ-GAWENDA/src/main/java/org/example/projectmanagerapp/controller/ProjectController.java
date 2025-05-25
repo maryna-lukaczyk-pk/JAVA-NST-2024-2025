@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
 
 import java.util.List;
 
@@ -13,6 +15,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
+
+    @Operation(summary = "Assign user to project")
+    @PostMapping("/{projectId}/users")
+    public ResponseEntity<Void> assignUserToProject(
+            @PathVariable Long projectId,
+            @RequestParam Long userId
+    ) {
+        projectService.assignUserToProject(projectId, userId);
+        return ResponseEntity.ok().build();
+    }
+
 
     private final ProjectService projectService;
     public ProjectController(ProjectService projectService) {
