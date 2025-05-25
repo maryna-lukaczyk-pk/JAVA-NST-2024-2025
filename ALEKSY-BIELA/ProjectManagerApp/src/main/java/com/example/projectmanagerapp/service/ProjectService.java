@@ -24,7 +24,7 @@ public class ProjectService {
 
     public Project getProjectById(Long id) {
         Optional<Project> project = projectRepository.findById(id);
-        return project.orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
+        return project.orElseThrow(() -> new NoSuchElementException("Project not found with id: " + id));
     }
     public Project createProject(Project project) {
         return projectRepository.save(project);
@@ -34,6 +34,8 @@ public class ProjectService {
         return projectRepository.findById(id)
                 .map(project -> {
                     project.setName(projectDetails.getName());
+                    project.setProjectUsers(projectDetails.getProjectUsers());
+                    project.setProjectTasks(projectDetails.getProjectTasks());
                     return projectRepository.save(project);
                 })
                 .orElseThrow(() -> new NoSuchElementException("Project not found with id: " + id));

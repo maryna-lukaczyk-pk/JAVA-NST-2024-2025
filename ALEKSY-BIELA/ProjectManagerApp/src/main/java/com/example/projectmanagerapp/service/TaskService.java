@@ -10,9 +10,7 @@ import java.util.Optional;
 
 @Service
 public class TaskService {
-
     private final TasksRepository tasksRepository;
-
     @Autowired
     public TaskService(TasksRepository tasksRepository) {
         this.tasksRepository = tasksRepository;
@@ -20,14 +18,18 @@ public class TaskService {
 
     public Tasks getTaskById(Long id) {
         Optional<Tasks> task = tasksRepository.findById(id);
+        if (task.get().getTask_type() == null) {
+            task.get().generatePriority();
+        }
         return task.orElseThrow(() -> new NoSuchElementException("Task not found with id: " + id));
     }
 
     public Tasks createTask(Tasks task) {
-        task.generatePriority();
+        if (task.getTask_type() == null) {
+            task.generatePriority();
+        }
         return tasksRepository.save(task);
     }
-
     public Tasks updateTask(Long id, Tasks taskDetails) {
         return tasksRepository.findById(id)
                 .map(task -> {
@@ -38,7 +40,6 @@ public class TaskService {
                 })
                 .orElseThrow(() -> new NoSuchElementException("Task not found with id: " + id));
     }
-
     public void deleteTask(Long id) {
         if (tasksRepository.existsById(id)) {
             tasksRepository.deleteById(id);
