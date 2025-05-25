@@ -1,6 +1,5 @@
 package com.example.projectmanagerapp.integration.controller;
 
-import com.example.projectmanagerapp.integration.config.TestDatabaseConfig;
 import com.example.projectmanagerapp.integration.utilities.AssertionHelper;
 import org.example.projectmanager.dto.user.UserDto;
 import org.junit.jupiter.api.Assertions;
@@ -8,12 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.projectmanager.dto.user.UserCreateDto;
 import org.example.projectmanager.dto.user.UserEditDto;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
