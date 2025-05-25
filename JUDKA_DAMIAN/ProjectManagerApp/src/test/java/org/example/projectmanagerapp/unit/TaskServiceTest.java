@@ -1,4 +1,4 @@
-package org.example.projectmanagerapp.service;
+package org.example.projectmanagerapp.unit;
 
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Task;
@@ -6,6 +6,7 @@ import org.example.projectmanagerapp.entity.TaskType;
 import org.example.projectmanagerapp.repository.ProjectRepository;
 import org.example.projectmanagerapp.repository.TaskRepository;
 import org.example.projectmanagerapp.schemas.TaskDTO;
+import org.example.projectmanagerapp.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
