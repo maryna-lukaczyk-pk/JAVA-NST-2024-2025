@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: org.example.projectmanagerapp.ProjectManagerAppApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.443 s -- in org.example.projectmanagerapp.ProjectManagerAppApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.447 s -- in org.example.projectmanagerapp.ProjectManagerAppApplicationTests
