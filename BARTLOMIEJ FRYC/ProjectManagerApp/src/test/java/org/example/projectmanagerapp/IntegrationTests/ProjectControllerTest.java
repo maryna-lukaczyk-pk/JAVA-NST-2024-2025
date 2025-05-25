@@ -1,4 +1,4 @@
-package org.example.projectmanagerapp.controller;
+package org.example.projectmanagerapp.IntegrationTests;
 
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.service.ProjectService;
@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.example.projectmanagerapp.controller.ProjectController;
 
 class ProjectControllerTest {
 
