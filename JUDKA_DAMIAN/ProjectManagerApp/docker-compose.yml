@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: task_manager
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Q@H6h@A7bzzhUEr
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    container_name: spring-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/task_manager
+      DB_USERNAME: admin
+      DB_PASSWORD: Q@H6h@A7bzzhUEr
+
+volumes:
+  postgres_data:
