@@ -1,14 +1,17 @@
 package org.example.projectmanager.controller;
 
 import org.example.projectmanager.entity.Project;
-//import org.example.projectmanager.repository.ProjectRepository;
+import org.example.projectmanager.entity.Users;
+import org.example.projectmanager.entity.ProjectUsers;
 import org.example.projectmanager.service.ProjectService;
+import org.example.projectmanager.service.UsersService;
+import org.example.projectmanager.service.ProjectUsersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,12 +21,17 @@ import io.swagger.v3.oas.annotations.Parameter;
 @Tag (name = "Project",description = "Operations related to project management")
 
 public class ProjectController {
-    @Autowired
-    //private ProjectRepository projectRepository;
     private final ProjectService projectService;
+    private final UsersService usersService;
+    private final ProjectUsersService projectUsersService;
 
-    public ProjectController(ProjectService projectService) {
+    @Autowired
+    public ProjectController(ProjectService projectService,
+                             UsersService usersService,
+                             ProjectUsersService projectUsersService) {
         this.projectService = projectService;
+        this.usersService = usersService;
+        this.projectUsersService = projectUsersService;
     }
 
     @GetMapping
@@ -58,5 +66,34 @@ public class ProjectController {
             @PathVariable Long id) {
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{projectId}/users")
+    @Operation(summary = "Assign user to project")
+    public ResponseEntity<ProjectUsers> assignUserToProject(
+            @PathVariable Long projectId,
+            @RequestBody Map<String, Long> request) {
+        Long userId = request.get("userId");
+        Project project = projectService.getProjectById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        Users user = usersService.getUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        ProjectUsers projectUser = projectUsersService.createProjectUser(project, user);
+        return new ResponseEntity<>(projectUser, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}/users")
+    @Operation(summary = "Get all users in project")
+    public ResponseEntity<List<Users>> getProjectUsers(@PathVariable Long id) {
+        List<Users> users = projectUsersService.getUsersByProjectId(id);
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get project by ID", description = "Returns one project")
+    public ResponseEntity<Project> getProjectById(@PathVariable Long id) {
+        return projectService.getProjectById(id)
+                .map(p -> ResponseEntity.ok(p))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

@@ -1,7 +1,9 @@
 package org.example.projectmanager.service;
 
 import org.example.projectmanager.entity.Tasks;
+import org.example.projectmanager.repository.ProjectRepository;
 import org.example.projectmanager.repository.TasksRepository;
+import org.example.projectmanager.repository.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,11 +19,14 @@ class TaskServiceTest {
 
     private TasksRepository taskRepository;
     private TasksService taskService;
+    private ProjectRepository projectRepository;
+
 
     @BeforeEach
     public void setUp() {
         taskRepository = mock(TasksRepository.class);
-        taskService = new TasksService(taskRepository);
+        projectRepository   = mock(ProjectRepository.class);
+        taskService    = new TasksService(taskRepository, projectRepository);
     }
 
     @Test
