@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.projectmanagerapp.priority.HighPriority;
 
 @Entity
 @Table(name = "tasks")
@@ -26,12 +27,21 @@ public class Task {
     @Column(nullable = false)
     private TaskType taskType;
 
-//dodane
     @Column(nullable = false)
     private String priority;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "project_id", nullable = true)
     private Project project;
+
+    @PrePersist
+    @PreUpdate
+    private void applyDefaults() {
+        if (this.taskType == null) {
+            this.taskType = TaskType.TODO;
+        }
+        if (this.priority == null) {
+            this.priority = new HighPriority().getPriority();
+        }
+    }
 }
