@@ -2,9 +2,8 @@ version: '2.1'
 services:
   server:
     container_name: server
-    image: server:latest
-    volumes:
-      - ./:/app
+    build:
+      context: .
     ports:
       - 8083:8080
     depends_on:
