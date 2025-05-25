@@ -28,7 +28,7 @@ public class ProjectController {
     @Operation(summary = "Dodaj nowy projekt")
     @PostMapping
     public Project createProject(
-            @Parameter(description = "Dane nowego projektu") @RequestBody Project project
+            @Parameter(description = "Dane nowego projektu 1") @RequestBody Project project
     ) {
         return projectService.createProject(project);
     }
@@ -37,11 +37,11 @@ public class ProjectController {
     @PutMapping("/{id}")
     public Project updateProject(
             @Parameter(description = "project ID do zmiany") @PathVariable Long id,
-            @Parameter(description = "nowe dane") @RequestBody Project project) {
+            @Parameter(description = "nowe dane 1") @RequestBody Project project) {
         return projectService.updateProject(id, project);
     }
 
-    @Operation(summary = "Usuń projekt")
+    @Operation(summary = "Usun projekt")
     @DeleteMapping("/{id}")
     public void deleteProject(@Parameter(description = "project ID do usuniecia") @PathVariable Long id) {
         projectService.deleteProject(id);
@@ -54,4 +54,6 @@ public class ProjectController {
     ) {
         return projectService.getProjectById(id);
     }
+
+
 }
