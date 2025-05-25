@@ -3,6 +3,7 @@ package com.example.projectmanagerapp.service;
 
 import com.example.projectmanagerapp.entity.Project;
 import com.example.projectmanagerapp.repository.ProjectRepository;
+import com.example.projectmanagerapp.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,14 +16,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ProjectServiceTest {
-
+    private UserService userService;
+    private UserRepository userRepository;
     private ProjectRepository projectRepository;
     private ProjectService projectService;
 
     @BeforeEach
     void setUp() {
         projectRepository = mock(ProjectRepository.class);
-        projectService    = new ProjectService(projectRepository);
+        projectService    = new ProjectService(projectRepository, userRepository);
     }
 
     @Test

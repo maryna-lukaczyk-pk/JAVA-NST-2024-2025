@@ -3,8 +3,12 @@ package com.example.projectmanagerapp.service;
 
 import com.example.projectmanagerapp.entity.Project;
 import com.example.projectmanagerapp.repository.ProjectRepository;
+import com.example.projectmanagerapp.entity.User;
+import com.example.projectmanagerapp.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,10 +16,14 @@ import java.util.Optional;
 @Transactional
 public class ProjectService {
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
+
+
 
     public List<Project> getProjects() {
         return projectRepository.findAll();
@@ -42,4 +50,26 @@ public class ProjectService {
     public void deleteProject(Long id) {
         projectRepository.deleteById(id);
     }
+    @Transactional
+    public void assignUserToProject(Long projectId, Long userId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        project.getUsers().add(user);
+        projectRepository.save(project);
+    }
+
+
+    public List<User> getUsersAssignedToProject(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        project.getUsers().size();
+        return new ArrayList<>(project.getUsers());
+    }
+
+
 }
+
+
+
