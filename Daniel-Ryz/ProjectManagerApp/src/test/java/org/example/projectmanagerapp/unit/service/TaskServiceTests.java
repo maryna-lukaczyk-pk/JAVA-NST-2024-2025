@@ -1,10 +1,12 @@
-package org.example.projectmanagerapp.service;
+package org.example.projectmanagerapp.unit.service;
 
 import org.example.projectmanagerapp.dto.CreateTaskRequest;
 import org.example.projectmanagerapp.entity.Project;
 import org.example.projectmanagerapp.entity.Tasks;
 import org.example.projectmanagerapp.entity.TaskType;
 import org.example.projectmanagerapp.repository.TaskRepository;
+import org.example.projectmanagerapp.service.ProjectService;
+import org.example.projectmanagerapp.service.TaskService;
 import org.example.projectmanagerapp.service.priority.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

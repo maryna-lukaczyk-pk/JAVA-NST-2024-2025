@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.projectmanagerapp.dto.CreateTaskRequest;
 import org.example.projectmanagerapp.entity.Tasks;
 import org.example.projectmanagerapp.service.TaskService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,12 +51,13 @@ public class TaskController {
     }
 
     @Operation(summary = "Create a new Tasks.")
-    @ApiResponse(responseCode = "200", description = "Task created successfully.",
+    @ApiResponse(responseCode = "201", description = "Task created successfully.",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Tasks.class)))
     @PostMapping
-    public Tasks createTask( @RequestBody CreateTaskRequest request) {
-        return taskService.createTask(request);
+    public ResponseEntity<Tasks> createTask( @RequestBody CreateTaskRequest request) {
+        Tasks task = taskService.createTask(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }
 
     @Operation(summary = "Update a task by id.")
