@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:17
+    container_name: project-db
+    environment:
+      POSTGRES_DB: task_manager
+      POSTGRES_USER: dgasi
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: project-manager-app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/task_manager
+      DB_USERNAME: dgasi
+      DB_PASSWORD: admin
+      SERVER_PORT: 8080
+    depends_on:
+      - db
+    restart: unless-stopped
