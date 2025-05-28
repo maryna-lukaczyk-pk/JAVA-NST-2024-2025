@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  app:
+    build: . # Buduje obraz z Dockerfile w bieżącym katalogu
+    container_name: project-manager-app
+    ports:
+      - "8080:8080" # Mapuje port 8080 hosta na port 8080 kontenera
+    depends_on:
+      db:
+        condition: service_healthy # Czeka, aż baza danych będzie gotowa
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/task_manager
+      # 'db' to nazwa serwisu bazy danych zdefiniowana poniżej
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin # Przykładowe hasło, możesz zmienić
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  db:
+    image: postgres:15-alpine # Używa oficjalnego obrazu PostgreSQL
+    container_name: project-manager-db
+    ports:
+      - "5432:5432" # Opcjonalnie: mapuje port bazy danych na hosta, jeśli chcesz mieć do niej dostęp z zewnątrz
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin # Musi być takie samo jak SPRING_DATASOURCE_PASSWORD w serwisie 'app'
+      - POSTGRES_DB=task_manager # Nazwa bazy danych, która zostanie utworzona
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Utrwala dane bazy danych
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d task_manager"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data: # Definiuje nazwany wolumen dla trwałości danych PostgreSQL
