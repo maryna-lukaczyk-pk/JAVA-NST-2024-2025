@@ -1,7 +1,6 @@
 package org.example.projectmanagerapp.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Task;
 import org.example.projectmanagerapp.services.TaskService;
@@ -39,7 +38,7 @@ public class TaskController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     @Operation(summary = "Create a new task")
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         Task createdTask = taskService.createTask(task);
