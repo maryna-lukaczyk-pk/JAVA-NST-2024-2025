@@ -1,10 +1,8 @@
 package org.example.projectmanagerapp.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.projectmanagerapp.entity.Project;
-
 import org.example.projectmanagerapp.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +24,13 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
+    @PostMapping("/{id}/users")
+    @Operation(summary = "Assign users to project")
+    public ResponseEntity<Project> assignUsersToProject(@PathVariable int id, @RequestBody List<Integer> userIds) {
+        Project updated = projectService.assignUsersToProject(id, userIds);
+        return ResponseEntity.ok(updated);
+    }
+
     @GetMapping
     @Operation(summary = "Get all projects")
     public List<Project> getAllProjects() {
@@ -40,7 +45,7 @@ public class ProjectController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     @Operation(summary = "Create a new project")
     public ResponseEntity<Project> createProject(@RequestBody Project project) {
         Project createdProject = projectService.createProject(project);
