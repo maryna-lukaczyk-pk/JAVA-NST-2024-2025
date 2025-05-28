@@ -1,3 +1,0 @@
-- Imię: Daniel
-- Nazwisko: Ryż
-- Numer grupy: 4 

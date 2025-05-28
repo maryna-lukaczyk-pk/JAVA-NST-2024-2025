@@ -1,1 +1,0 @@
-Dariusz Mędrala, gk03

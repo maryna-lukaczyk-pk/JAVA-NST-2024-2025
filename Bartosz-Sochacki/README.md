@@ -1,3 +1,0 @@
-Bartosz
-Sochacki
-grupa4

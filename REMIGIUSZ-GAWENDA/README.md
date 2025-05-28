@@ -1,1 +1,0 @@
-Remigiusz Gawenda Grupa nr 4
