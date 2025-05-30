@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ./ProjectManagerApp
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/task_manager
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=pass
+    networks:
+      - app-network
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: task_manager
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+volumes:
+  postgres_data:
+networks:
+  app-network:
