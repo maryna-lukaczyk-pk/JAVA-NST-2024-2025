@@ -1,15 +1,10 @@
 spring:
-  application:
-    name: ${APP_NAME:ProjectManagerApp}  # warto?? domy?lna je?li zmienna nie zostanie ustawiona
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/task_manager
+    username: myuser
+    password: mypassword
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
-    show-sql: ${SPRING_JPA_SHOW_SQL:true}
-    open-in-view: false
-    properties:
-      hibernate:
-        enable_lazy_load_no_trans: false
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
