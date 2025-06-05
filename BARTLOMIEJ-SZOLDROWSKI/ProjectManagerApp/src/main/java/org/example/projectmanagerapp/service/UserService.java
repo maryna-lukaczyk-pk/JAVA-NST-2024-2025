@@ -34,8 +34,8 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Usuń powiązania przed usunięciem użytkownika
-        user.getProjects().clear();
+/*        // Usuń powiązania przed usunięciem użytkownika
+        user.getProjects().clear();*/
         userRepository.save(user);
 
         userRepository.delete(user);
