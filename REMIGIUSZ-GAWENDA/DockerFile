@@ -1,0 +1,11 @@
+# Bazowy obraz z JDK 17
+FROM eclipse-temurin:17-jdk
+
+# Wskazanie pliku JAR do skopiowania
+ARG JAR_FILE=target/*.jar
+
+# Kopiujemy aplikację jako app.jar do kontenera
+COPY ${JAR_FILE} app.jar
+
+# Ustawienie komendy startowej
+ENTRYPOINT ["java", "-jar", "/app.jar"]
