@@ -117,6 +117,14 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>.</directory>
+                <includes>
+                    <include>.env</include>
+                    <include>.env.local</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
-
 </project>
