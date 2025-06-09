@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: projectdb
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testuser -d projectdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      # Database connection settings
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/projectdb
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: testpass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+      SECURITY_JWT_SECRET: YTJjZDhkNTIzZTA1M2E1NTY0NGU0MDA0YzY1NjJkNjk=
+      SECURITY_JWT_EXPIRATION_MS: ${SECURITY_JWT_EXPIRATION_MS}
+      SECURITY_JWT_REFRESH_EXP_MS: ${SECURITY_JWT_REFRESH_EXP_MS}
+
+      # JVM and application settings
+      JAVA_OPTS: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  db-data:
+    name: project-manager-db-data
