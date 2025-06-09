@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    container_name: project-manager-app
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/task_manager
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRINGDOC_SWAGGER_UI_DISABLE_SWAGGER_DEFAULT_URL=true
+      - SPRINGDOC_SWAGGER_UI_PATH=/swagger
+    networks:
+      - project-manager-app-network
+
+  db:
+    image: postgres:15
+    container_name: project-manager-app-db
+    environment:
+      POSTGRES_DB: task_manager
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - project-manager-app-network
+
+volumes:
+  pgdata:
+
+networks:
+  project-manager-app-network:
+    driver: bridge
