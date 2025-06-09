@@ -64,7 +64,6 @@ public class ProjectService {
     public List<User> getUsersAssignedToProject(Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
-        project.getUsers().size();
         return new ArrayList<>(project.getUsers());
     }
 
