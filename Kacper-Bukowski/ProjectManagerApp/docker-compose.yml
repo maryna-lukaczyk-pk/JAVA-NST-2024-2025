@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/studia-java-lab-1
+      - SPRING_DATASOURCE_USERNAME=bukowski
+      - SPRING_DATASOURCE_PASSWORD=Buczek2005!
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+    depends_on:
+      - db
+    networks:
+      - project-manager-network
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5433:5432"  # I use port 5433 because I already have a PostgreSQL server running on port 5432
+    environment:
+      - POSTGRES_DB=studia-java-lab-1
+      - POSTGRES_USER=bukowski
+      - POSTGRES_PASSWORD=Buczek2005!
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - project-manager-network
+
+networks:
+  project-manager-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
