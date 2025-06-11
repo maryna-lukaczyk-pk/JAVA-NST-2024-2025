@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: LaboratoriesDB
+      POSTGRES_USER: michalkruczala
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  app:
+    build: .
+    container_name: java_app
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8085:8085"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@local.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+volumes:
+  db_data:
