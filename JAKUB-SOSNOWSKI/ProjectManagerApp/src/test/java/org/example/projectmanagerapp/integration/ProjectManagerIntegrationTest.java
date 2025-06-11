@@ -72,9 +72,7 @@ public class ProjectManagerIntegrationTest {
                 .getContentAsString();
         Long userId = om.readValue(userResponse, User.class).getId();
 
-        String projectResponse = mvc.perform(post("/api/projects")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(Map.of("name", "Integracyjny projekt"))))
+        String projectResponse = mvc.perform(post("/api/projects").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(Map.of("name", "Integracyjny projekt"))))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
